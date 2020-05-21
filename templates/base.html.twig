@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<!--
+Template Name:  SmartAdmin Responsive WebApp - Template build with Twitter Bootstrap 4
+Version: 4.5.1
+Author: Sunnyat A.
+Website: http://gootbootstrap.com
+Purchase: https://wrapbootstrap.com/theme/smartadmin-responsive-webapp-WB0573SK0?ref=myorange
+License: You must have a valid license purchased only from wrapbootstrap.com (link above) in order to legally use this theme for your project.
+-->
+<html lang="{{ lang }}">
+<head>
+    <meta charset="utf-8">
+    <title>
+        {{ title }}
+    </title>
+    <meta name="description" content="Page Title">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui">
+    <!-- Call App Mode on ios devices -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- Remove Tap Highlight on Windows Phone IE -->
+    <meta name="msapplication-tap-highlight" content="no">
+    <!-- base css -->
+    {% block csss %}
+        <link id="vendorsbundle" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/vendors.bundle.css') }}">
+        <link id="appbundle" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/app.bundle.css') }}">
+        <link id="mytheme" rel="stylesheet" media="screen, print" href="#">
+        <link id="myskin" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/skins/skin-master.css') }}">
+    {% endblock %}
+
+    <!-- Place favicon.ico in the root directory -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('smartadmin/img/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('smartadmin/img/favicon/favicon-32x32.png') }}">
+    <link rel="mask-icon" href="{{ asset('smartadmin/img/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+    <!-- You can add your own stylesheet here to override any styles that comes before it
+    <link rel="stylesheet" media="screen, print" href="css/your_styles.css">-->
+</head>
+<!-- BEGIN Body -->
+<!-- Possible Classes
+
+    * 'header-function-fixed'         - header is in a fixed at all times
+    * 'nav-function-fixed'            - left panel is fixed
+    * 'nav-function-minify'			  - skew nav to maximize space
+    * 'nav-function-hidden'           - roll mouse on edge to reveal
+    * 'nav-function-top'              - relocate left pane to top
+    * 'mod-main-boxed'                - encapsulates to a container
+    * 'nav-mobile-push'               - content pushed on menu reveal
+    * 'nav-mobile-no-overlay'         - removes mesh on menu reveal
+    * 'nav-mobile-slide-out'          - content overlaps menu
+    * 'mod-bigger-font'               - content fonts are bigger for readability
+    * 'mod-high-contrast'             - 4.5:1 text contrast ratio
+    * 'mod-color-blind'               - color vision deficiency
+    * 'mod-pace-custom'               - preloader will be inside content
+    * 'mod-clean-page-bg'             - adds more whitespace
+    * 'mod-hide-nav-icons'            - invisible navigation icons
+    * 'mod-disable-animation'         - disables css based animations
+    * 'mod-hide-info-card'            - hides info card from left panel
+    * 'mod-lean-subheader'            - distinguished page header
+    * 'mod-nav-link'                  - clear breakdown of nav links
+
+    >>> more settings are described inside documentation page >>>
+-->
+<body class="mod-bg-1 ">
+<!-- DOC: script to save and load page settings -->
+{% block scripts %}
+{% endblock %}
+<!-- BEGIN Page Wrapper -->
+<div class="page-wrapper">
+    <div class="page-inner">
+        <!-- BEGIN Left Aside -->
+        {% block leftMenu %}
+        {% endblock %}
+        <!-- END Left Aside -->
+        <div class="page-content-wrapper">
+            <!-- BEGIN Page Header -->
+            {% block header %}
+            {% endblock %}
+            <!-- END Page Header -->
+            <!-- BEGIN Page Content -->
+            {% block content %}
+            {% endblock %}
+            <!-- END Page Content -->
+            <!-- BEGIN Page Footer -->
+            {% block footer %}
+            {% endblock %}
+            <!-- END Page Footer -->
+            <!-- BEGIN Shortcuts -->
+            {% block shortcuts %}
+            {% endblock %}
+            <!-- END Shortcuts -->
+            <!-- BEGIN Color profile -->
+            {% block colorprofile %}
+                <!-- this area is hidden and will not be seen on screens or screen readers -->
+                <!-- we use this only for CSS color refernce for JS stuff -->
+                <p id="js-color-profile" class="d-none">
+                    <span class="color-primary-50"></span>
+                    <span class="color-primary-100"></span>
+                    <span class="color-primary-200"></span>
+                    <span class="color-primary-300"></span>
+                    <span class="color-primary-400"></span>
+                    <span class="color-primary-500"></span>
+                    <span class="color-primary-600"></span>
+                    <span class="color-primary-700"></span>
+                    <span class="color-primary-800"></span>
+                    <span class="color-primary-900"></span>
+                    <span class="color-info-50"></span>
+                    <span class="color-info-100"></span>
+                    <span class="color-info-200"></span>
+                    <span class="color-info-300"></span>
+                    <span class="color-info-400"></span>
+                    <span class="color-info-500"></span>
+                    <span class="color-info-600"></span>
+                    <span class="color-info-700"></span>
+                    <span class="color-info-800"></span>
+                    <span class="color-info-900"></span>
+                    <span class="color-danger-50"></span>
+                    <span class="color-danger-100"></span>
+                    <span class="color-danger-200"></span>
+                    <span class="color-danger-300"></span>
+                    <span class="color-danger-400"></span>
+                    <span class="color-danger-500"></span>
+                    <span class="color-danger-600"></span>
+                    <span class="color-danger-700"></span>
+                    <span class="color-danger-800"></span>
+                    <span class="color-danger-900"></span>
+                    <span class="color-warning-50"></span>
+                    <span class="color-warning-100"></span>
+                    <span class="color-warning-200"></span>
+                    <span class="color-warning-300"></span>
+                    <span class="color-warning-400"></span>
+                    <span class="color-warning-500"></span>
+                    <span class="color-warning-600"></span>
+                    <span class="color-warning-700"></span>
+                    <span class="color-warning-800"></span>
+                    <span class="color-warning-900"></span>
+                    <span class="color-success-50"></span>
+                    <span class="color-success-100"></span>
+                    <span class="color-success-200"></span>
+                    <span class="color-success-300"></span>
+                    <span class="color-success-400"></span>
+                    <span class="color-success-500"></span>
+                    <span class="color-success-600"></span>
+                    <span class="color-success-700"></span>
+                    <span class="color-success-800"></span>
+                    <span class="color-success-900"></span>
+                    <span class="color-fusion-50"></span>
+                    <span class="color-fusion-100"></span>
+                    <span class="color-fusion-200"></span>
+                    <span class="color-fusion-300"></span>
+                    <span class="color-fusion-400"></span>
+                    <span class="color-fusion-500"></span>
+                    <span class="color-fusion-600"></span>
+                    <span class="color-fusion-700"></span>
+                    <span class="color-fusion-800"></span>
+                    <span class="color-fusion-900"></span>
+                </p>
+            {% endblock %}
+            <!-- END Color profile -->
+        </div>
+    </div>
+</div>
+<!-- END Page Wrapper -->
+<!-- BEGIN Quick Menu -->
+{% block quickmenu %}
+    <!-- to add more items, please make sure to change the variable '$menu-items: number;' in your _page-components-shortcut.scss -->
+    <nav class="shortcut-menu d-none d-sm-block">
+        <input type="checkbox" class="menu-open" name="menu-open" id="menu_open" />
+        <label for="menu_open" class="menu-open-button ">
+            <span class="app-shortcut-icon d-block"></span>
+        </label>
+        <a href="#" class="menu-item btn" data-toggle="tooltip" data-placement="left" title="Scroll Top">
+            <i class="fal fa-arrow-up"></i>
+        </a>
+        <a href="page_login.html" class="menu-item btn" data-toggle="tooltip" data-placement="left" title="Logout">
+            <i class="fal fa-sign-out"></i>
+        </a>
+        <a href="#" class="menu-item btn" data-action="app-fullscreen" data-toggle="tooltip" data-placement="left" title="Full Screen">
+            <i class="fal fa-expand"></i>
+        </a>
+        <a href="#" class="menu-item btn" data-action="app-print" data-toggle="tooltip" data-placement="left" title="Print page">
+            <i class="fal fa-print"></i>
+        </a>
+        <a href="#" class="menu-item btn" data-action="app-voice" data-toggle="tooltip" data-placement="left" title="Voice command">
+            <i class="fal fa-microphone"></i>
+        </a>
+    </nav>
+{% endblock %}
+<!-- END Quick Menu -->
+<!-- BEGIN Messenger -->
+{% block messenger %}
+{% endblock %}
+<!-- END Messenger -->
+<!-- BEGIN Page Settings -->
+{% block pagesettings %}
+{% endblock %}
+<!-- END Page Settings -->
+<!-- base vendor bundle:
+     DOC: if you remove pace.js from core please note on Internet Explorer some CSS animations may execute before a page is fully loaded, resulting 'jump' animations
+                + pace.js (recommended)
+                + jquery.js (core)
+                + jquery-ui-cust.js (core)
+                + popper.js (core)
+                + bootstrap.js (core)
+                + slimscroll.js (extension)
+                + app.navigation.js (core)
+                + ba-throttle-debounce.js (core)
+                + waves.js (extension)
+                + smartpanels.js (extension)
+                + src/../jquery-snippets.js (core) -->
+{% block javascripts %}
+    <script src="{{ asset('smartadmin/js/vendors.bundle.js') }}"></script>
+    <script src="{{ asset('smartadmin/js/app.bundle.js') }}"></script>
+{% endblock %}
+<!--This page contains the basic JS and CSS files to get started on your project. If you need aditional addon's or plugins please see scripts located at the bottom of each page in order to find out which JS/CSS files to add.-->
+</body>
+<!-- END Body -->
+</html>
