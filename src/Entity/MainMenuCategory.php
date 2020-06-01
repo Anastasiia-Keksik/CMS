@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use Doctrine\ORM\PersistentCollection;
+
 /**
  * @ORM\Entity(repositoryClass=MainMenuCategoryRepository::class)
  */
@@ -35,14 +37,19 @@ class MainMenuCategory
     private $User;
 
     /**
-     * @ORM\OneToMany(targetEntity=MainMenuChild::class, mappedBy="MainMenuCategory", fetch="EAGER")
+     * @ORM\OneToMany(targetEntity=MainMenuChild::class, mappedBy="MainMenuCategory",)
      */
     private $mainMenuChildren;
 
     /**
-     * @ORM\OneToMany(targetEntity=MainMenuSubCategory::class, mappedBy="MainMenuCategory", fetch="EAGER")
+     * @ORM\OneToMany(targetEntity=MainMenuSubCategory::class, mappedBy="MainMenuCategory", )
      */
     private $mainMenuSubCategories;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $hidden;
 
     public function __construct()
     {
@@ -149,6 +156,18 @@ class MainMenuCategory
                 $mainMenuSubCategory->setMainMenuCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getHidden(): ?bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(bool $hidden): self
+    {
+        $this->hidden = $hidden;
 
         return $this;
     }

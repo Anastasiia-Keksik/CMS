@@ -1,0 +1,202 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\UserPrivateForumRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass=UserPrivateForumRepository::class)
+ */
+class UserPrivateForum
+{
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Account::class, inversedBy="userPrivateForum", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $UserAdmin;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $modifiedAt;
+
+    /**
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    private $password;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Account::class, inversedBy="userPrivateForums")
+     */
+    private $Members;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $softDelete;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ForumCategory::class, mappedBy="IsItUserPrivateForum")
+     */
+    private $forumCategories;
+
+    public function __construct()
+    {
+        $this->Members = new ArrayCollection();
+        $this->forumCategories = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getUserAdmin(): ?Account
+    {
+        return $this->UserAdmin;
+    }
+
+    public function setUserAdmin(Account $UserAdmin): self
+    {
+        $this->UserAdmin = $UserAdmin;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getModifiedAt(): ?\DateTimeInterface
+    {
+        return $this->modifiedAt;
+    }
+
+    public function setModifiedAt(?\DateTimeInterface $modifiedAt): self
+    {
+        $this->modifiedAt = $modifiedAt;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(?string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Account[]
+     */
+    public function getMembers(): Collection
+    {
+        return $this->Members;
+    }
+
+    public function addMember(Account $member): self
+    {
+        if (!$this->Members->contains($member)) {
+            $this->Members[] = $member;
+        }
+
+        return $this;
+    }
+
+    public function removeMember(Account $member): self
+    {
+        if ($this->Members->contains($member)) {
+            $this->Members->removeElement($member);
+        }
+
+        return $this;
+    }
+
+    public function getSoftDelete(): ?bool
+    {
+        return $this->softDelete;
+    }
+
+    public function setSoftDelete(?bool $softDelete): self
+    {
+        $this->softDelete = $softDelete;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ForumCategory[]
+     */
+    public function getForumCategories(): Collection
+    {
+        return $this->forumCategories;
+    }
+
+    public function addForumCategory(ForumCategory $forumCategory): self
+    {
+        if (!$this->forumCategories->contains($forumCategory)) {
+            $this->forumCategories[] = $forumCategory;
+            $forumCategory->setIsItUserPrivateForum($this);
+        }
+
+        return $this;
+    }
+
+    public function removeForumCategory(ForumCategory $forumCategory): self
+    {
+        if ($this->forumCategories->contains($forumCategory)) {
+            $this->forumCategories->removeElement($forumCategory);
+            // set the owning side to null (unless already changed)
+            if ($forumCategory->getIsItUserPrivateForum() === $this) {
+                $forumCategory->setIsItUserPrivateForum(null);
+            }
+        }
+
+        return $this;
+    }
+}

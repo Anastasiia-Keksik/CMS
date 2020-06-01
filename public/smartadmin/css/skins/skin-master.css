@@ -42,9 +42,6 @@ body:not(.mod-skin-light):not(.mod-skin-dark) #skin-default:before {
 .mod-skin-light:not(.mod-skin-dark) .page-content-wrapper {
   background-color: #f9f9f9; }
 
-.mod-skin-light:not(.mod-skin-dark) .page-footer {
-  background-color: #ffffff; }
-
 .mod-skin-light:not(.mod-skin-dark) .nav-filter input[type="text"] {
   background: #ffffff;
   color: #333333;

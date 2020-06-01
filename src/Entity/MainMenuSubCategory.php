@@ -40,6 +40,11 @@ class MainMenuSubCategory
      */
     private $mainMenuSubChildren;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $hidden;
+
     public function __construct()
     {
         $this->mainMenuSubChildren = new ArrayCollection();
@@ -113,6 +118,18 @@ class MainMenuSubCategory
                 $mainMenuSubChild->setMainMenuSubCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getHidden(): ?bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(bool $hidden): self
+    {
+        $this->hidden = $hidden;
 
         return $this;
     }

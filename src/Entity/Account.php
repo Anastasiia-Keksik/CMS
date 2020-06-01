@@ -6,10 +6,19 @@ use App\Repository\AccountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=AccountRepository::class)
+ * @UniqueEntity(
+ *     fields={"username"},
+ *     message="Username already in use"
+ * )
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message="Email already in use"
+ * )
  */
 class Account implements UserInterface
 {
@@ -47,7 +56,7 @@ class Account implements UserInterface
     private $lastName;
 
     /**
-     * @ORM\Column(type="string", length=160)
+     * @ORM\Column(type="string", length=160, unique=true)
      */
     private $email;
 
@@ -86,9 +95,93 @@ class Account implements UserInterface
      */
     private $mainMenuCategories;
 
+    /**
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    private $country;
+
+    /**
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    private $city;
+
+    /**
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    private $linkedin;
+
+    /**
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    private $reddit;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $skype;
+
+    /**
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    private $flickr;
+
+    /**
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    private $instagram;
+
+    /**
+     * @ORM\Column(type="string", length=32, nullable=true)
+     */
+    private $youtube;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $newsletter;
+
+    /**
+     * @ORM\Column(type="string", length=32, nullable=true)
+     */
+    private $template;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $agreedTermsAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ForumTopic::class, mappedBy="author")
+     */
+    private $forumTopics;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ForumPost::class, mappedBy="Author")
+     */
+    private $forumPosts;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ForumPostConversation::class, mappedBy="author")
+     */
+    private $forumPostConversations;
+
+    /**
+     * @ORM\OneToOne(targetEntity=UserPrivateForum::class, mappedBy="UserAdmin", cascade={"persist", "remove"})
+     */
+    private $userPrivateForum;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=UserPrivateForum::class, mappedBy="Members")
+     */
+    private $userPrivateForums;
+
     public function __construct()
     {
         $this->mainMenuCategories = new ArrayCollection();
+        $this->forumTopics = new ArrayCollection();
+        $this->forumPosts = new ArrayCollection();
+        $this->forumPostConversations = new ArrayCollection();
+        $this->userPrivateForums = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -298,6 +391,276 @@ class Account implements UserInterface
             if ($mainMenuCategory->getUser() === $this) {
                 $mainMenuCategory->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): self
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getLinkedin(): ?string
+    {
+        return $this->linkedin;
+    }
+
+    public function setLinkedin(?string $linkedin): self
+    {
+        $this->linkedin = $linkedin;
+
+        return $this;
+    }
+
+    public function getReddit(): ?string
+    {
+        return $this->reddit;
+    }
+
+    public function setReddit(?string $reddit): self
+    {
+        $this->reddit = $reddit;
+
+        return $this;
+    }
+
+    public function getSkype(): ?string
+    {
+        return $this->skype;
+    }
+
+    public function setSkype(?string $skype): self
+    {
+        $this->skype = $skype;
+
+        return $this;
+    }
+
+    public function getFlickr(): ?string
+    {
+        return $this->flickr;
+    }
+
+    public function setFlickr(?string $flickr): self
+    {
+        $this->flickr = $flickr;
+
+        return $this;
+    }
+
+    public function getInstagram(): ?string
+    {
+        return $this->instagram;
+    }
+
+    public function setInstagram(?string $instagram): self
+    {
+        $this->instagram = $instagram;
+
+        return $this;
+    }
+
+    public function getYoutube(): ?string
+    {
+        return $this->youtube;
+    }
+
+    public function setYoutube(?string $youtube): self
+    {
+        $this->youtube = $youtube;
+
+        return $this;
+    }
+
+    public function getNewsletter(): ?bool
+    {
+        return $this->newsletter;
+    }
+
+    public function setNewsletter(?bool $newsletter): self
+    {
+        $this->newsletter = $newsletter;
+
+        return $this;
+    }
+
+    public function getTemplate(): ?string
+    {
+        return $this->template;
+    }
+
+    public function setTemplate(?string $template): self
+    {
+        $this->template = $template;
+
+        return $this;
+    }
+
+    public function getAgreedTermsAt(): ?\DateTimeInterface
+    {
+        return $this->agreedTermsAt;
+    }
+
+    public function terms(): self
+    {
+        $this->agreedTermsAt = new \DateTime();
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ForumTopic[]
+     */
+    public function getForumTopics(): Collection
+    {
+        return $this->forumTopics;
+    }
+
+    public function addForumTopic(ForumTopic $forumTopic): self
+    {
+        if (!$this->forumTopics->contains($forumTopic)) {
+            $this->forumTopics[] = $forumTopic;
+            $forumTopic->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeForumTopic(ForumTopic $forumTopic): self
+    {
+        if ($this->forumTopics->contains($forumTopic)) {
+            $this->forumTopics->removeElement($forumTopic);
+            // set the owning side to null (unless already changed)
+            if ($forumTopic->getAuthor() === $this) {
+                $forumTopic->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ForumPost[]
+     */
+    public function getForumPosts(): Collection
+    {
+        return $this->forumPosts;
+    }
+
+    public function addForumPost(ForumPost $forumPost): self
+    {
+        if (!$this->forumPosts->contains($forumPost)) {
+            $this->forumPosts[] = $forumPost;
+            $forumPost->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeForumPost(ForumPost $forumPost): self
+    {
+        if ($this->forumPosts->contains($forumPost)) {
+            $this->forumPosts->removeElement($forumPost);
+            // set the owning side to null (unless already changed)
+            if ($forumPost->getAuthor() === $this) {
+                $forumPost->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ForumPostConversation[]
+     */
+    public function getForumPostConversations(): Collection
+    {
+        return $this->forumPostConversations;
+    }
+
+    public function addForumPostConversation(ForumPostConversation $forumPostConversation): self
+    {
+        if (!$this->forumPostConversations->contains($forumPostConversation)) {
+            $this->forumPostConversations[] = $forumPostConversation;
+            $forumPostConversation->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeForumPostConversation(ForumPostConversation $forumPostConversation): self
+    {
+        if ($this->forumPostConversations->contains($forumPostConversation)) {
+            $this->forumPostConversations->removeElement($forumPostConversation);
+            // set the owning side to null (unless already changed)
+            if ($forumPostConversation->getAuthor() === $this) {
+                $forumPostConversation->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUserPrivateForum(): ?UserPrivateForum
+    {
+        return $this->userPrivateForum;
+    }
+
+    public function setUserPrivateForum(UserPrivateForum $userPrivateForum): self
+    {
+        $this->userPrivateForum = $userPrivateForum;
+
+        // set the owning side of the relation if necessary
+        if ($userPrivateForum->getUserAdmin() !== $this) {
+            $userPrivateForum->setUserAdmin($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserPrivateForum[]
+     */
+    public function getUserPrivateForums(): Collection
+    {
+        return $this->userPrivateForums;
+    }
+
+    public function addUserPrivateForum(UserPrivateForum $userPrivateForum): self
+    {
+        if (!$this->userPrivateForums->contains($userPrivateForum)) {
+            $this->userPrivateForums[] = $userPrivateForum;
+            $userPrivateForum->addMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserPrivateForum(UserPrivateForum $userPrivateForum): self
+    {
+        if ($this->userPrivateForums->contains($userPrivateForum)) {
+            $this->userPrivateForums->removeElement($userPrivateForum);
+            $userPrivateForum->removeMember($this);
         }
 
         return $this;

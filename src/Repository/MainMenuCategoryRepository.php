@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\MainMenuCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**

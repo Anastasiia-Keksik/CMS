@@ -43,6 +43,11 @@ class MainMenuChild
      */
     private $urlValue;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $hidden;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -104,6 +109,18 @@ class MainMenuChild
     public function setUrlValue(?string $urlValue): self
     {
         $this->urlValue = $urlValue;
+
+        return $this;
+    }
+
+    public function getHidden(): ?bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(bool $hidden): self
+    {
+        $this->hidden = $hidden;
 
         return $this;
     }

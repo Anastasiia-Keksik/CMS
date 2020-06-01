@@ -1,0 +1,5 @@
+Zastanowic sie jakie sa relacje miedzy templeytami a modami poszczegolnymi do kazdego templeyta, czy bedzie yedna strona rozszerzajaca kazdy mod, czy kazdy mod bedzie musial miec strone? Co ostatecznie bedzie prowadzic do tego ze kazdy frondendowiec bedzie musial+ wziac pod uwage i stworzyc niestety podstrone do kazdego moda.
+url_value do childa i sub childa musza byc wybierane w panelu admina z selecji opcji
+ciasteczka aby forum pamietalo jakie haslo wpisales do niego.
+
+Do CMS usunac ten Password entity i jego rejestracje

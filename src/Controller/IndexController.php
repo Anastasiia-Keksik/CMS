@@ -4,11 +4,8 @@
 namespace App\Controller;
 
 
-use App\Services\MainMenuInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use App\Services\Kalk;
+use App\Services\MainMenuService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
@@ -16,21 +13,27 @@ class IndexController extends AbstractController
     /**
      * @Route("/", name="landingpage")
      */
-    public function homepage(Kalk $kalk, MainMenuInterface $mainMenu)
+    public function homepage(MainMenuService $mainMenuService)
     {
-        $someVariable = $mainMenu->getMenuJSON();
+        $mainMenu = $mainMenuService->getMenu();
 
-        return $this->render("blank.html.twig",[
+        dump ($mainMenu);
+        //$MainMenuChildren = $mainMenu->getMainMenuChildren();
+
+        return $this->render($_SERVER['DEFAULT_TEMPLATE']."/blank.html.twig",[
             'title'=>'title',
             'lang'=>'pl',
             'APP_NAME'=>$_SERVER['APP_NAME'],
             'logoSite'=>$_SERVER['SHOW_LOGO'],
             'navFooter'=>$_SERVER['NAV_FOOTER'],
             'footer'=>$_SERVER['FOOTER'],
-            'pageName'=>"Profile - timeline"
+            'pageName'=>"Profile",
+            'MainMenu' => $mainMenu,
+
         ]);
     }
 }
 /**
  * TODO: 1. nie dziala wybor kolorow w theme na twig
+ * TODO: jesli zalogowany, przeslij gdzies indziej
  */
