@@ -6,14 +6,15 @@
     <main id="js-page-content" role="main" class="page-content">
         <ol class="breadcrumb page-breadcrumb">
             <li class="breadcrumb-item"><a href="{{ path('landingpage') }}">{{ APP_NAME }}</a></li>
-            <li class="breadcrumb-item active"><a href="{{ path('app_forum') }}">Forum</a></li>
+            <li class="breadcrumb-item active"><a href="{{ path('forum') }}">Forum</a></li>
+            <li class="breadcrumb-item active"><a href="">{{ forum.Name }}</a></li>
             <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
         </ol>
         <div class="subheader">
             <h1 class="subheader-title">
-                <i class='subheader-icon fal fa-plus-circle'></i> Forum: <span class='fw-300'>List</span>
+                <i class='subheader-icon fal fa-plus-circle'></i> Forum: <span class='fw-300'>{{ forum.Name }}</span>
                 <small>
-                    Zbiór wszystkich działów forum
+                    {{ forum.description }}
                 </small>
             </h1>
         </div>
@@ -27,7 +28,7 @@
                 </div>
                 {# flash messages #}
 
-                {% for category in categories %}
+                {% for category in forum.forumCategories %}
                     <div class="card mb-g border shadow-0">
 
 
@@ -139,9 +140,11 @@
                 {% endfor %}
 
             </div>
+            {% if thisForumUserAdmin.Username == loggedUserUsername %}
             <div class="col-12 clearfix">
-                <a href="http://<?=ROOT_APP_URL;?>/makeNewCategoryForm" target="_self" class="btn btn-outline-info waves-effect waves-themed float-right">Make New Category</a>
+                <a href="{{ path('forum_make_new_category', {'userId': thisForumUserAdmin.id}) }}" target="_self" class="btn btn-outline-info waves-effect waves-themed float-right">Make New Category</a>
             </div>
+            {% endif %}
         </div>
     </main>
     <!-- this overlay is activated only when mobile menu is triggered -->

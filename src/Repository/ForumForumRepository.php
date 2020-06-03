@@ -19,6 +19,16 @@ class ForumForumRepository extends ServiceEntityRepository
         parent::__construct($registry, ForumForum::class);
     }
 
+    public function takeForumsByOrderValue($category)
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t.name', 't.OrderValue')
+            ->where('t.Category = :val')
+            ->setParameter(':val', $category)
+            ->orderBy('t.OrderValue','ASC')
+            ->getQuery()
+            ->getResult();
+    }
     // /**
     //  * @return ForumForum[] Returns an array of ForumForum objects
     //  */

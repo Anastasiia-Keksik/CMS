@@ -61,6 +61,11 @@ class ForumForum
      */
     private $hidden = false;
 
+    /**
+     * @ORM\Column(type="blob", nullable=true)
+     */
+    private $Icon;
+
     public function __construct()
     {
         $this->forumTopics = new ArrayCollection();
@@ -196,6 +201,18 @@ class ForumForum
     public function setHidden(bool $hidden): self
     {
         $this->hidden = $hidden;
+
+        return $this;
+    }
+
+    public function getIcon()
+    {
+        return $this->Icon;
+    }
+
+    public function setIcon($Icon): self
+    {
+        $this->Icon = $Icon;
 
         return $this;
     }

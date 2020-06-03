@@ -3,3 +3,5 @@ url_value do childa i sub childa musza byc wybierane w panelu admina z selecji o
 ciasteczka aby forum pamietalo jakie haslo wpisales do niego.
 
 Do CMS usunac ten Password entity i jego rejestracje
+
+w prywatnych stronach zabronic dump. i innych twigowych potencjalnie niebezpiecznych wartosci. W ogole zrobic to predefiniowane. jesli sie da

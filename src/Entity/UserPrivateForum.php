@@ -60,6 +60,11 @@ class UserPrivateForum
      */
     private $forumCategories;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $description;
+
     public function __construct()
     {
         $this->Members = new ArrayCollection();
@@ -196,6 +201,18 @@ class UserPrivateForum
                 $forumCategory->setIsItUserPrivateForum(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

@@ -19,6 +19,28 @@ class ForumCategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, ForumCategory::class);
     }
 
+     /**
+      * @return ForumCategory[] Returns an array of ForumCategory objects
+      */
+    public function takeCategoriesByOrderValue($user = NULL){
+        if ($user == NULL)
+        {
+            return $this->createQueryBuilder('t')
+                ->select('t.name', 't.OrderValue')
+                ->where('t.IsItUserPrivateForum IS NULL')
+                ->orderBy('t.OrderValue','ASC')
+                ->getQuery()
+                ->getResult();
+        }else{
+            return $this->createQueryBuilder('t')
+                ->select('t.name', 't.OrderValue')
+                ->where('t.IsItUserPrivateForum = :user')
+                ->setParameter(':user', $user)
+                ->orderBy('t.OrderValue','ASC')
+                ->getQuery()
+                ->getResult();
+        }
+    }
 //    public function takeCategories($user = NULL)
 //    {
 //        $cat = $this->createQueryBuilder('c')

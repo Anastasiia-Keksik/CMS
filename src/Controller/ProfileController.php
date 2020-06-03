@@ -60,7 +60,7 @@ class ProfileController extends AbstractController
             'footer'=>$_SERVER['FOOTER'],
             'pageName'=>"Profile",
             'MainMenu' => $mainMenu,
-            'profile'=>$userCredentials
+            'profile'=>$userCredentials,
         ]);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ForumCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -70,6 +71,14 @@ class ForumCategory
     {
         return $this->OrderValue;
     }
+
+//    public function getByOrderValue()
+//    {
+//        $criteria = Criteria::create()
+//            ->orderBy(['OrderValue' => 'ASC']);
+//
+//        return $this->OrderValue->matching($criteria);
+//    }
 
     public function setOrderValue(int $OrderValue): self
     {
