@@ -20,7 +20,7 @@ class IndexController extends AbstractController
         dump ($mainMenu);
         //$MainMenuChildren = $mainMenu->getMainMenuChildren();
 
-        return $this->render($_SERVER['DEFAULT_TEMPLATE']."/blank.html.twig",[
+        return $this->render($_SERVER['DEFAULT_TEMPLATE']."/landing.page.twig",[
             'title'=>'title',
             'lang'=>'pl',
             'APP_NAME'=>$_SERVER['APP_NAME'],

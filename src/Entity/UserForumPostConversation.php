@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\ForumPostConversationRepository;
+use App\Repository\UserForumPostConversationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ForumPostConversationRepository::class)
+ * @ORM\Entity(repositoryClass=UserForumPostConversationRepository::class)
  */
-class ForumPostConversation
+class UserForumPostConversation
 {
     /**
      * @ORM\Id()
@@ -18,7 +18,7 @@ class ForumPostConversation
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Account::class, inversedBy="forumPostConversations")
+     * @ORM\ManyToOne(targetEntity=Account::class, inversedBy="userForumPostConversations")
      */
     private $author;
 
@@ -28,7 +28,7 @@ class ForumPostConversation
     private $content;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ForumPost::class, inversedBy="forumPostConversations")
+     * @ORM\ManyToOne(targetEntity=UserForumPost::class, inversedBy="forumPostConversations")
      * @ORM\JoinColumn(nullable=false)
      */
     private $Post;

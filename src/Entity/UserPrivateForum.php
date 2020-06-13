@@ -56,7 +56,7 @@ class UserPrivateForum
     private $softDelete;
 
     /**
-     * @ORM\OneToMany(targetEntity=ForumCategory::class, mappedBy="IsItUserPrivateForum")
+     * @ORM\OneToMany(targetEntity=UserForumCategory::class, mappedBy="IsItUserPrivateForum")
      */
     private $forumCategories;
 

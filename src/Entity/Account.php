@@ -165,6 +165,25 @@ class Account implements UserInterface
      */
     private $forumPostConversations;
 
+
+    //DODANE PRZEZE MNIE
+    /**
+     * @ORM\OneToMany(targetEntity=UserForumTopic::class, mappedBy="author")
+     */
+    private $userForumTopics;
+
+    /**
+     * @ORM\OneToMany(targetEntity=UserForumPost::class, mappedBy="Author")
+     */
+    private $userForumPosts;
+
+    /**
+     * @ORM\OneToMany(targetEntity=UserForumPostConversation::class, mappedBy="author")
+     */
+    private $userForumPostConversations;
+
+    //END DODANE PRZEZE MNIE
+
     /**
      * @ORM\OneToOne(targetEntity=UserPrivateForum::class, mappedBy="UserAdmin", cascade={"persist", "remove"})
      */
@@ -181,6 +200,9 @@ class Account implements UserInterface
         $this->forumTopics = new ArrayCollection();
         $this->forumPosts = new ArrayCollection();
         $this->forumPostConversations = new ArrayCollection();
+        $this->userForumTopics = new ArrayCollection();
+        $this->userForumPosts = new ArrayCollection();
+        $this->userForumPostConversations = new ArrayCollection();
         $this->userPrivateForums = new ArrayCollection();
     }
 
@@ -620,6 +642,103 @@ class Account implements UserInterface
 
         return $this;
     }
+
+    //DODANE PRZEZE MNIE
+
+    /**
+     * @return Collection|UserForumTopic[]
+     */
+    public function getUserForumTopics(): Collection
+    {
+        return $this->userForumTopics;
+    }
+
+    public function addUserForumTopic(UserForumTopic $userForumTopic): self
+    {
+        if (!$this->userForumTopics->contains($userForumTopic)) {
+            $this->userForumTopics[] = $userForumTopic;
+            $userForumTopic->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserForumTopic(UserForumTopic $userForumTopic): self
+    {
+        if ($this->userForumTopics->contains($userForumTopic)) {
+            $this->userForumTopics->removeElement($userForumTopic);
+            // set the owning side to null (unless already changed)
+            if ($userForumTopic->getAuthor() === $this) {
+                $userForumTopic->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserForumPost[]
+     */
+    public function getUserForumPosts(): Collection
+    {
+        return $this->userForumPosts;
+    }
+
+    public function addUserForumPost(UserForumPost $userForumPost): self
+    {
+        if (!$this->userForumPosts->contains($userForumPost)) {
+            $this->userForumPosts[] = $userForumPost;
+            $userForumPost->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserForumPost(UserForumPost $userForumPost): self
+    {
+        if ($this->userForumPosts->contains($userForumPost)) {
+            $this->userForumPosts->removeElement($userForumPost);
+            // set the owning side to null (unless already changed)
+            if ($userForumPost->getAuthor() === $this) {
+                $userForumPost->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserForumPostConversation[]
+     */
+    public function getUserForumPostConversations(): Collection
+    {
+        return $this->forumPostConversations;
+    }
+
+    public function addUserForumPostConversation(UserForumPostConversation $userForumPostConversation): self
+    {
+        if (!$this->userForumPostConversations->contains($userForumPostConversation)) {
+            $this->userForumPostConversations[] = $userForumPostConversation;
+            $userForumPostConversation->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserForumPostConversation(UserForumPostConversation $userForumPostConversation): self
+    {
+        if ($this->userForumPostConversations->contains($userForumPostConversation)) {
+            $this->userForumPostConversations->removeElement($userForumPostConversation);
+            // set the owning side to null (unless already changed)
+            if ($userForumPostConversation->getAuthor() === $this) {
+                $userForumPostConversation->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    //END DODANE PRZE ZE MNIE
 
     public function getUserPrivateForum(): ?UserPrivateForum
     {

@@ -5,146 +5,26 @@
     <!-- the #js-page-content id is needed for some plugins to initialize -->
     <main id="js-page-content" role="main" class="page-content">
         <ol class="breadcrumb page-breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('landingpage') }}">{{ APP_NAME }}</a></li>
-            <li class="breadcrumb-item active"><a href="{{ path('forum') }}">Forum</a></li>
-            <li class="breadcrumb-item active"><a href="">{{ forum.Name }}</a></li>
+            <li class="breadcrumb-item"><a href="javascript:void(0);">{{ APP_NAME }}</a></li>
+            <li class="breadcrumb-item">Page Views</li>
+            <li class="breadcrumb-item">Error Pages</li>
+            <li class="breadcrumb-item active">Server Error</li>
             <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
         </ol>
-        <div class="subheader">
-            <h1 class="subheader-title">
-                <i class='subheader-icon fal fa-plus-circle'></i> Forum: <span class='fw-300'>{{ forum.Name }}</span>
-                <small>
-                    {{ forum.description }}
+        <div class="subheader"></div>
+        <div class="h-alt-hf d-flex flex-column align-items-center justify-content-center text-center">
+            <h1 class="page-error color-fusion-500">
+                ERROR <span class="text-gradient">404</span>
+                <small class="fw-500">
+                    {{  error_msg }}
                 </small>
             </h1>
-        </div>
-        <div class="row">
-            <div class="col-xl-12">
-                <div class="input-group input-group-lg mb-g">
-                    <input type="text" class="form-control shadow-inset-2" placeholder="Search topics">
-                    <div class="input-group-append">
-                        <span class="input-group-text"><i class="fal fa-search"></i></span>
-                    </div>
-                </div>
-                {# flash messages #}
-
-                {% for category in forum.forumCategories %}
-                    <div class="card mb-g border shadow-0">
-
-
-                        <div class="card-header bg-white">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col">{# is admin#}
-                                    <a href="#" class="text-danger" data-toggle="modal" data-target="#delete-category-modal-<?=$kategoria['id'];?>"><i class="fa fa-times-circle "></i>&nbsp;&nbsp;</a>{# is admin end#}
-                                    <span class="h6 font-weight-bold text-uppercase">{{ category.name }}</span>
-                                </div>
-                                <div class="col d-flex">
-                                    <a href="make new forum?>" class="btn btn-outline-info btn-sm ml-auto mr-2 flex-shrink-0">Dodaj Forum</a>
-                                    <a href="edit kat" class="btn btn-outline-dark btn-sm mr-2 flex-shrink-0">Edycja Kategorii</a>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- MODAL -->
-                        <div class="modal modal-alert fade" id="delete-category-modal-{{ category.id }}" tabindex="-1" role="dialog" style="display: none" aria-modal="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Delete: {{ category.name }}</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true"><i class="fal fa-times"></i></span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Are you sure? With category will be deleted all of forums pined to it. Maybe first you want to move them?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary waves-effect waves-themed" data-dismiss="modal">STOP!</button>
-                                        <a href="http://<?=ROOT_APP_URL;?>/deleteCategory?id={{ category.id }}&kol=<?=$kategoria['kolejnosc'];?>" class="btn btn-primary waves-effect waves-themed">Go Ahead..</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- END MODAL -->
-                        <div class="card-header bg-white p-0">
-                            <div class="row no-gutters row-grid align-items-stretch">
-                                <div class="col-12 col-md">
-                                    <div class="text-uppercase text-muted py-2 px-3">Title</div>
-                                </div>
-                                <div class="col-sm-6 col-md-2 col-xl-1 hidden-md-down">
-                                    <div class="text-uppercase text-muted py-2 px-3">Status</div>
-                                </div>
-                                <div class="col-sm-6 col-md-3 hidden-md-down">
-                                    <div class="text-uppercase text-muted py-2 px-3">Last posts</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="row no-gutters row-grid">
-                                <!-- thread start -->
-                                {% for forum in category.forumForum %}
-
-                                        <div class="col-12">
-                                        <div class="row no-gutters row-grid align-items-stretch">
-                                        <div class="col-md">
-                                        <div class="p-3">
-                                        <div class="d-flex">
-                                        <a href="http://<?=ROOT_APP_URL;?>/editForumForm?forumid={{ forum.id }}&katid={ { forum['kat_id']}}" class="btn waves-effect waves-themed btn-xs mr-2" target="_self" data-toggle="tooltip" data-placement="right" data-original-title="Edit"><i class="fal color-fusion-50 fa-3x fa-arrow-alt-right"></i></a>
-                                        {# forum['ikona'] #}
-                                        <div class="d-inline-flex flex-column">
-                                        <a href="http://{ {ROOT_APP_URL}}/forum/{ { forum['id']}}" class="fs-lg fw-500 d-block">
-                                            {{ forum.name }}
-                                    </a>
-                                    <div class="d-block text-muted fs-sm">
-                                        {{ forum.description}}
-                                    </div>
-
-                                    </div>
-                                    </div>
-                                    </div>
-                                    </div>
-
-
-
-                                    <div class="col-4 col-md-2 col-xl-1 hidden-md-down">
-                                        <div class="p-3 p-md-3">
-                                            <span class="d-block text-muted"> {{ forum.topics }} <i>Topics</i></span>
-                                            <span class="d-block text-muted">{{ forum.Posts }} <i>Posts</i></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-8 col-md-3 hidden-md-down">
-                                        <div class="p-3 p-md-3">
-                                            {% if forum.ForumTopics is not empty %}
-                                            <div class="d-flex align-items-center">
-                                                <div class="d-inline-block align-middle status status-success status-sm mr-2">
-                                                    <span class="profile-image-md rounded-circle d-block" style="background-image:url(' '); background-size: cover;"></span>
-                                                </div>
-                                                <div class="flex-1 min-width-0">
-                                                    <a href="javascript:void(0)" class="d-block text-truncate">
-                                                        {{ forum.ForumLastTopic.0.title }}
-                                                    </a>
-                                                    <div class="text-muted small text-truncate">
-                                                        <a href="javascript:void(0)" class="text-info">{{ forum.ForumLastTopic.0.ForumLastPost.0.createdAt|ago }}</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    </div>
-                                    </div>
-                                {% endfor %}
-                                <!-- thread end -->
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-
-            </div>
-            {% if loggedUserUsername is defined and thisForumUserAdmin.Username == loggedUserUsername %}
-            <div class="col-12 clearfix">
-                <a href="{{ path('forum_make_new_category_user', {'userId': thisForumUserAdmin.id}) }}" target="_self" class="btn btn-outline-info waves-effect waves-themed float-right">Make New Category</a>
-            </div>
-            {% endif %}
+            <h3 class="fw-500 mb-5">
+                {{ middle_error_msg }}
+            </h3>
+            <h4>
+                {{ lower_error_msg|raw }}
+            </h4>
         </div>
     </main>
     <!-- this overlay is activated only when mobile menu is triggered -->

@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\Passwords;
+use App\Form\LoginFormType;
+use App\Form\RecoverPasswordFormType;
 use App\Form\RegisterFormType;
 use App\Security\LoginFormAuthenticator;
 use App\Services\MainMenuService;
@@ -28,6 +30,7 @@ SecurityController extends AbstractController
         // if ($this->getUser()) {
         //     return $this->redirectToRoute('target_path');
         // }
+        $form = $this->createForm(LoginFormType::class);
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -44,7 +47,8 @@ SecurityController extends AbstractController
             'navFooter'=>$_SERVER['NAV_FOOTER'],
             'footer'=>$_SERVER['FOOTER'],
             'pageName'=>"Profile",
-            'MainMenu' => $mainMenu,]);
+            'MainMenu' => $mainMenu,
+            'loginForm'=>$form->createView()]);
     }
 
     /**
@@ -53,6 +57,23 @@ SecurityController extends AbstractController
     public function logout()
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+    }
+
+    /**
+     * @Route("/recovery", name="app_recovery")
+     */
+    public function recoverPassword(){
+
+        $form = $this->createForm(RecoverPasswordFormType::class);
+
+        $this->addFlash('success',"Hasło zostało pomyślnie wysłane na twój email.");
+        $this->addFlash('success',"Nie znaleziono takiego emaila");
+
+        return $this->render($_SERVER['DEFAULT_TEMPLATE']."/security/recoverPassword.html.twig",[
+            'lang'=>'pl',
+            'title'=>'Recover Password in'. $_SERVER['APP_NAME'],
+            'recoverPasswordForm'=>$form->createView(),
+        ]);
     }
 
     /**
