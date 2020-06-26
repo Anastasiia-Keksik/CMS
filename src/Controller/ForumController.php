@@ -21,7 +21,7 @@ class ForumController extends AbstractController
 
 
     /**
-     * @Route("/forum", name="forum")
+     * @Route("/forum", name="app_forum")
      */
     public function index(ForumCategoryRepository $forumCategoryRepository, MainMenuService $mainMenuService)
     {

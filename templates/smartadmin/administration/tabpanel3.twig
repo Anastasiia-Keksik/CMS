@@ -1,1 +1,116 @@
-3
+<div class="row">
+  <div class="col-8">
+    <div class="panel">
+      <div class="panel-container show">
+          <div class="panel-content">
+            <h4>Kategorie forum <span><i>(View)</i></span></h4>
+              {% for category in categories %}
+                  <p class="m-0 color-fusion-900"><b><i class="fal fa-angle-double-down"></i> {{ category.name }} </b><small><i>(Rename) (Delete)</i></small></p>
+                    {% for forum in category.forumForum %}
+                      <p class="m-0 "> &nbsp; &nbsp; <i class="fal fa-angle-double-right"></i> {{ forum.name }} <small><i>(Rename) (Delete)</i></small></P>
+                    {% endfor %}
+                  <p class="m-0"> &nbsp; &nbsp; <small><i class="fal fa-angle-double-up"></i> <i>Create New Forum</small></i></P>
+                  <hr class="mt-3 mb-0" style="border-top: 1px dashed #666666;">
+              {% endfor %}
+              <div class="m-0 float-right mb-4"><a href="{{ path('forum_make_new_category') }}"><small><i class="fal fa-angle-double-up"></i> Make New Category</small></a></div>
+          </div>
+      </div>
+    </div>
+  </div>
+  {# right panel - statistics #}
+  <div class="col-4">
+    <div class="panel">
+      <div class="panel-container show">
+          <div class="panel-content">
+           <ul class="nav nav-tabs nav-justified" role="tablist">
+                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#all-posts" role="tab" aria-selected="true"><i class="fal fa-alien-monster"></i> Posts</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#all-topics" role="button"><i class="fal fa-alicorn"></i> Topics</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#private-posts" role="tab"><i class="fal fa-anchor"></i> Posts</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#private-topics" role="tab"><i class="fal fa-ankh"></i> Topics</a></li>
+            </ul>
+            <div class="tab-content p-0">
+                <div class="tab-pane fade active show" id="all-posts" role="tabpanel">
+                  <center><h5 class="mt-2">All new Posts</h5></center>
+
+                  <table id="posts-table" class="w-100">
+                      <thead>
+                      <tr>
+                          <th><center>Topic Name</center></th>
+                          <th><center>Author</center></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                        {% for post in lastPosts %}
+                          <tr>
+                            <td>{{ post.forumTopic.title }}</td>
+                            <td>{{ post.author.username }}</td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+                <div class="tab-pane fade" id="all-topics" role="tabpanel">
+                  <center><h5 class="mt-2">All new Topics</h5></center>
+
+                  <table id="posts-table" class="w-100">
+                      <thead>
+                      <tr>
+                          <th><center>Topic Name</center></th>
+                          <th><center>Author</center></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      {% for topic in lastTopics %}
+                        <tr>
+                          <td>{{ topic.title }}</td>
+                          <td>{{ topic.author.username }}</td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+                <div class="tab-pane fade" id="private-posts" role="tabpanel">
+                  <center><h5 class="mt-2">Private new Posts</h5></center>
+
+                  <table id="posts-table" class="w-100">
+                      <thead>
+                      <tr>
+                          <th><center>Topic Name</center></th>
+                          <th><center>Author</center></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      {% for post in lastPrivatePosts %}
+                        <tr>
+                          <td>{{ post.ForumTopic.title }}</td>
+                          <td>{{ post.author.username }}</td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+                <div class="tab-pane fade" id="private-topics" role="tabpanel">
+                  <center><h5 class="mt-2">Private new Topics</h5></center>
+
+                  <table id="posts-table" class="w-100">
+                      <thead>
+                      <tr>
+                          <th><center>Topic Name</center></th>
+                          <th><center>Author</center></th>
+                      </tr>
+                      </thead>
+                      {% for topic in lastPrivateTopics %}
+                        <tr>
+                          <td>{{ topic.title }}</td>
+                          <td>{{ topic.author.username }}</td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+                </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

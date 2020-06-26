@@ -19,22 +19,19 @@ class UserForumTopicRepository extends ServiceEntityRepository
         parent::__construct($registry, UserForumTopic::class);
     }
 
-    // /**
-    //  * @return ForumTopic[] Returns an array of ForumTopic objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return UserForumTopic[] Returns an array of ForumTopic objects
+     */
+
+    public function findLast10()
     {
         return $this->createQueryBuilder('f')
-            ->andWhere('f.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('f.id', 'ASC')
+            ->orderBy('f.createdAt', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?ForumTopic

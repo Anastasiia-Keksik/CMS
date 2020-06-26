@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends AbstractController
 {
     /**
-     * @Route("/", name="landingpage")
+     * @Route("/", name="app_home")
      */
     public function homepage(MainMenuService $mainMenuService)
     {

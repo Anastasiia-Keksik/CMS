@@ -175,12 +175,12 @@ class UserForumPost
         return $this;
     }
 
-    public function getForumTopic(): ?ForumTopic
+    public function getForumTopic(): ?UserForumTopic
     {
         return $this->ForumTopic;
     }
 
-    public function setForumTopic(?ForumTopic $ForumTopic): self
+    public function setForumTopic(?UserForumTopic $ForumTopic): self
     {
         $this->ForumTopic = $ForumTopic;
 

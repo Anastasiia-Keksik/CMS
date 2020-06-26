@@ -18,7 +18,20 @@ class ForumTopicRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ForumTopic::class);
     }
+    
+    /**
+     * @return ForumTopic[] Returns an array of ForumTopic objects
+     */
 
+    public function findLast10()
+    {
+        return $this->createQueryBuilder('f')
+            ->orderBy('f.createdAt', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
     // /**
     //  * @return ForumTopic[] Returns an array of ForumTopic objects
     //  */

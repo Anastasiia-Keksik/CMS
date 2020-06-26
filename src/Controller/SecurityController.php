@@ -60,23 +60,6 @@ SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/recovery", name="app_recovery")
-     */
-    public function recoverPassword(){
-
-        $form = $this->createForm(RecoverPasswordFormType::class);
-
-        $this->addFlash('success',"Hasło zostało pomyślnie wysłane na twój email.");
-        $this->addFlash('success',"Nie znaleziono takiego emaila");
-
-        return $this->render($_SERVER['DEFAULT_TEMPLATE']."/security/recoverPassword.html.twig",[
-            'lang'=>'pl',
-            'title'=>'Recover Password in'. $_SERVER['APP_NAME'],
-            'recoverPasswordForm'=>$form->createView(),
-        ]);
-    }
-
-    /**
      * @Route("/register", name="app_register")
      */
     public function register(EntityManagerInterface $em, Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, LoginFormAuthenticator$formAuthenticator)

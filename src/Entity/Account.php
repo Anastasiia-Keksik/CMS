@@ -194,6 +194,11 @@ class Account implements UserInterface
      */
     private $userPrivateForums;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Gallery::class, mappedBy="account", cascade={"persist", "remove"})
+     */
+    private $gallery;
+
     public function __construct()
     {
         $this->mainMenuCategories = new ArrayCollection();
@@ -204,6 +209,7 @@ class Account implements UserInterface
         $this->userForumPosts = new ArrayCollection();
         $this->userForumPostConversations = new ArrayCollection();
         $this->userPrivateForums = new ArrayCollection();
+        $this->galleries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -784,4 +790,22 @@ class Account implements UserInterface
 
         return $this;
     }
+
+    public function getGallery(): ?Gallery
+    {
+        return $this->gallery;
+    }
+
+    public function setGallery(Gallery $gallery): self
+    {
+        $this->gallery = $gallery;
+
+        // set the owning side of the relation if necessary
+        if ($gallery->getAccount() !== $this) {
+            $gallery->setAccount($this);
+        }
+
+        return $this;
+    }
+
 }

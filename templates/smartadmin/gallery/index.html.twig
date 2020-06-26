@@ -1,123 +1,211 @@
-{% extends 'base.html.twig' %}
+{% extends 'smartadmin/base.html.twig' %}
 
 {% block content %}
     <!-- the #js-page-content id is needed for some plugins to initialize -->
     <main id="js-page-content" role="main" class="page-content">
-        <ol class="breadcrumb page-breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0);">SmartAdmin</a></li>
-            <li class="breadcrumb-item">Category</li>
-            <li class="breadcrumb-item">Sub-category</li>
-            <li class="breadcrumb-item active">Page Title</li>
-            <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
-        </ol>
-        <div class="subheader">
-            <h1 class="subheader-title">
-                <i class='subheader-icon fal fa-globe'></i> Blank Page <span class='fw-300'>SubTitle</span> <sup class='badge badge-primary fw-500'>STICKER</sup>
-                <small>
-                    Insert page description or punch line
+    <ol class="breadcrumb page-breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{{ APP_NAME }}</a></li>
+        <li class="breadcrumb-item active"><a href="{{ path('app_gallery', {'username':user.username}) }}">Gallery</a></li>
+        <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
+    </ol>
+    <div class="subheader">
+        <h1 class="subheader-title">
+            <i class='subheader-icon fal fa-globe'></i>  {{ user.username }}'s gallery
+        </h1>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div id="panel-1" class="panel">
+                <div class="panel-hdr">
+                    <h2>
+                        Gallery
+                    </h2>
+                    <div class="panel-toolbar">
+                        @IF($id == $_SESSION['user']->id)
+                        <div class="btn-group">
+                        <a class="btn btn-light waves-effect waves-themed" data-toggle="collapse" href="#upload" role="button" aria-expanded="false" aria-controls="collapseExample"><span class="text-black-50">U P L O A D - F I L E S</span></a>
+                        <button type="button waves-effect waves-themed" class="btn btn btn-dark" data-toggle="modal" data-target=".add-album">Make Album</button>
+                        </div>
+                        @ENDIF
+                        <button class="btn p-0 m-0 ml-3 waves-effect waves-themed" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"><i class="ni ni-frame fa-2x"></i></button>
+                    </div>
+                </div>
+                <div class="panel-container">
+                    <div class="panel-content">
+                        @IF($id == $_SESSION['user']->id)
+                        <div class="panel-container collapse mb-2" id="upload">
+                            <form action="http://<?=ROOT_APP_URL;?>/UploadToGallery" id="gallery" class="dropzone needsclick upload" style="min-height: 7rem;" >
+                                <div class="dz-message needsclick">
+                                    <i class="fal fa-cloud-upload text-muted mb-3"></i> <br>
+                                    <span class="text-uppercase">Drop files here or click to upload.</span>
+                                    <br>
+                                </div>
+                                <input type="hidden" name="deletehash" value="deletehash">
+                            </form>
+                            <div id="removed" class="text-center" style="width:100%"></div>
+                        </div>
+                        @ENDIF
+                        @IF($albums)
+                        <div class="col-12" style="margin-top: 0px;">
+                            <div class="card-deck justify-content-start">
+                                @FOREACH($albums as $album)
+                                    <a href="http:/ROOT_APP_URL/album/album['id']">
+                                        <div class="" style="width: 200px">
+                                            <div class="card border img-rounded">
+                                                <div class="w-100 d-flex p-0 align-items-end position-relative" style="height:80px; border: black 0px solid;">
+                                                    <?php $url = "http://".ROOT_APP_URL."/IMAGES/gallery/".$album['user_id']."/album_".$album['id']."/small/"; ?>
+                                                    <?php $name = app\Gallery::takeBGTitle($album['title_image']); ?>
+                                                    @IF($name['name'] == NULL)
+   <!--    POPRAWIC CODEPARSER   ----------->       <?php $url = "http://".ROOT_APP_URL."/IMAGES/_default/cover-".rand(1,6)."-lg.png"; ?>
+                                                    @ELSE
+                                                    <?php $url = $url . $name['name']; ?>
+                                                    @ENDIF
+                                                    <!--
+                                                    <img src="url" class="card-img-top" alt="album['title']"> -->
+                                                    <div class="card-img-top" alt="album['title']" style="display: block; height: 80px; background: url('url') no-repeat center center/cover;"> </div>
+                                                    <div class="align-bottom text-white d-flex px-3 position-absolute" style="height: 26px; border: black 0px solid; background-color: rgba(0,0,0, 0.5); width: inherit"  data-toggle="tooltip" data-placement="bottom" title="" data-original-title="album['title']"><span class="card-title my-auto text-truncate">album['title']</span></div>
+                                                  </div>
+
+                                                <div class="card-body">
+                                                    <p class="card-text text-left p-0 m-0">@IF($album['description'])album['description']@ELSE<p class="text-center m-0 p-0"> . &nbsp; . &nbsp; . </p>@ENDIF</p>
+                                                    @IF($id == $_SESSION['user']->id)</a>
+                                <small style="cursor: pointer" class="p-0 m-0 float-left" data-toggle="modal" data-target=".edit-album-$album['id']">Edit</small>
+                                <small style="cursor: pointer" class="p-0 m-0 float-right" data-toggle="modal" data-target="#delete-album-$album['id']">Delete</small>
+                                <a href="http://ROOT_APP_URL/album/{$album['id']}">@ENDIF
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <!-- EDIT MODAL -->
+                    <div class="modal modal-alert fade" id="delete-album-{$album['id']}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Delete album - {$album['title']}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    All of your photos within this album will be deleted, are you sure?
+                                </div>
+                                <div class="modal-footer">
+                                    <form action="deleteAlbum" method="post">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button class="btn btn-primary">Delete!</button>
+                                    <input type="hidden" name="id" value="{$album['id']}">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade edit-album-{$album['id']}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-transparent" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title text-white">
+                                        Make Album
+                                        <small class="m-0 text-white opacity-70">
+                                        </small>
+                                    </h4>
+                                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                                    </button>
+                                </div>
+                                <form action="http://{ROOT_APP_URL}/updateAlbum" method="post">
+                                    <div class="modal-body">
+                                        <div class="">
+                                            <label class="text-white-50">Title</label><br>
+                                            <input type="text" name="title" class="form-control" value="{$album['title']}">
+                                            <br><br>
+                                            <label class="text-white-50">Description *</label><br>
+                                            <input type="text" name="desc" class="form-control" value="{$album['description']}">
+                                            <input type="hidden" name="id" value="{$album['id']}">
+                                            <small class="m-0 text-white opacity-70 mb-0">
+                                                * - optional
+                                            </small><br><br>
+                                            <label class="text-white-50">Set Background</label>
+                                            <select name="imgid" class="form-control">
+                                                @$lista = app\Gallery::galleryAlbumList($album['id'])
+                                                @FOREACH($lista as $obraz)
+                                                <option value="{$obraz['id'}}"
+                                                @IF($album['title_image']==$obraz['id'])
+                                                selected
+                                                @ENDIF
+                                                >
+                                                    @IF($obraz['alt']=="")
+                                                    {$obraz['name']}
+                                                    @else
+                                                    {$obraz['alt']}
+                                                    @ENDIF
+                                                </option>
+                                                @ENDFOREACH
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button class="btn btn-primary">Save Album</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                                 @ENDFOREACH
+                            </div>
+                        </div>
+                        @ENDIF
+                        <div id="js-lightgallery">
+                            <?php
+                                app\Gallery::showAlbumPhotos($id);
+                            ?>
+                            <!--@Gallery::showAlbumPhotos($id) - do zrobienia-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div class="modal fade add-album" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-transparent" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-white">
+                    Make Album
+                    <small class="m-0 text-white opacity-70">
+                    </small>
+                </h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                </button>
+            </div>
+            <form action="/makealbum" method="post">
+            <div class="modal-body">
+                <div class="">
+                    <label class="text-white-50">Title</label><br>
+                    <input type="text" name="title" class="form-control">
+                    <br><br>
+                    <label class="text-white-50">Description *</label><br>
+                    <input type="text" name="desc" class="form-control">
+
+                </div>
+                <small class="m-0 text-white opacity-70 mb-0">
+                    * - optional
                 </small>
-            </h1>
-            <!--
-Right content on content header
-A nice area to add graphs or buttons -->
-            <div class="subheader-block">
-                Right Subheader Block
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-primary">Make Album</button>
+            </div>
+            </form>
         </div>
-        <div class="alert alert-primary">
-            <div class="d-flex flex-start w-100">
-                <div class="mr-2 hidden-md-down">
-                                    <span class="icon-stack icon-stack-lg">
-                                        <i class="base base-6 icon-stack-3x opacity-100 color-primary-500"></i>
-                                        <i class="base base-10 icon-stack-2x opacity-100 color-primary-300 fa-flip-vertical"></i>
-                                        <i class="ni ni-blog-read icon-stack-1x opacity-100 color-white"></i>
-                                    </span>
-                </div>
-                <div class="d-flex flex-fill">
-                    <div class="flex-fill">
-                        <span class="h5">Pro Tip!</span>
-                        <p>
-                            If you don't know where to start, this is a good page to start your application. It comes with the basics to get you started. Contains a good inline documentation and waypoints to guide you with your project. Use this area of the page as an attention grabber. Users are likely to respond or pay attention when you involve a color icon along with your information (as displayed here on the left).
-                        </p>
-                        <p class="m-0">
-                            Follow a slogal with a useful link or call to action <a href="#" target="_blank">Call to action >></a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Your main content goes below here: -->
-        <div class="row">
-            <div class="col-xl-6">
-                <div id="panel-1" class="panel">
-                    <div class="panel-hdr">
-                        <h2>
-                            Panel <span class="fw-300"><i>Title</i></span>
-                        </h2>
-                        <div class="panel-toolbar">
-                            <button class="btn btn-panel" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"></button>
-                            <button class="btn btn-panel" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"></button>
-                            <button class="btn btn-panel" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"></button>
-                        </div>
-                    </div>
-                    <div class="panel-container show">
-                        <div class="panel-content">
-                            <div class="panel-tag">
-                                It stash and was even had of collection the latest story still every or times derive come way. Travelling business ill. Helplessly starting didn't should he her bad will so through audiences to the supported congress, if card with was way allows century quarter the control village for of payload.
-                            </div>
-                            <p>Offers it children. Been far good the or so eye. And first the her to white unionized that the absolutely supplies hall to named accuse times had or the to in the monitor a by carefully and than train excessive turned been a rationale to be the little. Agency still a the supported or people out doing place what does one studies of that value designer the you line their transformed extent, you to for not must reflection chequered with got rush than because he with thoughts until sisters term much and bed they of duty organization. And ago. As.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-6">
-                <div id="panel-1" class="panel">
-                    <div class="panel-hdr">
-                        <h2>
-                            Panel <span class="fw-300"><i>Title</i></span>
-                        </h2>
-                        <div class="panel-toolbar">
-                            <button class="btn btn-panel" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"></button>
-                            <button class="btn btn-panel" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"></button>
-                            <button class="btn btn-panel" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"></button>
-                        </div>
-                    </div>
-                    <div class="panel-container show">
-                        <div class="panel-content">
-                            <div class="panel-tag">
-                                It stash and was even had of collection the latest story still every or times derive come way. Travelling business ill. Helplessly starting didn't should he her bad will so through audiences to the supported congress, if card with was way allows century quarter the control village for of payload.
-                            </div>
-                            <p>Offers it children. Been far good the or so eye. And first the her to white unionized that the absolutely supplies hall to named accuse times had or the to in the monitor a by carefully and than train excessive turned been a rationale to be the little. Agency still a the supported or people out doing place what does one studies of that value designer the you line their transformed extent, you to for not must reflection chequered with got rush than because he with thoughts until sisters term much and bed they of duty organization. And ago. As.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-12">
-                <div id="panel-1" class="panel">
-                    <div class="panel-hdr">
-                        <h2>
-                            Panel <span class="fw-300"><i>Title</i></span>
-                        </h2>
-                        <div class="panel-toolbar">
-                            <button class="btn btn-panel" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"></button>
-                            <button class="btn btn-panel" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"></button>
-                            <button class="btn btn-panel" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"></button>
-                        </div>
-                    </div>
-                    <div class="panel-container show">
-                        <div class="panel-content">
-                            <div class="panel-tag">
-                                It stash and was even had of collection the latest story still every or times derive come way. Travelling business ill. Helplessly starting didn't should he her bad will so through audiences to the supported congress, if card with was way allows century quarter the control village for of payload.
-                            </div>
-                            <p>Offers it children. Been far good the or so eye. And first the her to white unionized that the absolutely supplies hall to named accuse times had or the to in the monitor a by carefully and than train excessive turned been a rationale to be the little. Agency still a the supported or people out doing place what does one studies of that value designer the you line their transformed extent, you to for not must reflection chequered with got rush than because he with thoughts until sisters term much and bed they of duty organization. And ago. As.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <!-- this overlay is activated only when mobile menu is triggered -->
-    <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div>
+    </div>
+</div>
+<!-- this overlay is activated only when mobile menu is triggered -->
+<div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div>
 {% endblock %}
 
 {% block csss %}
@@ -196,146 +284,7 @@ Variables:
 - navFooter (if enabled and Not false shows Navigation Footer (chat logs, support chat and make a call)
 #}
 {%  block leftMenu %}
-    <aside class="page-sidebar">
-        {%  if logoSite is defined and logoSite != false %}
-            <div class="page-logo">
-                <a href="#" class="page-logo-link press-scale-down d-flex align-items-center position-relative" data-toggle="modal" data-target="#modal-shortcut">
-                    <img src="{{ asset('smartadmin/img/logo.png') }}" alt="SmartAdmin WebApp" aria-roledescription="logo">
-                    <span class="page-logo-text mr-1">{{ APP_NAME }}</span>
-                    <span class="position-absolute text-white opacity-50 small pos-top pos-right mr-2 mt-n2"></span>
-                    <i class="fal fa-angle-down d-inline-block ml-1 fs-lg color-primary-300"></i>
-                </a>
-            </div>
-        {%  endif %}
-        <!-- BEGIN PRIMARY NAVIGATION -->
-        <nav id="js-primary-nav" class="primary-nav" role="navigation">
-            <div class="nav-filter">
-                <div class="position-relative">
-                    <input type="text" id="nav_filter_input" placeholder="Filter menu" class="form-control" tabindex="0">
-                    <a href="#" onclick="return false;" class="btn-primary btn-search-close js-waves-off" data-action="toggle" data-class="list-filter-active" data-target=".page-sidebar">
-                        <i class="fal fa-chevron-up"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="info-card">
-                <img src="{{ asset('smartadmin/img/demo/avatars/avatar-admin.png') }}" class="profile-image rounded-circle" alt="Dr. Codex Lantern">
-                <div class="info-card-text">
-                    <a href="#" class="d-flex align-items-center text-white">
-                                    <span class="text-truncate text-truncate-sm d-inline-block">
-                                        Dr. Codex Lantern
-                                    </span>
-                    </a>
-                    <span class="d-inline-block text-truncate text-truncate-sm">Toronto, Canada</span>
-                </div>
-                <img src="{{ asset('smartadmin/img/card-backgrounds/cover-2-lg.png') }}" class="cover" alt="cover">
-                <a href="#" onclick="return false;" class="pull-trigger-btn" data-action="toggle" data-class="list-filter-active" data-target=".page-sidebar" data-focus="nav_filter_input">
-                    <i class="fal fa-angle-down"></i>
-                </a>
-            </div>
-            <!--
-            TIP: The menu items are not auto translated. You must have a residing lang file associated with the menu saved inside dist/media/data with reference to each 'data-i18n' attribute.
-            -->
-            <ul id="js-nav-menu" class="nav-menu">
-                <li class="active">
-                    <a href="blank.html" title="Blank Project" data-filter-tags="blank page">
-                        <i class="fal fa-globe"></i>
-                        <span class="nav-link-text" data-i18n="nav.blankpage">{{ pageName }}</span>
-                    </a>
-                </li>
-                {#
-                <li class="nav-title">Navigation Title</li>
-                #}
-                <hr>
-                {#instead of#}
-                {# TODO: menu zrobic i pobierac te wartosci z bazy danych #}
-                <li id="MenuId1" class="{% if pageName == "Profile - timeline" or pageName == "Forum" or pageName == "Inbox" or pageName=="Gallery" %}active open{% endif %}">
-                    <a href="#" title="Category" data-filter-tags="category">
-                        <i class="fal fa-file"></i>
-                        <span class="nav-link-text" data-i18n="nav.category">Main</span>
-                    </a>
-                    <ul>
-                        <li class="{% if pageName == "Profile - timeline" %}active{% endif %}">
-                            <a href="{{ path('app_main_profile') }}" title="Menu child" data-filter-tags="utilities menu child">
-                                <span class="nav-link-text" data-i18n="nav.utilities_menu_child">Profile - timeline</span>
-                            </a>
-                        </li>
-                        <li class="{% if pageName == "Forum" %}active{% endif %}">
-                            <a href="{{ path('app_forum') }}" title="Disabled item" data-filter-tags="utilities disabled item">
-                                <span class="nav-link-text" data-i18n="nav.utilities_disabled_item">Forum</span>
-                            </a>
-                        </li>
-                        <li class="{% if pageName == "Inbox" %}active{% endif %}">
-                            <a href="{{ path('app_inbox') }}" title="Menu child" data-filter-tags="utilities menu child">
-                                <span class="nav-link-text" data-i18n="nav.utilities_menu_child">Inbox</span>
-                            </a>
-                        </li>
-                        <li class="{% if pageName=="Gallery" %}active{% endif %}">
-                            <a href="{{ path('app_gallery') }}" title="Menu child" data-filter-tags="utilities menu child">
-                                <span class="nav-link-text" data-i18n="nav.utilities_menu_child">Gallery</span>
-                            </a>
-                        </li>
-                        <li class="{% if pageName == "Dashboard" %}active{% endif %}">
-                            <a href="{{ path('dashboard') }}" title="Menu child" data-filter-tags="utilities menu child">
-                                <span class="nav-link-text" data-i18n="nav.utilities_menu_child">Dashboard</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- Example of open and active states -->
-                <li class="">
-                    <a href="#" title="Category" data-filter-tags="category">
-                        <i class="fal fa-plus"></i>
-                        <span class="nav-link-text" data-i18n="nav.category">Open Item</span>
-                    </a>
-                    <ul>
-                        <li class="">
-                            <a href="javascript:void(0);" title="Menu child" data-filter-tags="utilities menu child">
-                                <span class="nav-link-text" data-i18n="nav.utilities_menu_child">Open Sub-category</span>
-                            </a>
-                            <ul>
-                                <li class="">
-                                    <a href="javascript:void(0);" title="Sublevel Item" data-filter-tags="utilities menu child sublevel item">
-                                        <span class="nav-link-text" data-i18n="nav.utilities_menu_child_sublevel_item">Active Item</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <div class="filter-message js-filter-message bg-success-600"></div>
-            <div class="text-center"><a href="#" class="btn color-primary-50" data-action="toggle" data-class="layout-composed">Try with Composed Layout</a></div>
-        </nav>
-        <!-- END PRIMARY NAVIGATION -->
-        <!-- NAV FOOTER -->
-        {% if navFooter is defined and navFooter != false %}
-            <div class="nav-footer shadow-top">
-                <a href="#" onclick="return false;" data-action="toggle" data-class="nav-function-minify" class="hidden-md-down">
-                    <i class="ni ni-chevron-right"></i>
-                    <i class="ni ni-chevron-right"></i>
-                </a>
-                <ul class="list-table m-auto nav-footer-buttons">
-                    <li>
-                        <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="Chat logs">
-                            <i class="fal fa-comments"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="Support Chat">
-                            <i class="fal fa-life-ring"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="Make a call">
-                            <i class="fal fa-phone"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        {% endif %}
-
-        <!-- END NAV FOOTER -->
-    </aside>
+  {% include 'smartadmin/main_menu/leftMenu.html.twig' %}
 {% endblock %}
 
 {% block header %}
