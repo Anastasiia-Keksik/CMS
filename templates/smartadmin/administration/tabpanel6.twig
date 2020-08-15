@@ -1,0 +1,98 @@
+<div class="row">
+
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 pr-sm-0">
+        <div class="panel">
+            <div class="panel-content">
+                {% if MainMenuForAdmin is not null %}
+                <ul class="pl-2">
+                {% for menu in MainMenuForAdmin %}
+                    {% if menu.hidden==1 %}<li><h3 style="color: lightgray; display: inline">{{ menu.name }} </h3><small><sup>HIDDEN</sup></small></li>
+
+                        <ul style="padding-left: 16px">
+                            {% for child in menu.mainMenuChildren %}
+                                {% if child.hidden==1 %}<li><h6 style="color: lightgray; display: inline">{{ child.name }} - {{ child.urlValue }} </h6><small><sup>HIDDEN</sup></small></li>{% else %}<li><h6 style="color: lightgray">{{ child.name }} - {{ child.urlValue }}</h6></li>{% endif %}
+                            {% endfor %}
+                        </ul>
+
+                    {% else %}<li><h3 style="color: dimgray">{{ menu.name }}</h3></li>
+
+
+                        <ul style="padding-left: 16px">
+                            {% for child in menu.mainMenuChildren %}
+                                {% if child.hidden==1 %}<li><h6 style="color: lightgray; display: inline">{{ child.name }} - {{ child.urlValue }} </h6><small><sup>HIDDEN</sup></small></li>{% else %}<li><h6>{{ child.name }} - {{ child.urlValue }}</h6></li>{% endif %}
+                            {% endfor %}
+                        </ul>
+
+                    {% endif %}
+
+                {% endfor %}
+                </ul>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8 ">
+        <div class="panel mb-3">
+            <div class="panel-content position-relative">
+                <h2 class="position-absolute text-black-50" style="right: 16px">Make new category</h2>
+                <form method="post">
+                    <label class="">Category Name</label>
+                    <input type="text" name="catName" class="form-control mb-3">
+                    <select name="catOrderNumber" class="form-control">
+                        {% if MainMenuForAdmin is not null %}
+                            {% for menu in MainMenuForAdmin %}
+                                <option value="{{ menu.orderNumber }}">{{ menu.name }} #{{ menu.orderNumber }}</option>
+                            {% endfor %}
+                            <option value="{{ MainMenuForAdmin|last.orderNumber + 1 }}">New Index #{{ MainMenuForAdmin|last.orderNumber + 1 }}</option>
+                        {% endif %}
+                    </select>
+                    <small class="d-inline-block d-sm-none d-md-inline-flex ">sdfsdfsdfsd</small>
+                    <div class="w-100 float-right text-right">Hidden &nbsp;
+                    <input class="float-right form-check" type="checkbox" name="hidden">
+                    </div>
+                    <div class="w-100 justify-content-center text-center">
+                    <button type="submit" class="btn btn-primary btn-xs">Chose Category</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-content position-relative">
+                <h2 class="position-absolute text-black-50" style="right: 16px">Make new Route</h2>
+                <form method="post">
+                    <label>Chose Category</label>
+                    <select id="CategoryTagID" name="underCategory" class="form-control mb-3" onchange="populate(this.id, 'TargetTagID')">
+                        {% if MainMenuForAdmin is not null %}
+                                <option selected="selected">Chose category</option>
+                            {% for menu in MainMenuForAdmin %}
+                                <option value="{{ menu.id }}">{{ menu.name }}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option>First Make some Categories</option>
+                        {% endif %}
+                    </select>
+                    <label class="">Route title</label>
+                    <input class="form-control mb-3" type="text">
+                    <div class="row">
+                    <div class="col-12 col-lg-6">
+                        <label>Path info</label>
+                        <input class="form-control mb-3" type="text">
+                    </div>
+                        <div class="col-12 col-lg-6"><label>Order place</label>
+                           <select id="TargetTagID" class="form-control mb-3" name="order">
+                               {% if something is defined and something is null %}
+                               <option>Chose category first</option>
+                               {% else %}
+                               <option></option>
+                               {% endif %}
+                           </select>
+                        </div>
+                    </div>
+                    <div class="w-100 text-center">
+                    <button type="submit" class="btn btn-primary btn-xs">Create New Route</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

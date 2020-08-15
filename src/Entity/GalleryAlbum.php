@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\GalleryAlbumRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -47,6 +49,21 @@ class GalleryAlbum
      * @ORM\Column(type="integer")
      */
     private $photos;
+
+    /**
+     * @ORM\OneToMany(targetEntity=GalleryPhotos::class, mappedBy="album")
+     */
+    private $galleryPhotos;
+
+    /**
+     * @ORM\OneToOne(targetEntity=GalleryPhotos::class, cascade={"persist", "remove"})
+     */
+    private $cover;
+
+    public function __construct()
+    {
+        $this->galleryPhotos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -121,6 +138,49 @@ class GalleryAlbum
     public function setPhotos(int $photos): self
     {
         $this->photos = $photos;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GalleryPhotos[]
+     */
+    public function getGalleryPhotos(): Collection
+    {
+        return $this->galleryPhotos;
+    }
+
+    public function addGalleryPhoto(GalleryPhotos $galleryPhoto): self
+    {
+        if (!$this->galleryPhotos->contains($galleryPhoto)) {
+            $this->galleryPhotos[] = $galleryPhoto;
+            $galleryPhoto->setAlbum($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGalleryPhoto(GalleryPhotos $galleryPhoto): self
+    {
+        if ($this->galleryPhotos->contains($galleryPhoto)) {
+            $this->galleryPhotos->removeElement($galleryPhoto);
+            // set the owning side to null (unless already changed)
+            if ($galleryPhoto->getAlbum() === $this) {
+                $galleryPhoto->setAlbum(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCover(): ?GalleryPhotos
+    {
+        return $this->cover;
+    }
+
+    public function setCover(?GalleryPhotos $cover): self
+    {
+        $this->cover = $cover;
 
         return $this;
     }

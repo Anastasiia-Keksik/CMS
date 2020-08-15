@@ -132,6 +132,43 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
         </a>
     </div>
     <div class="card p-4 border-top-left-radius-0 border-top-right-radius-0">
+        {# THE WORKING1 ONE #}
+
+        <form method="post">
+            <div class="form-group">
+                <label class="form-label" for="username">Username</label>
+                <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+                <span class="help-block">
+                            Your unique username to app
+                        </span>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                <span class="help-block">
+                            Your password
+                        </span>
+            </div>
+
+            <div class="form-group text-left">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="_remember_me" id="rememberme">
+                    <label class="custom-control-label" for="rememberme"> Remember me for the next 30 days</label>
+                </div>
+            </div>
+            <input type="hidden" name="_csrf_token"
+                   value="{{ csrf_token('authenticate') }}"
+            >
+            <button type="submit" class="btn btn-default float-right">Secure login</button>
+        </form>
+
+        {# SOMEHOW NEW #}
+
+        {#
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
         {{ form_start(loginForm) }}
         {{ form_row(loginForm.username, {
             'attr': {'class': '', 'placeholder': 'Username'}
@@ -142,8 +179,12 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
         {{ form_row(loginForm.remember_me, {
             'label_attr': {'class': 'checkbox-custom'}
         }) }}
+        <input type="hidden" name="_csrf_token"
+                   value="{{ csrf_token('authenticate') }}"
+            >
         <button type="submit" class="btn btn-default float-right">Secure login</button>
         {{ form_end(loginForm) }}
+        #}
     </div>
     <div class="blankpage-footer text-center">
         <a href="/reset-password"><strong>Recover Password</strong></a> | <a href="{{ path('app_register') }}"><strong>Register Account</strong></a>

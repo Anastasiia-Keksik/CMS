@@ -21866,6 +21866,7 @@ return Popper;
       $(this._element).off(EVENT_CLICK_DISMISS);
       $(this._dialog).off(EVENT_MOUSEDOWN_DISMISS);
 
+
       if (transition) {
         var transitionDuration = Util.getTransitionDurationFromElement(this._element);
         $(this._element).one(Util.TRANSITION_END, function (event) {
@@ -22031,6 +22032,8 @@ return Popper;
 
     _proto._hideModal = function _hideModal() {
       var _this8 = this;
+
+      usunModal();
 
       this._element.style.display = 'none';
 
@@ -22583,6 +22586,7 @@ return Popper;
       $.removeData(this.element, this.constructor.DATA_KEY);
       $(this.element).off(this.constructor.EVENT_KEY);
       $(this.element).closest('.modal').off('hide.bs.modal', this._hideModalHandler);
+      console.log('wylaczenie modalu');
 
       if (this.tip) {
         $(this.tip).remove();

@@ -174,25 +174,28 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
                                 Secure login
                             </h1>
                             <div class="card p-4 rounded-plus bg-faded">
-                                <form id="js-login" novalidate="" action="intel_analytics_dashboard.html">
+                                <form id="js-login" novalidate="" action="{{ path('app_login') }}" method="post">
                                     <div class="form-group">
                                         <label class="form-label" for="username">Username</label>
-                                        <input type="email" id="username" class="form-control form-control-lg" placeholder="your id or email" value="drlantern@gotbootstrap.com" required>
+                                        <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
                                         <div class="invalid-feedback">No, you missed this one.</div>
                                         <div class="help-block">Your unique username to app</div>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label" for="password">Password</label>
-                                        <input type="password" id="password" class="form-control form-control-lg" placeholder="password" value="password123" required>
+                                        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
                                         <div class="invalid-feedback">Sorry, you missed this one.</div>
                                         <div class="help-block">Your password</div>
                                     </div>
                                     <div class="form-group text-left">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="rememberme">
+                                            <input type="checkbox" class="custom-control-input" name="_remember_me" id="rememberme">
                                             <label class="custom-control-label" for="rememberme"> Remember me for the next 30 days</label>
                                         </div>
                                     </div>
+                                    <input type="hidden" name="_csrf_token"
+                                           value="{{ csrf_token('authenticate') }}"
+                                    >
                                     <div class="row no-gutters">
                                         <div class="col-lg-6 pr-lg-1 my-2">
                                             <button type="submit" class="btn btn-info btn-block btn-lg">Sign in with <i class="fab fa-google"></i></button>

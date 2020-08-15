@@ -47,7 +47,7 @@ class MainMenuCategory
     private $mainMenuSubCategories;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default"= "0"})
      */
     private $hidden;
 

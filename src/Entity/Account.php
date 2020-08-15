@@ -199,6 +199,51 @@ class Account implements UserInterface
      */
     private $gallery;
 
+    /**
+     * @ORM\OneToMany(targetEntity=IpLastLogonLog::class, mappedBy="User", orphanRemoval=true)
+     */
+    private $IP;
+
+    /**
+     * @ORM\OneToMany(targetEntity=SocialPost::class, mappedBy="Account", orphanRemoval=true)
+     */
+    private $socialPosts;
+
+    /**
+     * @ORM\OneToOne(targetEntity=AccountSignature::class, mappedBy="Account", cascade={"persist", "remove"})
+     */
+    private $Signature;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $avatarFileName;
+
+    /**
+     * @ORM\OneToMany(targetEntity=SocialPostComment::class, mappedBy="author")
+     */
+    private $socialPostComments;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $Occupation;
+
+    /**
+     * @ORM\OneToOne(targetEntity=ProfileDesignSettings::class, mappedBy="Account", cascade={"persist", "remove"})
+     */
+    private $profileDesignSettings;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Contact::class, mappedBy="Account_source", orphanRemoval=true)
+     */
+    private $contacts;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Contact::class, mappedBy="Account_Targets", orphanRemoval=true)
+     */
+    private $contacts_backward;
+
     public function __construct()
     {
         $this->mainMenuCategories = new ArrayCollection();
@@ -210,6 +255,11 @@ class Account implements UserInterface
         $this->userForumPostConversations = new ArrayCollection();
         $this->userPrivateForums = new ArrayCollection();
         $this->galleries = new ArrayCollection();
+        $this->IP = new ArrayCollection();
+        $this->socialPosts = new ArrayCollection();
+        $this->socialPostComments = new ArrayCollection();
+        $this->contacts = new ArrayCollection();
+        $this->contacts_backward = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -808,4 +858,216 @@ class Account implements UserInterface
         return $this;
     }
 
+    /**
+     * @return Collection|IpLastLogonLog[]
+     */
+    public function getIP(): Collection
+    {
+        return $this->IP;
+    }
+
+    public function addIP(IpLastLogonLog $iP): self
+    {
+        if (!$this->IP->contains($iP)) {
+            $this->IP[] = $iP;
+            $iP->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIP(IpLastLogonLog $iP): self
+    {
+        if ($this->IP->contains($iP)) {
+            $this->IP->removeElement($iP);
+            // set the owning side to null (unless already changed)
+            if ($iP->getUser() === $this) {
+                $iP->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SocialPost[]
+     */
+    public function getSocialPosts(): Collection
+    {
+        return $this->socialPosts;
+    }
+
+    public function addSocialPost(SocialPost $socialPost): self
+    {
+        if (!$this->socialPosts->contains($socialPost)) {
+            $this->socialPosts[] = $socialPost;
+            $socialPost->setAccount($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSocialPost(SocialPost $socialPost): self
+    {
+        if ($this->socialPosts->contains($socialPost)) {
+            $this->socialPosts->removeElement($socialPost);
+            // set the owning side to null (unless already changed)
+            if ($socialPost->getAccount() === $this) {
+                $socialPost->setAccount(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getSignature(): ?AccountSignature
+    {
+        return $this->Signature;
+    }
+
+    public function setSignature(AccountSignature $Signature): self
+    {
+        $this->Signature = $Signature;
+
+        // set the owning side of the relation if necessary
+        if ($Signature->getAccount() !== $this) {
+            $Signature->setAccount($this);
+        }
+
+        return $this;
+    }
+
+    public function getAvatarFileName(): ?string
+    {
+        return $this->avatarFileName;
+    }
+
+    public function setAvatarFileName(?string $avatarFileName): self
+    {
+        $this->avatarFileName = $avatarFileName;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SocialPostComment[]
+     */
+    public function getSocialPostComments(): Collection
+    {
+        return $this->socialPostComments;
+    }
+
+    public function addSocialPostComment(SocialPostComment $socialPostComment): self
+    {
+        if (!$this->socialPostComments->contains($socialPostComment)) {
+            $this->socialPostComments[] = $socialPostComment;
+            $socialPostComment->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSocialPostComment(SocialPostComment $socialPostComment): self
+    {
+        if ($this->socialPostComments->contains($socialPostComment)) {
+            $this->socialPostComments->removeElement($socialPostComment);
+            // set the owning side to null (unless already changed)
+            if ($socialPostComment->getAuthor() === $this) {
+                $socialPostComment->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getOccupation(): ?string
+    {
+        return $this->Occupation;
+    }
+
+    public function setOccupation(?string $Occupation): self
+    {
+        $this->Occupation = $Occupation;
+
+        return $this;
+    }
+
+    public function getProfileDesignSettings(): ?ProfileDesignSettings
+    {
+        return $this->profileDesignSettings;
+    }
+
+    public function setProfileDesignSettings(ProfileDesignSettings $profileDesignSettings): self
+    {
+        $this->profileDesignSettings = $profileDesignSettings;
+
+        // set the owning side of the relation if necessary
+        if ($profileDesignSettings->getAccount() !== $this) {
+            $profileDesignSettings->setAccount($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Contact[]
+     */
+    public function getContacts(): Collection
+    {
+        return $this->contacts;
+    }
+
+    public function addContact(Contact $contact): self
+    {
+        if (!$this->contacts->contains($contact)) {
+            $this->contacts[] = $contact;
+            $contact->setAccountSource($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContact(Contact $contact): self
+    {
+        if ($this->contacts->contains($contact)) {
+            $this->contacts->removeElement($contact);
+            // set the owning side to null (unless already changed)
+            if ($contact->getAccountSource() === $this) {
+                $contact->setAccountSource(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Contact[]
+     */
+    public function getContactsBackward(): Collection
+    {
+        return $this->contacts_backward;
+    }
+
+    public function addContactsBackward(Contact $contactsBackward): self
+    {
+        if (!$this->contacts_backward->contains($contactsBackward)) {
+            $this->contacts_backward[] = $contactsBackward;
+            $contactsBackward->setAccountTargets($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContactsBackward(Contact $contactsBackward): self
+    {
+        if ($this->contacts_backward->contains($contactsBackward)) {
+            $this->contacts_backward->removeElement($contactsBackward);
+            // set the owning side to null (unless already changed)
+            if ($contactsBackward->getAccountTargets() === $this) {
+                $contactsBackward->setAccountTargets(null);
+            }
+        }
+
+        return $this;
+    }
 }

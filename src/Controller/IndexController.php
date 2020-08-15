@@ -7,20 +7,25 @@ namespace App\Controller;
 use App\Services\MainMenuService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class IndexController extends AbstractController
 {
     /**
      * @Route("/", name="app_home")
      */
-    public function homepage(MainMenuService $mainMenuService)
+    public function homepage(MainMenuService $mainMenuService, AuthenticationUtils $authenticationUtils)
     {
         $mainMenu = $mainMenuService->getMenu();
 
-        dump ($mainMenu);
-        //$MainMenuChildren = $mainMenu->getMainMenuChildren();
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
+
 
         return $this->render($_SERVER['DEFAULT_TEMPLATE']."/landing.page.twig",[
+            'last_username'=>$lastUsername,
             'title'=>'title',
             'lang'=>'pl',
             'APP_NAME'=>$_SERVER['APP_NAME'],

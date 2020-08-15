@@ -36,9 +36,9 @@ class AccountRepository extends ServiceEntityRepository implements PasswordUpgra
         $this->_em->flush();
     }
 
-     /**
-      * @return Account[] Returns an array of Account objects
-      */
+    /**
+     * @return Account[] Returns an array of Account objects
+     */
     public function findBySearch($value='', $column, $dir, $start, $length)
     {
         return $this->createQueryBuilder('a')
@@ -58,8 +58,24 @@ class AccountRepository extends ServiceEntityRepository implements PasswordUpgra
             ->setMaxResults($length)
             ->getQuery()
             ->getResult()
-        ;
+            ;
     }
+
+    /**
+     * @return Account[] Returns an array of Account objects
+     */
+    public function findJustUsernameAndAvatar($id)
+    {
+        return $this->createQueryBuilder('a')
+            ->select(['a.username', 'a.avatarFileName'])
+            ->andWhere('a.id like :id')
+            ->setParameter('id', $id)
+
+            ->getQuery()
+            ->getOneOrNullResult(1)
+            ;
+    }
+
 
     // /**
     //  * @return Account[] Returns an array of Account objects

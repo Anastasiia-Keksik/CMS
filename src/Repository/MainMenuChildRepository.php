@@ -19,7 +19,15 @@ class MainMenuChildRepository extends ServiceEntityRepository
         $ek = parent::__construct($registry, MainMenuChild::class);
     }
 
-
+    public function findOrderBy($cat)
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.MainMenuCategory = :val')
+            ->setParameter('val', $cat)
+            ->orderBy('m.orderNumber', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
     // /**
     //  * @return MainMenuChild[] Returns an array of MainMenuChild objects

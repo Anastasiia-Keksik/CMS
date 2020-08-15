@@ -5050,6 +5050,12 @@ a.text-blur {
   .layout-composed .page-content .page-breadcrumb,
   .layout-composed .page-content .subheader {
     display: none; }
+  .layout-composed .page-content .profile .composed-top {
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+  }
+
+
 
 /* responsive helpers */
 @media only screen and (max-width: 992px) {

@@ -136,6 +136,8 @@ http://www.standardista.com/px-to-rem-conversion-if-root-font-size-is-16px/
 
 Guide:
 
+.test89 ($nav-link-hover-color)
+
 aside.page-sidebar ($nav-width, $nav-background)
 	.page-logo
 	.primary-nav

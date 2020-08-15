@@ -5,12 +5,12 @@
     <main id="js-page-content" role="main" class="page-content">
     <ol class="breadcrumb page-breadcrumb">
         <li class="breadcrumb-item"><a href="/">{{ APP_NAME }}</a></li>
-        <li class="breadcrumb-item active"><a href="{{ path('app_gallery', {'username':user.username}) }}">Gallery</a></li>
+        <li class="breadcrumb-item active"><a href="{{ path('app_gallery', {'profile':profile.username}) }}">Gallery</a></li>
         <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
     </ol>
     <div class="subheader">
         <h1 class="subheader-title">
-            <i class='subheader-icon fal fa-globe'></i>  {{ user.username }}'s gallery
+            <i class='subheader-icon fal fa-globe'></i>  {{ profile.username }}'s gallery
         </h1>
     </div>
 
@@ -22,18 +22,18 @@
                         Gallery
                     </h2>
                     <div class="panel-toolbar">
-                        @IF($id == $_SESSION['user']->id)
+                        {% if username == profile.username %}
                         <div class="btn-group">
                         <a class="btn btn-light waves-effect waves-themed" data-toggle="collapse" href="#upload" role="button" aria-expanded="false" aria-controls="collapseExample"><span class="text-black-50">U P L O A D - F I L E S</span></a>
-                        <button type="button waves-effect waves-themed" class="btn btn btn-dark" data-toggle="modal" data-target=".add-album">Make Album</button>
+                        <button type="button waves-effect waves-themed" class="btn btn bg-primary-900" data-toggle="modal" data-target=".add-album">Make Album</button>
                         </div>
-                        @ENDIF
+                        {% endif %}
                         <button class="btn p-0 m-0 ml-3 waves-effect waves-themed" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"><i class="ni ni-frame fa-2x"></i></button>
                     </div>
                 </div>
                 <div class="panel-container">
                     <div class="panel-content">
-                        @IF($id == $_SESSION['user']->id)
+                        {% if username == profile.username %}
                         <div class="panel-container collapse mb-2" id="upload">
                             <form action="http://<?=ROOT_APP_URL;?>/UploadToGallery" id="gallery" class="dropzone needsclick upload" style="min-height: 7rem;" >
                                 <div class="dz-message needsclick">
@@ -45,44 +45,43 @@
                             </form>
                             <div id="removed" class="text-center" style="width:100%"></div>
                         </div>
-                        @ENDIF
-                        @IF($albums)
+                        {% endif %}
+                        {{  dump(albums) }}
+                        {% if albums is not null %}
                         <div class="col-12" style="margin-top: 0px;">
                             <div class="card-deck justify-content-start">
-                                @FOREACH($albums as $album)
-                                    <a href="http:/ROOT_APP_URL/album/album['id']">
+                                {% for album in albums %}
+                                    <a href="{{ path('app_gallery_album', {'profile':profile.username, 'id':album.id}) }}">
                                         <div class="" style="width: 200px">
                                             <div class="card border img-rounded">
                                                 <div class="w-100 d-flex p-0 align-items-end position-relative" style="height:80px; border: black 0px solid;">
-                                                    <?php $url = "http://".ROOT_APP_URL."/IMAGES/gallery/".$album['user_id']."/album_".$album['id']."/small/"; ?>
-                                                    <?php $name = app\Gallery::takeBGTitle($album['title_image']); ?>
-                                                    @IF($name['name'] == NULL)
-   <!--    POPRAWIC CODEPARSER   ----------->       <?php $url = "http://".ROOT_APP_URL."/IMAGES/_default/cover-".rand(1,6)."-lg.png"; ?>
-                                                    @ELSE
-                                                    <?php $url = $url . $name['name']; ?>
-                                                    @ENDIF
+                                                    {% if album.cover is null %}
+                                                    {% set url = "URL FOR COVER WITH RAND IMAGE" %}
+                                                    {% else %}
+                                                    {% set url = "URL FOR COVER/".album.cover %}
+                                                    {% endif %}
                                                     <!--
                                                     <img src="url" class="card-img-top" alt="album['title']"> -->
-                                                    <div class="card-img-top" alt="album['title']" style="display: block; height: 80px; background: url('url') no-repeat center center/cover;"> </div>
-                                                    <div class="align-bottom text-white d-flex px-3 position-absolute" style="height: 26px; border: black 0px solid; background-color: rgba(0,0,0, 0.5); width: inherit"  data-toggle="tooltip" data-placement="bottom" title="" data-original-title="album['title']"><span class="card-title my-auto text-truncate">album['title']</span></div>
+                                                    <div class="card-img-top" alt="{{ album.name }}" style="display: block; height: 80px; background: url('{{ url }}') no-repeat center center/cover;"> </div>
+                                                    <div class="align-bottom text-white d-flex px-3 position-absolute" style="height: 26px; border: black 0px solid; background-color: rgba(0,0,0, 0.5); width: inherit"  data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{ album.name }}"><span class="card-title my-auto text-truncate">{{ album.name }}</span></div>
                                                   </div>
 
                                                 <div class="card-body">
-                                                    <p class="card-text text-left p-0 m-0">@IF($album['description'])album['description']@ELSE<p class="text-center m-0 p-0"> . &nbsp; . &nbsp; . </p>@ENDIF</p>
-                                                    @IF($id == $_SESSION['user']->id)</a>
-                                <small style="cursor: pointer" class="p-0 m-0 float-left" data-toggle="modal" data-target=".edit-album-$album['id']">Edit</small>
-                                <small style="cursor: pointer" class="p-0 m-0 float-right" data-toggle="modal" data-target="#delete-album-$album['id']">Delete</small>
-                                <a href="http://ROOT_APP_URL/album/{$album['id']}">@ENDIF
+                                                    <p class="card-text text-left p-0 m-0">{% if album.description is not null %}{{ album.description }}{% else %}<p class="text-center m-0 p-0"> . &nbsp; . &nbsp; . </p>{% endif %}</p>
+                                        {% if username == profile.username %}</a>
+                                <small style="cursor: pointer" class="p-0 m-0 mt-2 float-left" data-toggle="modal" data-target=".edit-album-{{ album.id }}">Edit</small>
+                                <small style="cursor: pointer" class="p-0 m-0 mt-2 float-right" data-toggle="modal" data-target="#delete-album-{{ album.id }}">Delete</small>
+                                <a href="http://ROOT_APP_URL/album/{{ album.id }}">{% endif %}
                                                 </div>
                                             </div>
                                         </div>
                                     </a>
                                     <!-- EDIT MODAL -->
-                    <div class="modal modal-alert fade" id="delete-album-{$album['id']}" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal modal-alert fade" id="delete-album-{{ album.id }}" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">Delete album - {$album['title']}</h5>
+                                    <h5 class="modal-title">Delete album - {{ album.name }}</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true"><i class="fal fa-times"></i></span>
                                     </button>
@@ -94,14 +93,14 @@
                                     <form action="deleteAlbum" method="post">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <button class="btn btn-primary">Delete!</button>
-                                    <input type="hidden" name="id" value="{$album['id']}">
+                                    <input type="hidden" name="id" value="{{ album.id }}">
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="modal fade edit-album-{$album['id']}" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal fade edit-album-{{ album.id }}" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-transparent" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -118,30 +117,27 @@
                                     <div class="modal-body">
                                         <div class="">
                                             <label class="text-white-50">Title</label><br>
-                                            <input type="text" name="title" class="form-control" value="{$album['title']}">
+                                            <input type="text" name="title" class="form-control" value="{{ album.name }}">
                                             <br><br>
                                             <label class="text-white-50">Description *</label><br>
-                                            <input type="text" name="desc" class="form-control" value="{$album['description']}">
-                                            <input type="hidden" name="id" value="{$album['id']}">
+                                            <input type="text" name="desc" class="form-control" value="{{ album.description }}">
+                                            <input type="hidden" name="id" value="{{ album.id }}">
                                             <small class="m-0 text-white opacity-70 mb-0">
                                                 * - optional
                                             </small><br><br>
                                             <label class="text-white-50">Set Background</label>
                                             <select name="imgid" class="form-control">
-                                                @$lista = app\Gallery::galleryAlbumList($album['id'])
-                                                @FOREACH($lista as $obraz)
-                                                <option value="{$obraz['id'}}"
-                                                @IF($album['title_image']==$obraz['id'])
-                                                selected
-                                                @ENDIF
+                                                {% if album.galleryphotos is not null %}
+                                                {% for photo in album.galleryphotos %}
+                                                <option value="{{ photo.id }}"&nbsp;
+                                                {% if photo.id == album.cover %}
+                                                selected&nbsp;
+                                                {% endif %}
                                                 >
-                                                    @IF($obraz['alt']=="")
-                                                    {$obraz['name']}
-                                                    @else
-                                                    {$obraz['alt']}
-                                                    @ENDIF
+                                                    {{ photo.filename }}
                                                 </option>
-                                                @ENDFOREACH
+                                                {% endfor %}
+                                                {% endif %}
                                             </select>
                                         </div>
                                     </div>
@@ -153,15 +149,14 @@
                             </div>
                         </div>
                     </div>
-                                 @ENDFOREACH
+                                 {% endfor %}
                             </div>
                         </div>
-                        @ENDIF
+                        {% endif %}
                         <div id="js-lightgallery">
                             <?php
                                 app\Gallery::showAlbumPhotos($id);
                             ?>
-                            <!--@Gallery::showAlbumPhotos($id) - do zrobienia-->
                         </div>
                     </div>
                 </div>
@@ -208,9 +203,13 @@
 <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div>
 {% endblock %}
 
-{% block csss %}
+{% block stylesheets %}
     {{ parent() }}
+
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/miscellaneous/lightgallery/lightgallery.bundle.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/formplugins/dropzone/dropzone.css') }}">
 {% endblock %}
+
 
 {% block scripts %}
     <script>
@@ -284,7 +283,7 @@ Variables:
 - navFooter (if enabled and Not false shows Navigation Footer (chat logs, support chat and make a call)
 #}
 {%  block leftMenu %}
-  {% include 'smartadmin/main_menu/leftMenu.html.twig' %}
+  {% include 'smartadmin/parts/leftMenu.html.twig' %}
 {% endblock %}
 
 {% block header %}
@@ -1555,49 +1554,49 @@ Variables:
                                     <a href="#" id="myapp-0" data-action="theme-update" data-themesave data-theme="" data-toggle="tooltip" data-placement="top" title="Wisteria (base css)" data-original-title="Wisteria (base css)"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-1" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-1.css" data-toggle="tooltip" data-placement="top" title="Tapestry" data-original-title="Tapestry"></a>
+                                    <a href="#" id="myapp-1" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-1.css') }}" data-toggle="tooltip" data-placement="top" title="Tapestry" data-original-title="Tapestry"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-2" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-2.css" data-toggle="tooltip" data-placement="top" title="Atlantis" data-original-title="Atlantis"></a>
+                                    <a href="#" id="myapp-2" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-2.css') }}" data-toggle="tooltip" data-placement="top" title="Atlantis" data-original-title="Atlantis"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-3" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-3.css" data-toggle="tooltip" data-placement="top" title="Indigo" data-original-title="Indigo"></a>
+                                    <a href="#" id="myapp-3" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-3.css') }}" data-toggle="tooltip" data-placement="top" title="Indigo" data-original-title="Indigo"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-4" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-4.css" data-toggle="tooltip" data-placement="top" title="Dodger Blue" data-original-title="Dodger Blue"></a>
+                                    <a href="#" id="myapp-4" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-4.css') }}" data-toggle="tooltip" data-placement="top" title="Dodger Blue" data-original-title="Dodger Blue"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-5" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-5.css" data-toggle="tooltip" data-placement="top" title="Tradewind" data-original-title="Tradewind"></a>
+                                    <a href="#" id="myapp-5" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-5.css') }}" data-toggle="tooltip" data-placement="top" title="Tradewind" data-original-title="Tradewind"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-6" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-6.css" data-toggle="tooltip" data-placement="top" title="Cranberry" data-original-title="Cranberry"></a>
+                                    <a href="#" id="myapp-6" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-6.css') }}" data-toggle="tooltip" data-placement="top" title="Cranberry" data-original-title="Cranberry"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-7" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-7.css" data-toggle="tooltip" data-placement="top" title="Oslo Gray" data-original-title="Oslo Gray"></a>
+                                    <a href="#" id="myapp-7" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-7.css') }}" data-toggle="tooltip" data-placement="top" title="Oslo Gray" data-original-title="Oslo Gray"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-8" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-8.css" data-toggle="tooltip" data-placement="top" title="Chetwode Blue" data-original-title="Chetwode Blue"></a>
+                                    <a href="#" id="myapp-8" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-8.css') }}" data-toggle="tooltip" data-placement="top" title="Chetwode Blue" data-original-title="Chetwode Blue"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-9" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-9.css" data-toggle="tooltip" data-placement="top" title="Apricot" data-original-title="Apricot"></a>
+                                    <a href="#" id="myapp-9" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-9.css') }}" data-toggle="tooltip" data-placement="top" title="Apricot" data-original-title="Apricot"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-10" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-10.css" data-toggle="tooltip" data-placement="top" title="Blue Smoke" data-original-title="Blue Smoke"></a>
+                                    <a href="#" id="myapp-10" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-10.css') }}" data-toggle="tooltip" data-placement="top" title="Blue Smoke" data-original-title="Blue Smoke"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-11" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-11.css" data-toggle="tooltip" data-placement="top" title="Green Smoke" data-original-title="Green Smoke"></a>
+                                    <a href="#" id="myapp-11" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-11.css') }}" data-toggle="tooltip" data-placement="top" title="Green Smoke" data-original-title="Green Smoke"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-12" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-12.css" data-toggle="tooltip" data-placement="top" title="Wild Blue Yonder" data-original-title="Wild Blue Yonder"></a>
+                                    <a href="#" id="myapp-12" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-12.css') }}" data-toggle="tooltip" data-placement="top" title="Wild Blue Yonder" data-original-title="Wild Blue Yonder"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-13" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-13.css" data-toggle="tooltip" data-placement="top" title="Emerald" data-original-title="Emerald"></a>
+                                    <a href="#" id="myapp-13" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-13.css') }}" data-toggle="tooltip" data-placement="top" title="Emerald" data-original-title="Emerald"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-14" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-14.css" data-toggle="tooltip" data-placement="top" title="Supernova" data-original-title="Supernova"></a>
+                                    <a href="#" id="myapp-14" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-14.css') }}" data-toggle="tooltip" data-placement="top" title="Supernova" data-original-title="Supernova"></a>
                                 </li>
                                 <li>
-                                    <a href="#" id="myapp-15" data-action="theme-update" data-themesave data-theme="css/themes/cust-theme-15.css" data-toggle="tooltip" data-placement="top" title="Hoki" data-original-title="Hoki"></a>
+                                    <a href="#" id="myapp-15" data-action="theme-update" data-themesave data-theme="{{ asset('smartadmin/css/themes/cust-theme-15.css') }}" data-toggle="tooltip" data-placement="top" title="Hoki" data-original-title="Hoki"></a>
                                 </li>
                             </ul>
                         </div>
@@ -1674,4 +1673,62 @@ Variables:
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('smartadmin/js/miscellaneous/lightgallery/lightgallery.bundle.js') }}"></script>
+    <script>
+        $(document).ready(function()
+        {
+            var $initScope = $('#album-lightgallery');
+            if ($initScope.length)
+            {
+                $initScope.justifiedGallery(
+                    {
+                        border: -1,
+                        rowHeight: 150,
+                        margins: 8,
+                        waitThumbnailsLoad: true,
+                        randomize: false,
+                    }).on('jg.complete', function()
+                {
+                    $initScope.lightGallery(
+                        {
+                            thumbnail: true,
+                            animateThumb: true,
+                            showThumbByDefault: true,
+                        });
+                });
+            };
+            $initScope.on('onAfterOpen.lg', function(event)
+            {
+                $('body').addClass("overflow-hidden");
+            });
+            $initScope.on('onCloseAfter.lg', function(event)
+            {
+                $('body').removeClass("overflow-hidden");
+            });
+        });
+
+    </script>
+    <script src="{{ asset('smartadmin/js/formplugins/dropzone/dropzone.js') }}"></script>
+    <script type="text/javascript">
+        initApp.pushSettings("layout-composed", false);
+
+        Dropzone.autoDiscover = false;
+        $('.dropzone').dropzone({
+            acceptedFiles: "image/*",
+            paramName: "image", // The name that will be used to transfer the file
+            maxFilesize: 5, // MB
+            maxFiles: 10,// zobaczymy, trzba zrobic jeszcze albumy
+            init: function() {
+
+                this.on("maxfilesexceeded", function(file) {
+                    //alert("You are not allowed to chose more than 10 files at once!");
+                    this.removeFile(file);
+
+                });
+
+            }
+        });
+    </script>
+
 {% endblock %}
+

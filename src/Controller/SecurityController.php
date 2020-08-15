@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Account;
+use App\Entity\AccountSignature;
 use App\Entity\Passwords;
 use App\Form\LoginFormType;
 use App\Form\RecoverPasswordFormType;
@@ -24,13 +25,25 @@ SecurityController extends AbstractController
     /**
      * @Route("/login", name="app_login")
      */
-    public function login(AuthenticationUtils $authenticationUtils, MainMenuService $mainMenuService): Response
+    public function login(Request $request, AuthenticationUtils $authenticationUtils, MainMenuService $mainMenuService): Response
     {
+        $user = $this->getUser();
+        if($user!=NULL)
+        {
+            return $this->redirectToRoute('app_main_profile');
+        }
+
         $mainMenu = $mainMenuService->getMenu();
         // if ($this->getUser()) {
         //     return $this->redirectToRoute('target_path');
         // }
         $form = $this->createForm(LoginFormType::class);
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid())
+        {
+
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -64,6 +77,12 @@ SecurityController extends AbstractController
      */
     public function register(EntityManagerInterface $em, Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, LoginFormAuthenticator$formAuthenticator)
     {
+        $user = $this->getUser();
+        if($user!=NULL)
+        {
+            return $this->redirectToRoute('app_main_profile');
+        }
+
         $form = $this->createForm(RegisterFormType::class);
 
         $form->handleRequest($request);
@@ -71,11 +90,15 @@ SecurityController extends AbstractController
             /** @var Account $account */
             $account = $form->getData();
             $account->setTemplate($_SERVER['DEFAULT_TEMPLATE']);//TODO: pobierac default template z bazy
+            $account->setAvatarFileName('empty-avatar.png');
 
             $account->setPassword($passwordEncoder->encodePassword(
                 $account,
                 $form['plainPassword']->getData()
             ));
+
+            mkdir($this->getParameter('kernel.project_dir') . "/public/upload/avatars/".$account->getUsername());
+            copy($this->getParameter('kernel.project_dir') . "/public/default/empty-avatar.png", $this->getParameter('kernel.project_dir') . "/public/upload/avatars/".$account->getUsername()."/empty-avatar.png");
 
             $account->setCreatedAt(new \DateTime());
 
@@ -94,9 +117,15 @@ SecurityController extends AbstractController
             $password->setEmail($form['email']->getData());
             $password->setUser($account);
 
+            $signature = new AccountSignature();
+            $signature -> setAccount($account);
+            $signature -> setSignature("I am a new User. Welcome!");
+
+
             $em = $this -> getDoctrine()->getManager();
             $em->persist($account);
             $em->persist($password);
+            $em->persist($signature);
             $em->flush();
 
             $this->addFlash('success',"Zarejestrowano pomyślnie.");

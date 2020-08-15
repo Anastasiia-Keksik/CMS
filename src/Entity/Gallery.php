@@ -60,9 +60,15 @@ class Gallery
      */
     private $galleryAlbums;
 
+    /**
+     * @ORM\OneToMany(targetEntity=GalleryPhotos::class, mappedBy="galleryId")
+     */
+    private $galleryPhotos;
+
     public function __construct()
     {
         $this->galleryAlbums = new ArrayCollection();
+        $this->galleryPhotos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -179,6 +185,37 @@ class Gallery
             // set the owning side to null (unless already changed)
             if ($galleryAlbum->getGallery() === $this) {
                 $galleryAlbum->setGallery(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GalleryPhotos[]
+     */
+    public function getGalleryPhotos(): Collection
+    {
+        return $this->galleryPhotos;
+    }
+
+    public function addGalleryPhoto(GalleryPhotos $galleryPhoto): self
+    {
+        if (!$this->galleryPhotos->contains($galleryPhoto)) {
+            $this->galleryPhotos[] = $galleryPhoto;
+            $galleryPhoto->setUnderGalleryId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGalleryPhoto(GalleryPhotos $galleryPhoto): self
+    {
+        if ($this->galleryPhotos->contains($galleryPhoto)) {
+            $this->galleryPhotos->removeElement($galleryPhoto);
+            // set the owning side to null (unless already changed)
+            if ($galleryPhoto->getUnderGalleryId() === $this) {
+                $galleryPhoto->setUnderGalleryId(null);
             }
         }
 

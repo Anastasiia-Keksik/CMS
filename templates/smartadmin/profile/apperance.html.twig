@@ -1,0 +1,39 @@
+<div class="tab-pane fade{% if tab == 'apperance' %} show active{% endif %}" id="apperance" role="tab-panel">
+    <div id="panel" class="panel">
+        <div class="panel-hdr">
+            <h2>
+                Ustawienia konta <span class="fw-300"><i>{{ user.Username }}</i></span>
+            </h2>
+        </div>
+        <div class="panel-container show">
+            <div class="panel-content">
+
+                {% for message in app.flashes('success')|raw %}
+                    <div class="alert alert-sucess">
+                        {{ message|raw }}
+                    </div>
+                {% endfor %}
+                {% for message in app.flashes('error')|raw %}
+                    <div class="alert alert-danger">
+                        {{ message|raw }}
+                    </div>
+                {% endfor %}
+
+           
+           <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+            <label>Set Background color</label>
+            <input class="form-control" type='text' name='color'>
+            <button type="submit" class="btn float-right btn-primary btn-xs mt-3">SEND</button>
+           </form>
+           <p class="text-black-50 display-4 width-100 mb-0 text-center">OR</p>
+           <form method="POST" enctype="multipart/form-data">
+            <label class='mt-3'>Set your MURAL</label>
+            <input class="form-control-file" type='file' name='mural-background'>
+            <button type="submit" class="btn float-right btn-primary btn-xs mt-3 mb-3">SEND</button>
+            </div>
+           </form>
+            </div>
+        </div>
+    </div>
+</div>
