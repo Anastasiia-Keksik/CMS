@@ -66,6 +66,11 @@ class UserForumForum
      */
     private $Icon;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $OrderValue;
+
     public function __construct()
     {
         $this->forumTopics = new ArrayCollection();
@@ -113,12 +118,12 @@ class UserForumForum
         return $this;
     }
 
-    public function getCategory(): ?ForumCategory
+    public function getCategory(): ?UserForumCategory
     {
         return $this->Category;
     }
 
-    public function setCategory(?ForumCategory $Category): self
+    public function setCategory(?UserForumCategory $Category): self
     {
         $this->Category = $Category;
 
@@ -213,6 +218,18 @@ class UserForumForum
     public function setIcon($Icon): self
     {
         $this->Icon = $Icon;
+
+        return $this;
+    }
+
+    public function getOrderValue(): ?int
+    {
+        return $this->OrderValue;
+    }
+
+    public function setOrderValue(int $OrderValue): self
+    {
+        $this->OrderValue = $OrderValue;
 
         return $this;
     }

@@ -57,6 +57,7 @@ class UserPrivateForum
 
     /**
      * @ORM\OneToMany(targetEntity=UserForumCategory::class, mappedBy="IsItUserPrivateForum")
+     * @ORM\OrderBy({"OrderValue" = "ASC"})
      */
     private $forumCategories;
 
@@ -175,14 +176,14 @@ class UserPrivateForum
     }
 
     /**
-     * @return Collection|ForumCategory[]
+     * @return Collection|UserForumCategory[]
      */
     public function getForumCategories(): Collection
     {
         return $this->forumCategories;
     }
 
-    public function addForumCategory(ForumCategory $forumCategory): self
+    public function addForumCategory(UserForumCategory $forumCategory): self
     {
         if (!$this->forumCategories->contains($forumCategory)) {
             $this->forumCategories[] = $forumCategory;
@@ -192,7 +193,7 @@ class UserPrivateForum
         return $this;
     }
 
-    public function removeForumCategory(ForumCategory $forumCategory): self
+    public function removeForumCategory(UserForumCategory $forumCategory): self
     {
         if ($this->forumCategories->contains($forumCategory)) {
             $this->forumCategories->removeElement($forumCategory);

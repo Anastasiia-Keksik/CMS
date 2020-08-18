@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\UserForumTopic;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -31,6 +32,17 @@ class UserForumTopicRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    public function findTopicsWithPagination($forumid): QueryBuilder
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.forum = :forum')
+            ->setParameter('forum', $forumid)
+            ->andWhere('s.softDelete = 0')
+            ->orderBy('s.sticky', 'DESC')
+            ->addOrderBy('s.createdAt', 'DESC')
+            ;
     }
 
     /*

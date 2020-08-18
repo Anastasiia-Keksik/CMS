@@ -48,12 +48,12 @@ class UserForumTopic
     private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $modifiedAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastPostAt;
 
@@ -63,9 +63,19 @@ class UserForumTopic
     private $forumPosts;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(type="boolean")
      */
-    private $IsItUserForumTopic;
+    private $sticky;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $replies;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $views;
 
     public function __construct()
     {
@@ -101,12 +111,12 @@ class UserForumTopic
         return $this;
     }
 
-    public function getForum(): ?ForumForum
+    public function getForum(): ?UserForumForum
     {
         return $this->forum;
     }
 
-    public function setForum(?ForumForum $forum): self
+    public function setForum(?UserForumForum $forum): self
     {
         $this->forum = $forum;
 
@@ -205,14 +215,38 @@ class UserForumTopic
         return $this;
     }
 
-    public function getIsItUserForumTopic(): ?bool
+    public function getSticky(): ?bool
     {
-        return $this->IsItUserForumTopic;
+        return $this->sticky;
     }
 
-    public function setIsItUserForumTopic(?bool $IsItUserForumTopic): self
+    public function setSticky(bool $sticky): self
     {
-        $this->IsItUserForumTopic = $IsItUserForumTopic;
+        $this->sticky = $sticky;
+
+        return $this;
+    }
+
+    public function getReplies(): ?int
+    {
+        return $this->replies;
+    }
+
+    public function setReplies(int $replies): self
+    {
+        $this->replies = $replies;
+
+        return $this;
+    }
+
+    public function getViews(): ?int
+    {
+        return $this->views;
+    }
+
+    public function setViews(int $views): self
+    {
+        $this->views = $views;
 
         return $this;
     }

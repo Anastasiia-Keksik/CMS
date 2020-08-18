@@ -35,7 +35,8 @@ class UserForumCategory
     private $hidden = false;
 
     /**
-     * @ORM\OneToMany(targetEntity=ForumForum::class, mappedBy="Category")
+     * @ORM\OneToMany(targetEntity=UserForumForum::class, mappedBy="Category")
+     * @ORM\OrderBy({"OrderValue" = "ASC"})
      */
     private $forumForum;
 
@@ -43,6 +44,11 @@ class UserForumCategory
      * @ORM\ManyToOne(targetEntity=UserPrivateForum::class, inversedBy="forumCategories")
      */
     private $IsItUserPrivateForum;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $Description;
 
     public function __construct()
     {
@@ -99,14 +105,14 @@ class UserForumCategory
     }
 
     /**
-     * @return Collection|ForumForum[]
+     * @return Collection|UserForumForum[]
      */
     public function getForumForum(): Collection
     {
         return $this->forumForum;
     }
 
-    public function addForumForum(ForumForum $forum): self
+    public function addForumForum(UserForumForum $forum): self
     {
         if (!$this->forumForum->contains($forum)) {
             $this->forumForum[] = $forum;
@@ -116,7 +122,7 @@ class UserForumCategory
         return $this;
     }
 
-    public function removeForum(ForumForum $forum): self
+    public function removeForum(UserForumForum $forum): self
     {
         if ($this->forumForum->contains($forum)) {
             $this->forumForum->removeElement($forum);
@@ -137,6 +143,18 @@ class UserForumCategory
     public function setIsItUserPrivateForum(?UserPrivateForum $IsItUserPrivateForum): self
     {
         $this->IsItUserPrivateForum = $IsItUserPrivateForum;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->Description;
+    }
+
+    public function setDescription(?string $Description): self
+    {
+        $this->Description = $Description;
 
         return $this;
     }

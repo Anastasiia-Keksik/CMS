@@ -9,6 +9,7 @@
         "ext-json": "^7.4",
         "fzaninotto/faker": "^1.9",
         "intervention/image": "^2.5",
+        "knplabs/knp-paginator-bundle": "^5.3",
         "knplabs/knp-time-bundle": "^1.11",
         "liip/imagine-bundle": "^2.3",
         "sensio/framework-extra-bundle": "^5.1",

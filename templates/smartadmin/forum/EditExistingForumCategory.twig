@@ -1,0 +1,98 @@
+{% extends 'smartadmin/base.html.twig' %}
+
+{% block content %}
+    <!-- BEGIN Page Content -->
+    <!-- the #js-page-content id is needed for some plugins to initialize -->
+    <main id="js-page-content" role="main" class="page-content">
+        <ol class="breadcrumb page-breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0);">{{ APP_NAME }}</a></li>
+            <li class="breadcrumb-item">Forum</li>
+            <li class="breadcrumb-item active">Edit Category</li>
+            <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
+        </ol>
+        <div class="subheader">
+            <h1 class="subheader-title">
+                <i class='subheader-icon fal fa-plus-circle'></i> Forum: <span class='fw-300'>Edit Existing Category</span>
+                <small>
+                    Administration restricted page
+                </small>
+            </h1>
+        </div>
+        <div class="row">
+            <div class="col-4 offset-4 clearfix">
+                <form method="post">
+                    <label class="form-label">Category Name</label>
+                    <input type="text" class="form-control" name="CatNewName" maxlength="64" value="{{ category.Name }}"><br>
+                    <label clas="form-label">Category Description</label>
+                    <input type="text" class="form-control" name="CatNewDesc" maxlength="255" value="{{ category.Description }}"><br>
+                    <label class="form-label">Change category order</label>
+
+                        <select name="CatNewNumber" class="custom-select form-control">
+                            {% for categoryList in CategoryOrder %}
+                                {% if category.OrderValue == categoryList.OrderValue %}
+                                    <option value="{{ categoryList.OrderValue }}" selected>{{ categoryList.OrderValue }} - {{ categoryList.name }}</option>
+                                {% else %}
+                                    <option value="{{ categoryList.OrderValue }}">{{ categoryList.OrderValue }} - {{ categoryList.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+
+
+                    <input type="hidden" name="CatOldNumber" value="{{ category.OrderValue }}">
+                    <input type="hidden" name="CatId" value="{{ category.id }}">
+                    <br><br>
+                    <input type="hidden" name="_token" value="{{ csrf_token('cat_edit') }}">
+                    <a href="{{ path('user_forum', {'profile':category.IsItUserPrivateForum.UserAdmin.Username}) }}" class="btn btn-outline-danger float-left">Cancel</a>
+                    <button class="btn btn-outline-success float-right">Save Changes!</button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+    <!-- this overlay is activated only when mobile menu is triggered -->
+    <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-regular.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-solid.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-brands.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-duotone.css') }}">
+{% endblock %}
+
+{% block scripts %}
+    {% include 'smartadmin/parts/scripts.twig' %}
+{% endblock %}
+
+{#
+Variables:
+- navFooter (if enabled and Not false shows Navigation Footer (chat logs, support chat and make a call)
+#}
+{%  block leftMenu %}
+    {% include 'smartadmin/parts/leftMenu.html.twig' %}
+{% endblock %}
+
+{% block header %}
+    {% include 'smartadmin/parts/header.html.twig' %}
+{% endblock %}
+
+{% block footer %}
+ {% include 'smartadmin/parts/footer.twig' %}
+{%  endblock %}
+
+{% block quickmenu %}
+    {% include 'smartadmin/parts/quickmenu.twig' %}
+{% endblock %}
+
+{% block messenger %}
+    {% include 'smartadmin/parts/chat.twig' %}
+{% endblock %}
+
+{% block pagesettings %}
+    {% include 'smartadmin/parts/pagesettings.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

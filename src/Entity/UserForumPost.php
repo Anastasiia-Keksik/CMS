@@ -46,7 +46,7 @@ class UserForumPost
     private $modifiedAt;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(type="boolean")
      */
     private $softDelete = false;
 
@@ -56,7 +56,7 @@ class UserForumPost
     private $likes;
 
     /**
-     * @ORM\ManyToOne(targetEntity=UserForumTopic::class, inversedBy="forumPosts")
+     * @ORM\ManyToOne(targetEntity=UserForumTopic::class, inversedBy="ForumPosts")
      * @ORM\JoinColumn(nullable=false)
      */
     private $ForumTopic;

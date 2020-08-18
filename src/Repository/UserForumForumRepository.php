@@ -22,7 +22,7 @@ class UserForumForumRepository extends ServiceEntityRepository
     public function takeForumsByOrderValue($category)
     {
         return $this->createQueryBuilder('t')
-            ->select('t.name', 't.OrderValue')
+            ->select('t.id', 't.Name', 't.OrderValue')
             ->where('t.Category = :val')
             ->setParameter(':val', $category)
             ->orderBy('t.OrderValue','ASC')

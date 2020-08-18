@@ -1,0 +1,157 @@
+{% extends 'smartadmin/base.html.twig' %}
+
+{% block content %}
+<main id="js-page-content" role="main" class="page-content">
+    <ol class="breadcrumb page-breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{{ APP_NAME }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('app_profile', {'profile': profile.Username}) }}">{{ profile.Username }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('user_forum', {'profile': profile.Username}) }}">{{ forumCre.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('app_forum_threads_list', {'forumid': forumCre.id, 'forumtableid': forum.id}) }}">{{ forum.name }}</a></li>
+        <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date">Sunday, October 20, 2019</span></li>
+    </ol>
+    <div class="subheader">
+        <h1 class="subheader-title">
+            <i class="subheader-icon fal fa-plus-circle"></i> Forum: <span class="fw-300">{{ forum.name }}</span>
+            <small>
+                {{ forum.Description }}
+            </small>
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="input-group input-group-lg mb-g">
+                <input type="text" class="form-control shadow-inset-2" placeholder="Search Threads">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fal fa-search"></i></span>
+                </div>
+            </div>
+            <div class="card mb-g border shadow-0">
+                <div class="card-header bg-white">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <span class="h6 font-weight-bold text-uppercase d-block">{{ forum.name }}</span>
+                        </div>
+                        <div class="col d-flex align-items-center">
+                            <a href="{{ path('app_forum_make_new_thread', {'forumtableid': forum.id}) }}" class="btn shadow-0 btn-sm ml-auto flex-shrink-0 bg-primary-200">New Thread</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header bg-white p-0">
+                    <div class="row no-gutters row-grid align-items-stretch">
+                        <div class="col-12 col-md">
+                            <div class="text-uppercase text-muted py-2 px-3">Title</div>
+                        </div>
+                        <div class="col-sm-6 col-md-2 col-xl-1 hidden-md-down">
+                            <div class="text-uppercase text-muted py-2 px-3">Replies</div>
+                        </div>
+                        <div class="col-sm-6 col-md-3 hidden-md-down">
+                            <div class="text-uppercase text-muted py-2 px-3">Last update</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="row no-gutters row-grid">
+                        <!-- thread -->
+                        {% for thread in thread_pagination %}
+                            <div class="col-12">
+                                <div class="row no-gutters row-grid align-items-stretch">
+                                    <div class="col-md">
+                                        <div class="p-2">
+                                            <!--avatar dla topicu przed forum-->
+                                            <!--<div class="d-inline-flex align-middle mr-2">
+                                                    <span class="profile-image-md d-block" style="background-image:url('http://<?php //echo ROOT_APP_URL;?>/img/demo/avatars/avatar-admin.png'); background-size: cover;"></span>
+                                            </div>-->
+                                            <div class="d-flex flex-column">
+                                                <a href="forum/1/1/1/friendly-url" class="fs-lg fw-500 d-flex align-items-start">
+                                                    {{ thread.Title }}
+                                                    {% if thread.sticky == 1 %}
+                                                        <span class="badge badge-warning ml-auto">Sticky</span>";} ?>
+                                                    {% endif %}
+                                                </a>
+                                                <div class="d-block text-muted fs-sm">
+                                                    Started by <a href="javascript:void(0);" class="text-info">{{ thread.Author.Username }} </a> on {{ thread.CreatedAt|date("m/d/Y") }}
+                                                </div>
+                                            </div>
+                                            <?php if($pagesnbr>1){ ?>
+                                            <div class="d-flex">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 col-md-2 col-xl-1 hidden-md-down">
+                                        <div class="p-2 p-md-2">
+                                            <span class="d-block text-muted">{{ thread.replies}}  <i>Replies</i></span>
+                                            <span class="d-block text-muted">{{ thread.views}}  <i>Views</i></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-8 col-md-3 hidden-md-down">
+                                        <div class="p-2 p-md-2">
+                                            <div class="d-flex align-items-center">
+                                                <div class="d-inline-block align-middle status status-success status-sm mr-2">
+                                                    <span class="profile-image-md rounded-circle d-block" style="background-image:url('http://<?=ROOT_APP_URL;?>/img/demo/avatars/avatar-admin.png'); background-size: cover;"></span>
+                                                </div>
+                                                <div class="flex-1 min-width-0">
+                                                    <a href="javascript:void(0)" class="d-block text-truncate">
+                                                        <?php echo substr(strip_tags($thread['post_content']),0,50)."...";?>
+                                                    </a>
+                                                    <div class="text-muted small text-truncate">
+                                                        <?=$thread['last_post'];?>  <a href="javascript:void(0)" class="text-info"><?=$thread['post_author'];?> </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <!-- thread -end -->
+
+                    </div>
+                </div>
+            </div>
+
+            {{ knp_pagination_render(thread_pagination) }}
+        </div>
+    </div>
+</main>
+<div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block scripts %}
+    {% include 'smartadmin/parts/scripts.twig' %}
+{% endblock %}
+
+{#
+Variables:
+- navFooter (if enabled and Not false shows Navigation Footer (chat logs, support chat and make a call)
+#}
+{%  block leftMenu %}
+    {% include 'smartadmin/parts/leftMenu.html.twig' %}
+{% endblock %}
+
+{% block header %}
+    {% include 'smartadmin/parts/header.html.twig' %}
+{% endblock %}
+
+{% block footer %}
+    {% include 'smartadmin/parts/footer.twig' %}
+{%  endblock %}
+
+{% block quickmenu %}
+    {% include 'smartadmin/parts/quickmenu.twig' %}
+{% endblock %}
+
+{% block messenger %}
+    {% include 'smartadmin/parts/chat.twig' %}
+{% endblock %}
+
+{% block pagesettings %}
+    {% include 'smartadmin/parts/pagesettings.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

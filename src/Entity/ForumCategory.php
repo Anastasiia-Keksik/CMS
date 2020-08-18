@@ -36,7 +36,7 @@ class ForumCategory
     private $hidden = false;
 
     /**
-     * @ORM\OneToMany(targetEntity=ForumForum::class, mappedBy="Category")
+     * @ORM\OneToMany(targetEntity=ForumForum::class, mappedBy="Category", fetch="EAGER")
      */
     private $forumForum;
 
@@ -44,6 +44,11 @@ class ForumCategory
      * @ORM\ManyToOne(targetEntity=UserPrivateForum::class, inversedBy="forumCategories")
      */
     private $IsItUserPrivateForum;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $Description;
 
     public function __construct()
     {
@@ -138,6 +143,18 @@ class ForumCategory
     public function setIsItUserPrivateForum(?UserPrivateForum $IsItUserPrivateForum): self
     {
         $this->IsItUserPrivateForum = $IsItUserPrivateForum;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->Description;
+    }
+
+    public function setDescription(?string $Description): self
+    {
+        $this->Description = $Description;
 
         return $this;
     }

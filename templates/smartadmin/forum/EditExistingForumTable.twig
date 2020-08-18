@@ -7,16 +7,14 @@
         <ol class="breadcrumb page-breadcrumb">
             <li class="breadcrumb-item"><a href="javascript:void(0);">{{ APP_NAME }}</a></li>
             <li class="breadcrumb-item"><a href="javascript:void(0);">Forum</a></li>
-            <li class="breadcrumb-item active">Make New Forum</li>
+            <li class="breadcrumb-item active">Edit Forum</li>
             <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
         </ol>
         <div class="subheader">
             <h1 class="subheader-title">
-                <i class='subheader-icon fal fa-plus-circle'></i> Forum: <span class='fw-300'> {{ forum.Name }}
-                    
-                </span>
+                <i class='subheader-icon fal fa-plus-circle'></i> Forum:  <span class='fw-300'>Edit Existing Category</span>
                 <small>
-                    {{ forum.description }}
+                    Administration restricted page
                 </small>
             </h1>
         </div>
@@ -24,31 +22,40 @@
             <div class="col-4 offset-4 clearfix">
                 <form method="post">
                     <label class="form-label">Under Category:</label>
-                    <fieldset disabled>
-                        <input type="text" class="form-control" maxlength="64" value="{{ category.Name }}"></fieldset><br>
-                    <label class="form-label">Forum Name</label>
-                    <input type="text" class="form-control" name="ForumName" maxlength="64" placeholder="Forum Name"><br>
-                    <label clas="form-label">Forum Description</label>
-                    <input type="text" class="form-control" name="ForumDesc" maxlength="255" placeholder="Forum Description"><br>
-                    <label class="form-label">Forum Order Number</label>
-                    <select name="ForumNumber" class="custom-select form-control">
-                        {% if forums %}
-                            {% for forum in forums %}
-                                <option value="{{ forum.OrderValue }}">{{ forum.OrderValue }} - {{ forum.Name }}</option>
+                    <fieldset>
+                        <select name="ForumNewCat" class="custom-select form-control">
+                            {% for categoryList in CategoryOrder %}
+                                {% if forum.Category.OrderValue == categoryList.OrderValue %}
+                                    <option value="{{ categoryList.id }}" selected>{{ categoryList.OrderValue }} - {{ categoryList.name }}</option>
+                                {% else %}
+                                    <option value="{{ categoryList.id }}">{{ categoryList.OrderValue }} - {{ categoryList.name }}</option>
+                                {% endif %}
                             {% endfor %}
-                            <option selected value="{{ forums|last.OrderValue+1 }}">{{ forums|last.OrderValue+1 }} - New Index</option>
-                        {% else %}
-                            <option selected value="1">1</option>
-                        {% endif %}
+                        </select>
+                    </fieldset><br>
+                    <label class="form-label">Forum Name</label>
+                    <input type="text" class="form-control" name="ForumNewName" maxlength="64" value="{{ forum.Name }}"><br>
+                    <label clas="form-label">Forum Description</label>
+                    <input type="text" class="form-control" name="ForumNewDesc" maxlength="255" value="{{ forum.Description }}"><br>
+                    <label class="form-label">Forum Order Number</label>
+                    <select name="ForumNewNumber" class="custom-select form-control">
+                            {% for forumList in forums %}
+                                {%  if forum.id == forumList.id %}
+                                    <option selected value="{{ forumList.OrderValue }}">{{ forumList.OrderValue }} - {{ forumList.Name }}</option>
+                                {% else %}
+                                    <option value="{{ forumList.OrderValue }}">{{ forumList.OrderValue }} - {{ forumList.Name }}</option>
+                                {% endif %}
+                            {% endfor %}
                     </select>	<br><br>
                     <label clas="form-label">Icon HTML</label>
                     <input type="text" class="form-control" name="Icon" maxlength="255" placeholder="">
                     <span>Add - &nbsp;&nbsp;<span class="color-success-600">display-4 mr-3 flex-shrink-0</span>&nbsp;&nbsp; - to div class for proper size</span><br><br>
 
-                    <input type="hidden" value="{{ category.id }}" name="CatId">
-                    <input type="hidden" value="{{ csrf_token('make_new_forum_list') }}" name="_token">
+                    <input type="hidden" value="{{ forum.OrderValue }}" name="ForumOldNumber">
+                    <input type="hidden" value="{{ forum.Category.id }}" name="ForumOldCat">
+                    <input type="hidden" value="{{ csrf_token('edit_Forum_table') }}" name="_token">
 
-                    <a href="{{ path('user_forum', {'profile':Profiler}) }}" class="btn btn-outline-danger float-left">Cancel</a>
+                    <a href="{{ path('user_forum', {'profile':forum.Category.IsItUserPrivateForum.UserAdmin.Username}) }}" class="btn btn-outline-danger float-left">Cancel</a>
                     <button class="btn btn-outline-success float-right">Make Me!</button>
 
                 </form>

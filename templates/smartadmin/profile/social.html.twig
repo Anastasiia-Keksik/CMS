@@ -27,9 +27,9 @@
                                     <button class="btn btn-outline-default ml-auto position-absolute bg-brand-gradient" style="right: 5px; bottom: 5px">Dodaj Post</button>
                                     <div id="buttonDropdownTarget hidden-xs-up"><a href="#" id="linkToggleDropdown" class="hidden-xs-up dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a></div>
 {#                                <span class="profile-image rounded-circle d-block position-absolute avatar-size-50" style="background-image:url('{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>#}
-{#                                    <script>#}
-{#                                        NewSocialPostContent = '';#}
-{#                                    </script>#}
+                                    <script>
+                                        NewSocialPostContent = '';
+                                    </script>
 {#                                <div class="ml-5 pl-5">#}
 {#                                    <textarea name="NewSocialPost" id="NewSocialPost" class="NewSocialPost form-control border-0 p-0 fs-xl bg-transparent" style="height: 6vw" placeholder="What's on your mind {{ user.firstName }}?..." oninput="NewSocialPostContentFun(document.getElementById('NewSocialPost').value)"></textarea>#}
 {#                                </div>#}
