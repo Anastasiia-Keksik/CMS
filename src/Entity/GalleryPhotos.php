@@ -136,12 +136,12 @@ class GalleryPhotos
 
     public function getUnderGalleryId(): ?Gallery
     {
-        return $this->underGalleryId;
+        return $this->galleryId;
     }
 
-    public function setUnderGalleryId(?Gallery $underGalleryId): self
+    public function setUnderGalleryId(?Gallery $galleryId): self
     {
-        $this->underGalleryId = $underGalleryId;
+        $this->galleryId = $galleryId;
 
         return $this;
     }

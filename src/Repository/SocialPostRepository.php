@@ -31,10 +31,23 @@ class SocialPostRepository extends ServiceEntityRepository
             ->andWhere('p.Account = :val')
             ->setParameter('val', $id)
             ->orderBy('p.id', 'DESC')
-            ->setMaxResults(10)
+            ->setMaxResults($_SERVER['SOCIAL_POSTS'])
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    public function loadNewPostsOffset($id, $offset)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.Account = :val')
+            ->setParameter('val', $id)
+            ->orderBy('p.id', 'DESC')
+            ->setMaxResults($_SERVER['SOCIAL_POSTS'])
+            ->setFirstResult($offset)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
     /*

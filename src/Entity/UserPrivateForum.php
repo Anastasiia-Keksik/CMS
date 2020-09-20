@@ -20,7 +20,7 @@ class UserPrivateForum
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=Account::class, inversedBy="userPrivateForum", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=Account::class, inversedBy="userPrivateForum", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $UserAdmin;

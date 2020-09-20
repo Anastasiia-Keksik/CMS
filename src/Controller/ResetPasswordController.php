@@ -27,9 +27,21 @@ class ResetPasswordController extends AbstractController
 
     private $resetPasswordHelper;
 
+    private $theme;
+
     public function __construct(ResetPasswordHelperInterface $resetPasswordHelper)
     {
         $this->resetPasswordHelper = $resetPasswordHelper;
+
+        if (isset($_COOKIE["theme"])){
+
+            $this->theme = $_COOKIE["theme"];
+
+        }else{
+
+            $this->theme = "#";
+
+        }
     }
 
     /**
@@ -53,6 +65,7 @@ class ResetPasswordController extends AbstractController
             'lang'=> "pl",
             'title'=> "pl",
             'requestForm' => $form->createView(),
+            'theme'=>$this->theme
         ]);
     }
 
@@ -72,6 +85,7 @@ class ResetPasswordController extends AbstractController
             'lang'=>"pl",
             'title'=>"pl",
             'tokenLifetime' => $this->resetPasswordHelper->getTokenLifetime(),
+            'theme' => $this->theme,
         ]);
     }
 
@@ -133,6 +147,7 @@ class ResetPasswordController extends AbstractController
             'lang'=>"pl",
             'title'=>"pl",
             'resetForm' => $form->createView(),
+            'theme' => $this->theme
         ]);
     }
 

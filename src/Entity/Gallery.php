@@ -62,6 +62,7 @@ class Gallery
 
     /**
      * @ORM\OneToMany(targetEntity=GalleryPhotos::class, mappedBy="galleryId")
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $galleryPhotos;
 

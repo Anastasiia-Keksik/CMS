@@ -2,18 +2,48 @@
 
 namespace App\Controller;
 
+use App\Entity\Account;
+use App\Entity\GalleryAlbum;
 use App\Repository\GalleryAlbumRepository;
+use App\Repository\GalleryPhotosRepository;
 use App\Services\MainMenuService;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Entity;
+use Knp\Component\Pager\PaginatorInterface;
+use Psr\Container\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\AccountRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class GalleryController extends AbstractController
 {
+
+    private $theme;
+
+    public function __construct()
+    {
+        if (isset($_COOKIE["theme"])){
+
+            $this->theme = htmlspecialchars($_COOKIE["theme"]);
+
+        }else{
+
+            $this->theme = "#";
+
+        }
+    }
+
     /**
      * @Route("/{profile}/gallery", name="app_gallery")
      */
-    public function galleryShow($profile, AccountRepository $user, MainMenuService $mainMenuService)
+    public function galleryShow($profile, AccountRepository $user, MainMenuService $mainMenuService,
+                                GalleryPhotosRepository $galleryPhotosRepository, PaginatorInterface $paginator,
+                                Request $request, SessionInterface $session)
     {
         $zalogowanyUser = $this->getUser();
         if ($zalogowanyUser)
@@ -25,6 +55,13 @@ class GalleryController extends AbstractController
         $mainMenu = $mainMenuService->getMenu();
         $profile = $user->findOneBy(['username'=>$profile]);
         $gallery = $profile->getGallery();
+        $query = $galleryPhotosRepository->takePhotos($gallery->getId());
+
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            100 /*limit per page*/
+        );
         if($gallery)
         {
             $album=$gallery->getGalleryAlbums();
@@ -44,10 +81,11 @@ class GalleryController extends AbstractController
                 'MainMenu' => $mainMenu,
                 'error_msg' => 'This user does not exist.',
                 'middle_error_msg' => '',
-                'lower_error_msg' => '<a href="javascript:history.back();">Go Back!</a>'
+                'lower_error_msg' => '<a href="javascript:history.back();">Go Back!</a>',
+                'theme'=>$this->theme
             ]);
         }
-             return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/gallery/index.html.twig', [
+             return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/gallery/gallery_main.twig', [
                  'title'=>'title',
                  'lang'=>'pl',
                  'APP_NAME'=>$_SERVER['APP_NAME'],
@@ -56,15 +94,20 @@ class GalleryController extends AbstractController
                  'footer'=>$_SERVER['FOOTER'],
                  'pageName'=>"Gallery",
                  'profile'=>$profile,
+                 'user'=>$this->getUser(),
                  'username'=>$username,
                  'albums'=>$album,
+                 'gallery'=>$pagination,
+                 'theme'=>$this->theme
              ]);
         }
 
         /**
          * @Route("{profile}/gallery/album/{id}", name="app_gallery_album")
          */
-        public function galleryAlbumShow($profile, $id, GalleryAlbumRepository $album, MainMenuService $mainMenuService)
+        public function galleryAlbumShow($profile, $id, GalleryAlbumRepository $album, AccountRepository $user,
+                                         MainMenuService $mainMenuService, GalleryPhotosRepository $galleryPhotosRepository,
+                                         PaginatorInterface $paginator, Request $request)
         {
             $zalogowanyUser = $this->getUser();
             if ($zalogowanyUser)
@@ -77,6 +120,16 @@ class GalleryController extends AbstractController
 
             $album = $album->find($id);
 
+            $profile = $user->findOneBy(['username'=>$profile]);
+
+            $query = $galleryPhotosRepository->takeAlbumPhotos($album->getId());
+
+            $pagination = $paginator->paginate(
+                $query, /* query NOT result */
+                $request->query->getInt('page', 1), /*page number*/
+                100 /*limit per page*/
+            );
+
             return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/gallery/album.twig', [
                 'title'=>'title',
                 'lang'=>'pl',
@@ -87,7 +140,40 @@ class GalleryController extends AbstractController
                 'pageName'=>"Gallery",
                 'profile'=>$profile,
                 'username'=>$username,
-                'album'=>$album
+                'album'=>$album,
+                'user'=>$zalogowanyUser,
+                'zdjecia'=>$pagination,
+                'theme'=>$this->theme
             ]);
+        }
+
+        /**
+         * @Route("/gallery/makeAlbum", name="gallery_make_album")
+         * @Security("is_granted('ROLE_USER')")
+         */
+        public function makeAlbum(EntityManagerInterface $em, Request $request)
+        {
+            $gallery = new GalleryAlbum();
+            $gallery->setName($request->request->get('title'));
+            $gallery->setDescription($request->request->get('desc'));
+            $gallery->setCreatedAt(new \DateTime());
+            $gallery->setGallery($this->getUser()->getGallery());
+            $gallery->setPhotos(0);
+
+            $em->persist($gallery);
+            $em->flush();
+
+            return new RedirectResponse($this->generateUrl('app_gallery', ['profile'=>$this->getUser()->getUsername()]));
+        }
+
+        /**
+         * @Route("api/updateAlbum/{album}", name="update_Album")
+         * @Security("is_granted('ROLE_USER')")
+         */
+        public function updateAlbum(EntityManagerInterface $em, Request $request)
+        {
+            
+
+            return new RedirectResponse($this->generateUrl('app_gallery', ['profile'=>$this->getUser()->getUsername()]));
         }
 }

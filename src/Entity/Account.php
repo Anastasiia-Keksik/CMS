@@ -185,7 +185,7 @@ class Account implements UserInterface
     //END DODANE PRZEZE MNIE
 
     /**
-     * @ORM\OneToOne(targetEntity=UserPrivateForum::class, mappedBy="UserAdmin", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity=UserPrivateForum::class, mappedBy="UserAdmin", cascade={"persist", "remove"})
      */
     private $userPrivateForum;
 
@@ -244,6 +244,16 @@ class Account implements UserInterface
      */
     private $contacts_backward;
 
+    /**
+     * @ORM\OneToMany(targetEntity=PostsLikes::class, mappedBy="User")
+     */
+    private $postsLikes;
+
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private $themeDoL;
+
     public function __construct()
     {
         $this->mainMenuCategories = new ArrayCollection();
@@ -260,6 +270,8 @@ class Account implements UserInterface
         $this->socialPostComments = new ArrayCollection();
         $this->contacts = new ArrayCollection();
         $this->contacts_backward = new ArrayCollection();
+        $this->PostsLikes = new ArrayCollection();
+        $this->postsLikes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -1067,6 +1079,49 @@ class Account implements UserInterface
                 $contactsBackward->setAccountTargets(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PostsLikes[]
+     */
+    public function getPostsLikes(): Collection
+    {
+        return $this->postsLikes;
+    }
+
+    public function addPostsLike(PostsLikes $postsLike): self
+    {
+        if (!$this->postsLikes->contains($postsLike)) {
+            $this->postsLikes[] = $postsLike;
+            $postsLike->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostsLike(PostsLikes $postsLike): self
+    {
+        if ($this->postsLikes->contains($postsLike)) {
+            $this->postsLikes->removeElement($postsLike);
+            // set the owning side to null (unless already changed)
+            if ($postsLike->getUser() === $this) {
+                $postsLike->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getThemeDoL(): ?int
+    {
+        return $this->themeDoL;
+    }
+
+    public function setThemeDoL(?int $themeDoL): self
+    {
+        $this->themeDoL = $themeDoL;
 
         return $this;
     }

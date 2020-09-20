@@ -1,0 +1,318 @@
+{% extends 'smartadmin/base.html.twig' %}
+
+{% block content %}
+    <!-- BEGIN Page Content -->
+    <!-- the #js-page-content id is needed for some plugins to initialize -->
+    <main id="js-page-content" role="main" class="page-content">
+        <div class="">
+            <div class="w-100 d-flex justify-content-center">
+                <div class="w-100 bg-fusion-50" style="height: 321px; background: url('{{ asset('upload/comics/id/BG_FHD.jpg') }}'); background-repeat: repeat-x"></div>
+            </div>
+        </div>
+        <div class="" style="margin-top: -321px">
+            <div class="m-auto" style="width: 1200px">
+            <div class="d-flex position-relative justify-content-center align-middle w-100" style="height: 240px">
+                <img src="{{ asset('upload/comics/id/LOGO_FHD.png') }}" class="position-absolute mx-auto" style="top: 0px">
+                <div class="position-absolute" style="height: 50px; border: 0px solid red; bottom: 0px; right: 0px;">
+                    <a href="#" class="btn btn-icon rounded-circle btn-outline-default hover-highlight" style="background-color: #fff"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="btn btn-icon rounded-circle btn-outline-default hover-highlight" style="background-color: #fff"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="btn btn-icon rounded-circle btn-outline-default hover-highlight" style="background-color: #fff"><i class="fab fa-tumblr"></i></a>
+                    <a href="#" class="btn btn-icon rounded-circle btn-outline-default hover-highlight" style="background-color: #fff"><i class="fab fa-reddit"></i></a>
+                    <a href="#" class="btn btn-icon rounded-circle btn-outline-default hover-highlight" style="background-color: #fff"><i class="fas fa-copy"></i></a>
+                    <a href="#" class="btn btn-icon rounded-circle btn-outline-default hover-highlight" style="background-color: #fff"><i class="fas fa-rss"></i></a>
+                </div>
+                <div id="info" class="text-center m-auto">
+                    <h2 class="d-block" style="font-size: 20px; color: red;">Genre</h2>
+                    <h1 class="d-block text-white" style="font-size: 57px;">Title</h1>
+                    <img src="{{ asset('upload/avatars/'~profile.Username~'/'~profile.AvatarFileName)|imagine_filter('my_thumb') }}" class="d-block mx-auto rounded-circle shadow-5">
+                    <p class="d-block" style="font-size: 20px"></p>
+                </div>
+            </div>
+            <div class="d-flex shadow-5 w-100" style="background-color: white; height: 948px">
+                <div style="width: 803px; border-right: 1px #eeeeee solid">
+                    <ul class="mt-3" style="list-style-type: none; padding-left: 20px">
+                        <li id="episode_xx" class="hover-highlight fw-500 color-fusion-900 ">
+                            <img id="episode_xx_glimpse" src="{{ asset('upload/comics/id/e_id/glimpse.png') }}" width="77" height="73">
+                            <span style="display:inline-block; font-size: 17px"> #ID</span>
+                            <span style="display: inline-block; font-size: 17px; width:424px"> nazwa (muzyka)</span>
+                            <span style="display: inline-block; font-size: 14px; width:102px"> time ago</span>
+                            <span style="display: inline-block; font-size: 14px; width:76px"> [heart] likeów</span>
+                            <span style="display: inline-block; font-size: 16px; width:59px"> Cena</span>
+                        </li>
+                        <li id="episode_xx" class="hover-highlight fw-500 color-fusion-900 ">
+                            <img src="{{ asset('upload/comics/id/e_id/glimpse.png') }}" width="77" height="73">
+                            <span style="display:inline-block; font-size: 17px"> #ID</span>
+                            <span style="display: inline-block; font-size: 17px; width:424px"> nazwa (muzyka)</span>
+                            <span style="display: inline-block; font-size: 14px; width:102px"> time ago</span>
+                            <span style="display: inline-block; font-size: 14px; width:76px"> [heart] likeów</span>
+                            <span style="display: inline-block; font-size: 16px; width:59px"> Cena</span>
+                        </li>
+                        <li id="episode_xx" class="hover-highlight fw-500 color-fusion-900 ">
+                            <img src="{{ asset('upload/comics/id/e_id/glimpse.png') }}" width="77" height="73">
+                            <span style="display:inline-block; font-size: 17px"> #ID</span>
+                            <span style="display: inline-block; font-size: 17px; width:424px"> nazwa (muzyka)</span>
+                            <span style="display: inline-block; font-size: 14px; width:102px"> time ago</span>
+                            <span style="display: inline-block; font-size: 14px; width:76px"> [heart] likeów</span>
+                            <span style="display: inline-block; font-size: 16px; width:59px"> Cena</span>
+                        </li>
+                        <li id="episode_xx" class="hover-highlight fw-500 color-fusion-900 ">
+                            <img src="{{ asset('upload/comics/id/e_id/glimpse.png') }}" width="77" height="73">
+                            <span style="display:inline-block; font-size: 17px"> #ID</span>
+                            <span style="display: inline-block; font-size: 17px; width:424px"> nazwa (muzyka)</span>
+                            <span style="display: inline-block; font-size: 14px; width:102px"> time ago</span>
+                            <span style="display: inline-block; font-size: 14px; width:76px"> [heart] likeów</span>
+                            <span style="display: inline-block; font-size: 16px; width:59px"> Cena</span>
+                        </li>
+                        <li id="episode_xx" class="hover-highlight fw-500 color-fusion-900 ">
+                            <img src="{{ asset('upload/comics/id/e_id/glimpse.png') }}" width="77" height="73">
+                            <span style="display:inline-block; font-size: 17px"> #ID</span>
+                            <span style="display: inline-block; font-size: 17px; width:424px"> nazwa (muzyka)</span>
+                            <span style="display: inline-block; font-size: 14px; width:102px"> time ago</span>
+                            <span style="display: inline-block; font-size: 14px; width:76px"> [heart] likeów</span>
+                            <span style="display: inline-block; font-size: 16px; width:59px"> Cena</span>
+                        </li>
+                        <li id="episode_xx" class="hover-highlight fw-500 color-fusion-900 ">
+                            <img src="{{ asset('upload/comics/id/e_id/glimpse.png') }}" width="77" height="73">
+                            <span style="display:inline-block; font-size: 17px"> #ID</span>
+                            <span style="display: inline-block; font-size: 17px; width:424px"> nazwa (muzyka)</span>
+                            <span style="display: inline-block; font-size: 14px; width:102px"> time ago</span>
+                            <span style="display: inline-block; font-size: 14px; width:76px"> [heart] likeów</span>
+                            <span style="display: inline-block; font-size: 16px; width:59px"> Cena</span>
+                        </li>
+                        <li id="episode_xx" class="hover-highlight fw-500 color-fusion-900 ">
+                            <img src="{{ asset('upload/comics/id/e_id/glimpse.png') }}" width="77" height="73">
+                            <span style="display:inline-block; font-size: 17px"> #ID</span>
+                            <span style="display: inline-block; font-size: 17px; width:424px"> nazwa (muzyka)</span>
+                            <span style="display: inline-block; font-size: 14px; width:102px"> time ago</span>
+                            <span style="display: inline-block; font-size: 14px; width:76px"> [heart] likeów</span>
+                            <span style="display: inline-block; font-size: 16px; width:59px"> Cena</span>
+                        </li>
+                        <li id="episode_xx" class="hover-highlight fw-500 color-fusion-900 ">
+                            <img src="{{ asset('upload/comics/id/e_id/glimpse.png') }}" width="77" height="73">
+                            <span style="display:inline-block; font-size: 17px"> #ID</span>
+                            <span style="display: inline-block; font-size: 17px; width:424px"> nazwa (muzyka)</span>
+                            <span style="display: inline-block; font-size: 14px; width:102px"> time ago</span>
+                            <span style="display: inline-block; font-size: 14px; width:76px"> [heart] likeów</span>
+                            <span style="display: inline-block; font-size: 16px; width:59px"> Cena</span>
+                        </li>
+                        <li id="episode_xx" class="hover-highlight fw-500 color-fusion-900 ">
+                            <img src="{{ asset('upload/comics/id/e_id/glimpse.png') }}" width="77" height="73">
+                            <span style="display:inline-block; font-size: 17px"> #ID</span>
+                            <span style="display: inline-block; font-size: 17px; width:424px"> nazwa (muzyka)</span>
+                            <span style="display: inline-block; font-size: 14px; width:102px"> time ago</span>
+                            <span style="display: inline-block; font-size: 14px; width:76px"> [heart] likeów</span>
+                            <span style="display: inline-block; font-size: 16px; width:59px"> Cena</span>
+                        </li>
+                        <li id="episode_xx" class="hover-highlight fw-500 color-fusion-900 ">
+                            <img src="{{ asset('upload/comics/id/e_id/glimpse.png') }}" width="77" height="73">
+                            <span style="display:inline-block; font-size: 17px"> #ID</span>
+                            <span style="display: inline-block; font-size: 17px; width:424px"> nazwa (muzyka)</span>
+                            <span style="display: inline-block; font-size: 14px; width:102px"> time ago</span>
+                            <span style="display: inline-block; font-size: 14px; width:76px"> [heart] likeów</span>
+                            <span style="display: inline-block; font-size: 16px; width:59px"> Cena</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div style="width: 397px; background: url(https://webtoon-phinf.pstatic.net/20200912_215/1599857422742mVHOU_JPEG/210_EC8DB8EB84A4EC9DBC_ipad.jpg?type=a306) no-repeat 100% 100%;background-size:306px">
+                    <div class="m-6">
+                        <div class="mb-3">Subscribe | Rate</div>
+                        <div>
+                            <h1>EVERY THUEASDAY</h1>
+                            <p>
+                                Lorem Ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki. Pięć wieków później zaczął być używany przemyśle elektronicznym, pozostając praktycznie niezmienionym. Spopularyzował się w latach 60. XX w. wraz z publikacją arkuszy Letrasetu, zawierających fragmenty Lorem Ipsum, a ostatnio z zawierającym różne wersje Lorem Ipsum oprogramowaniem przeznaczonym do realizacji druków na komputerach osobistych, jak Aldus PageMaker
+                            </p>
+                        </div>
+                        <button class="btn mt-3 btn-dark w-100 btn-pills">Continue reading</button>
+                        <button class="btn mt-3 btn-dark w-100 btn-pills">First Episode</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </main>
+    <!-- this overlay is activated only when mobile menu is triggered -->
+    <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-solid.css') }}">
+    <style>
+        .page-wrapper{
+            padding-left: 0px !important;
+        }
+        html{
+            -webkit-box-sizing: unset !important;
+            box-sizing: unset !important;
+        }
+        ul li:first-child {
+            border-top: 1px #eeeeee solid;
+            border-bottom: 1px #eeeeee solid;
+        }
+        ul li {
+            border-bottom: 1px #eeeeee solid;
+        }
+    </style>
+{% endblock %}
+
+{#
+Variables:
+- navFooter (if enabled and Not false shows Navigation Footer (chat logs, support chat and make a call)
+#}
+{%  block leftMenu %}
+{#    {% include 'smartadmin/parts/leftMenu.html.twig' %}#}
+{% endblock %}
+
+{% block header %}
+    <header class="page-header" role="banner" style="height: 50px">
+        <!-- we need this logo when user switches to nav-function-top -->
+        <div class="page-logo">
+            <a href="#" class="page-logo-link press-scale-down d-flex align-items-center position-relative" data-toggle="modal" data-target="#modal-shortcut">
+                <img src="{{ asset('smartadmin/img/logo.png') }}" alt="SmartAdmin WebApp" aria-roledescription="logo">
+                <span class="page-logo-text mr-1">SmartAdmin WebApp</span>
+                <span class="position-absolute text-white opacity-50 small pos-top pos-right mr-2 mt-n2"></span>
+                <i class="fal fa-angle-down d-inline-block ml-1 fs-lg color-primary-300"></i>
+            </a>
+        </div>
+        <div class="search">
+            <form class="app-forms hidden-xs-down" role="search" action="page_search.html" autocomplete="off">
+                <input type="text" id="search-field" placeholder="Search for anything" class="form-control" tabindex="1">
+                <a href="#" onclick="return false;" class="btn-danger btn-search-close js-waves-off d-none" data-action="toggle" data-class="mobile-search-on">
+                    <i class="fal fa-times"></i>
+                </a>
+            </form>
+        </div>
+        <div class="ml-auto d-flex">
+            <!-- activate app search icon (mobile) -->
+            <div class="hidden-sm-up">
+                <a href="#" class="header-icon" data-action="toggle" data-class="mobile-search-on" data-focus="search-field" title="Search">
+                    <i class="fal fa-search"></i>
+                </a>
+            </div>
+            <!-- app publish -->
+            <div class="m-auto">
+                <button data-toggle="dropdown" title="" class="btn btn-outline-default btn-pills no-arrow dropdown-toggle px-5" aria-expanded="false" aria-haspopup="true">Publish</button>
+                <div class="dropdown-menu dropdown-menu-animated dropdown-lg">
+
+                    <div class="dropdown-divider m-0"></div>
+                    <div class="dropdown-multilevel dropdown-multilevel-left">
+                        <div class="dropdown-item">
+                            Some Comic Title
+                        </div>
+                        <div class="dropdown-menu">
+                            <a href="#?lang=fr" class="dropdown-item" data-action="lang" data-lang="fr">New Episode</a>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider m-0"></div>
+                    <a href="#" class="dropdown-item" data-action="app-reset">
+                        <span data-i18n="drpdwn.reset_layout">Comic</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-toggle="modal" data-target=".js-modal-settings">
+                        <span data-i18n="drpdwn.settings">Article</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-action="app-fullscreen">
+                        <span data-i18n="drpdwn.fullscreen">New Poem/Story or a Book</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-action="app-print">
+                        <span data-i18n="drpdwn.print">Photo</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-action="app-print">
+                        <span data-i18n="drpdwn.print">Social Post</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-action="app-print">
+                        <span data-i18n="drpdwn.print">Blog post</span>
+                    </a>
+                </div>
+            </div>
+            <!-- app message -->
+            {% include 'smartadmin/parts/message.html.twig' %}
+            <!-- app notification -->
+            {% include 'smartadmin/parts/notification.html.twig' %}
+            <!-- app shortcuts -->
+            {% include 'smartadmin/parts/shortcuts.html.twig' %}
+            <!-- app user menu -->
+            {% if is_granted("ROLE_USER") %}
+            <div>
+                <a href="#" data-toggle="dropdown" title="drlantern@gotbootstrap.com" class="header-icon d-flex align-items-center justify-content-center ml-2">
+                    <img src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}" class="profile-image mine-avatar rounded-circle" alt="Dr. Codex Lantern">
+                    <!-- you can also add username next to the avatar with the codes below:
+                    <span class="ml-1 mr-1 text-truncate text-truncate-header hidden-xs-down">Me</span>
+                    <i class="ni ni-chevron-down hidden-xs-down"></i> -->
+                </a>
+                <div class="dropdown-menu dropdown-menu-animated dropdown-lg">
+                    <a href="{{path('app_profile', {'profile':user.Username})}}">
+                        <div class="dropdown-header bg-trans-gradient d-flex flex-row py-4 rounded-top">
+                            <div class="d-flex flex-row align-items-center mt-1 mb-1 color-white">
+                                            <span class="mr-2">
+                                                <img src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}" class="rounded-circle profile-image" alt="Dr. Codex Lantern">
+                                            </span>
+                                <div class="info-card-text">
+                                    <div class="fs-lg text-truncate text-truncate-lg">{{ user.Username }}</div>
+                                    <span class="text-truncate text-truncate-md opacity-80">{{ user.email }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider m-0"></div>
+                    <a href="#" class="dropdown-item" data-action="app-reset">
+                        <span data-i18n="drpdwn.reset_layout">Reset Layout</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-toggle="modal" data-target=".js-modal-settings">
+                        <span data-i18n="drpdwn.settings">Settings</span>
+                    </a>
+                    <div class="dropdown-divider m-0"></div>
+                    <a href="#" class="dropdown-item" data-action="app-fullscreen">
+                        <span data-i18n="drpdwn.fullscreen">Fullscreen</span>
+                        <i class="float-right text-muted fw-n">F11</i>
+                    </a>
+                    <a href="#" class="dropdown-item" data-action="app-print">
+                        <span data-i18n="drpdwn.print">Print</span>
+                        <i class="float-right text-muted fw-n">Ctrl + P</i>
+                    </a>
+                    <div class="dropdown-multilevel dropdown-multilevel-left">
+                        <div class="dropdown-item">
+                            Language
+                        </div>
+                        <div class="dropdown-menu">
+                            <a href="#?lang=fr" class="dropdown-item" data-action="lang" data-lang="fr">Français</a>
+                            <a href="#?lang=en" class="dropdown-item active" data-action="lang" data-lang="en">English (US)</a>
+                            <a href="#?lang=es" class="dropdown-item" data-action="lang" data-lang="es">Español</a>
+                            <a href="#?lang=ru" class="dropdown-item" data-action="lang" data-lang="ru">Русский язык</a>
+                            <a href="#?lang=jp" class="dropdown-item" data-action="lang" data-lang="jp">日本語</a>
+                            <a href="#?lang=ch" class="dropdown-item" data-action="lang" data-lang="ch">中文</a>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider m-0"></div>
+                    <a class="dropdown-item fw-500 pt-3 pb-3" href="{{ path('app_logout') }}">
+                        <span data-i18n="drpdwn.page-logout">Logout</span>
+                        <span class="float-right fw-n d-none">{{ user.Username }}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </header>
+{% endblock %}
+
+{% block footer %}
+    {% include 'smartadmin/parts/footer.twig' %}
+{%  endblock %}
+
+{% block quickmenu %}
+{% endblock %}
+
+{% block messenger %}
+{% endblock %}
+
+{% block pagesettings %}
+    {% include 'smartadmin/parts/pagesettings.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        initApp.pushSettings("layout-composed", true);
+        initApp.pushSettings("nav-function-hidden", false);
+    </script>
+{% endblock %}

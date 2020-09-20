@@ -5050,9 +5050,17 @@ a.text-blur {
   .layout-composed .page-content .page-breadcrumb,
   .layout-composed .page-content .subheader {
     display: none; }
-  .layout-composed .page-content .profile .composed-top {
+  .layout-composed .page-content .composed-top {
     border-top-left-radius: 0px !important;
     border-top-right-radius: 0px !important;
+  }
+  .layout-composed .page-content .composed-left {
+    border-top-left-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+  }
+  .layout-composed .page-content .composed-right {
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
   }
 
 

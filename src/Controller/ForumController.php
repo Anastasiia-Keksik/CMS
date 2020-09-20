@@ -18,7 +18,20 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ForumController extends AbstractController
 {
+    private $theme;
 
+    public function __construct()
+    {
+        if (isset($_COOKIE["theme"])){
+
+            $this->theme = htmlspecialchars($_COOKIE["theme"]);
+
+        }else{
+
+            $this->theme = "#";
+
+        }
+    }
 
     /**
      * @Route("/forum", name="app_forum")
@@ -37,7 +50,8 @@ class ForumController extends AbstractController
             'footer'=>$_SERVER['FOOTER'],
             'pageName'=>"Forum",
             'MainMenu' => $mainMenu,
-            'categories'=>$categories
+            'categories'=>$categories,
+            'theme'=>$this->theme,
         ]);
     }
 
@@ -81,6 +95,7 @@ class ForumController extends AbstractController
             'pageName'=>"Forum",
             'MainMenu' => $mainMenu,
             'categories' => $categories,
+            'theme'=>$this->theme
         ]);
     }
 
@@ -111,6 +126,7 @@ class ForumController extends AbstractController
                     'footer'=>$_SERVER['FOOTER'],
                     'pageName'=>"Forum",
                     'MainMenu' => $mainMenu,
+                    'theme'=>$this->theme
                 ]);
             }
         }else{
@@ -128,8 +144,7 @@ class ForumController extends AbstractController
             'footer'=>$_SERVER['FOOTER'],
             'pageName'=>"Forum",
             'MainMenu' => $mainMenu,
+            'theme'=>$this->theme
         ]);
     }
-
-
 }

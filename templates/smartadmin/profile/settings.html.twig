@@ -19,6 +19,136 @@
                     </div>
                 {% endfor %}
 
+                <div class="accordion" id="accordionExample">
+                    <div class="card">
+                        <div class="card-header" id="headingOne">
+                            <a href="javascript:void(0);" class="card-title" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                Upload avatar
+                            </a>
+                        </div>
+                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                            <div class="card-body">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <!-- <h3>Preview:</h3> -->
+                                            <div class="docs-preview clearfix">
+                                                <div class="img-preview preview-lg rounded-circle shadow-5"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <!-- <h3>Demo:</h3> -->
+                                            <div class="img-container d-block">
+                                                <img id="image" src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName) }}" alt="Picture">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 docs-buttons">
+                                            <!-- <h3>Toolbar:</h3> -->
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-primary" data-method="zoom" data-option="0.1" title="Zoom In">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;zoom&quot;, 0.1)">
+                                                                    <span class="fas fa-search-plus"></span>
+                                                                </span>
+                                                </button>
+                                                <button type="button" class="btn btn-primary" data-method="zoom" data-option="-0.1" title="Zoom Out">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;zoom&quot;, -0.1)">
+                                                                    <span class="fas fa-search-minus"></span>
+                                                                </span>
+                                                </button>
+                                            </div>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-primary" data-method="move" data-option="-10" data-second-option="0" title="Move Left">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;move&quot;, -10, 0)">
+                                                                    <span class="fas fa-arrow-left"></span>
+                                                                </span>
+                                                </button>
+                                                <button type="button" class="btn btn-primary" data-method="move" data-option="10" data-second-option="0" title="Move Right">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;move&quot;, 10, 0)">
+                                                                    <span class="fas fa-arrow-right"></span>
+                                                                </span>
+                                                </button>
+                                                <button type="button" class="btn btn-primary" data-method="move" data-option="0" data-second-option="-10" title="Move Up">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;move&quot;, 0, -10)">
+                                                                    <span class="fas fa-arrow-up"></span>
+                                                                </span>
+                                                </button>
+                                                <button type="button" class="btn btn-primary" data-method="move" data-option="0" data-second-option="10" title="Move Down">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;move&quot;, 0, 10)">
+                                                                    <span class="fas fa-arrow-down"></span>
+                                                                </span>
+                                                </button>
+                                            </div>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-primary" data-method="rotate" data-option="-45" title="Rotate Left">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;rotate&quot;, -45)">
+                                                                    <span class="fas fa-undo"></span>
+                                                                </span>
+                                                </button>
+                                                <button type="button" class="btn btn-primary" data-method="rotate" data-option="45" title="Rotate Right">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;rotate&quot;, 45)">
+                                                                    <span class="fas fa-redo"></span>
+                                                                </span>
+                                                </button>
+                                            </div>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-primary" data-method="scaleX" data-option="-1" title="Flip Horizontal">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="Flip: HORIZONTALY">
+                                                                    <span class="fas fa-arrows-h"></span>
+                                                                </span>
+                                                </button>
+                                                <button type="button" class="btn btn-primary" data-method="scaleY" data-option="-1" title="Flip Vertical">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="Flip: VERTICLY">
+                                                                    <span class="fal fa-arrows-v"></span>
+                                                                </span>
+                                                </button>
+                                            </div>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-primary" data-method="setDragMode" data-option="move" title="Move">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;setDragMode&quot;, &quot;move&quot;)">
+                                                                    <span class="fas fa-arrows"></span>
+                                                                </span>
+                                                </button>
+                                                <button type="button" class="btn btn-primary" data-method="setDragMode" data-option="crop" title="Crop">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;setDragMode&quot;, &quot;crop&quot;)">
+                                                                    <span class="fas fa-crop"></span>
+                                                                </span>
+                                                </button>
+                                            </div>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-primary" data-method="reset" title="Reset">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;reset&quot;)">
+                                                                    <span class="fas fa-sync"></span>
+                                                                </span>
+                                                </button>
+                                                <label class="btn btn-primary btn-upload" for="inputImage2" title="Upload image file">
+                                                    <input type="file" class="sr-only" id="inputImage2" name="file" accept=".jpg,.jpeg,.png,.gif,.bmp,.tiff">
+                                                    <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="Import image with Blob URLs">
+                                                                    <span class="fas fa-image mr-1"></span> Upload
+                                                                </span>
+                                                </label>
+                                            </div>
+                                            <div class="btn-group btn-group-crop">
+                                                <button type="button" class="btn btn-success" data-method="getCroppedCanvas" data-option="{ &quot;maxWidth&quot;: 4096, &quot;maxHeight&quot;: 4096 }">
+                                                                <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="Crop & Save">
+                                                                    CROP & SAVE
+                                                                </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- /.docs-buttons -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+
                 <form action="changePassword" method="post">
                     <fieldset disabled>
                         <div class="form-group">
@@ -328,13 +458,6 @@
                             </optgroup>
                         </select>
                     </div>
-                    <div class="form-group mb-0">
-                        <label class="form-label">Upload Avatar</label>
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="AvatarFile" name="AvatarFile">
-                            <label class="custom-file-label" for="AvatarFile">Choose file</label>
-                        </div>
-                    </div><br>
 
                     <div class="form-group mb-0">
                         <div class="row">
@@ -380,8 +503,6 @@
                     </div>
 
 
-
-
                     <div class="form-group">
                         <br>
                         <button type="submit" class="btn btn-default float-right">Change Credentials</button>
@@ -389,6 +510,14 @@
                     </div>
 
                 </form>
+
+{#                <div class="form-group mb-0">#}
+{#                    <label class="form-label">Upload Avatar</label>#}
+{#                    <div class="custom-file">#}
+{#                        <input type="file" class="custom-file-input" id="AvatarFile" name="AvatarFile" accept="image/jpeg,image/jpg,image/gif,image/png">#}
+{#                        <label class="custom-file-label" for="AvatarFile">Choose file</label>#}
+{#                    </div>#}
+{#                </div>#}
             </div>
         </div>
     </div>

@@ -17,7 +17,12 @@ class AppExtension extends AbstractExtension
             new TwigFilter('csort', function ($trav, array $options = []) {
                 return $this->customSort($trav, $options);
             }, ['is_variadic' => true]),
+            new TwigFilter('ceil', [$this, 'ceil'], ['is_safe' => ['html']])
         ];
+    }
+
+    public function ceil($value){
+        return round($value, PHP_ROUND_HALF_UP);
     }
 
     public function customSort($array, $options)

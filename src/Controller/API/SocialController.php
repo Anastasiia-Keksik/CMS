@@ -5,6 +5,7 @@ namespace App\Controller\API;
 use App\Entity\SocialPostComment;
 use App\Form\ChoseMenuCategoryFormType;
 use App\Form\MakeNewRouteFormType;
+use App\Repository\AccountRepository;
 use App\Repository\SocialPostRepository;
 use App\Repository\SocialPost;
 use App\Repository\SocialPostCommentRepository;
@@ -33,19 +34,23 @@ class SocialController extends AbstractController
      * @Route("/api/get_social_posts", name="api_app_getSocialPosts")
      * @IsGranted("ROLE_USER")
      */
-    public function showUsers(LoggerInterface $logger, Request $request, SocialPostRepository $socialPostRepository, SocialPostCommentRepository $underCommentsRepo)
+    public function showUsers(LoggerInterface $logger, Request $request, SocialPostRepository $socialPostRepository,
+                              SocialPostCommentRepository $underCommentsRepo, AccountRepository $accountRepository)
     {
        //TODO: check if user who sees it (pobiera to) have dostep do tego (not black listed, friend etc)
         $id = $request->request->get('profile');
+        $profile = $accountRepository->find($id);
         //$id = $request->query->get('profile');
 
-        $socialPosts = $socialPostRepository->loadNewPosts($id);
+        $socialPosts = $socialPostRepository->loadNewPostsOffset($id, $request->request->get('offset'));
         
         $posts = [];
         $postsIt=0;
 
         foreach ($socialPosts as $post){
-            if($post->getSoftDelete()==false)            {
+            if($post->getSoftDelete()==false){
+                $comments_length = $underCommentsRepo->countAllComments($post->getId());
+                $main_comments_length = $underCommentsRepo->countMainComments($post->getId());
                 $posts[$postsIt] = [
                     'Id'=>$post->getId(),
                     'Content'=>$post->getContent(),
@@ -59,6 +64,8 @@ class SocialController extends AbstractController
                     'modifiedAt'=>$post->getModifiedAt(),
                     'Likes'=>$post->getLikes(),
                     'Comments'=>[],
+                    'Comments_length'=>$comments_length[0]['1'],
+                    'MainCommentsLength'=>$main_comments_length[0]['1'],
                     'BGFilename' => $post->getBackgroundFilename()
                 ];
                 $commentIt=0;
@@ -105,7 +112,9 @@ class SocialController extends AbstractController
             return new JsonResponse(['status'=>"empty"]);
         }
         return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/api_loadPost.html.twig",[
-            'posts'=>$posts
+            'posts'=>$posts,
+            'profile'=>$profile,
+            'user'=>$this->getUser()
         ]);
     }
 

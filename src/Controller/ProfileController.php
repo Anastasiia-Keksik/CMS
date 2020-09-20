@@ -4,15 +4,21 @@
 namespace App\Controller;
 
 use App\Entity\Account;
+use App\Entity\GalleryPhotos;
 use App\Entity\SocialPost;
 use App\Entity\SocialPostComment;
 use App\Repository\AccountRepository;
 use App\Repository\ContactRepository;
+use App\Repository\GalleryPhotosRepository;
 use App\Repository\ProfileDesignSettingsRepository;
 use App\Repository\SocialPostRepository;
+use App\Repository\UserForumPostRepository;
+use App\Repository\UserPrivateForumRepository;
 use App\Services\MainMenuService;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,8 +28,24 @@ use Intervention\Image\ImageManager;
 
 class ProfileController extends AbstractController
 {
+    private $theme;
+
+    public function __construct()
+    {
+        if (isset($_COOKIE["theme"])){
+
+            $this->theme = $_COOKIE["theme"];
+
+        }else{
+
+            $this->theme = "#";
+
+        }
+    }
+
     /**
      * @Route("/sendNewPost", name="app_sendNewPost")
+     * @Security("is_granted('ROLE_USER')")
      */
     public function sendNewPost(Request $request, EntityManagerInterface $em)
     {
@@ -74,19 +96,17 @@ class ProfileController extends AbstractController
                     if ($width > 1920){
                         $width = 1920;
                         $height = ceil($height * (1920/$width));
-                        dump($ratio);
                     }
                 }elseif($height > $width) {
                     if ($height > 1080){
                         $width = ceil($width * (1080/$height));
                         $height = 1080;
                     }
-                    dump(2);
                 }else{
                     if ($width > 1920){
                         $width = 1920;
                         $height = 1920;
-                    }dump(3);
+                    }
                 }
 
                 $img->resize($width, $height);
@@ -107,168 +127,26 @@ class ProfileController extends AbstractController
 
     /**
      * @Route("/profile", name="app_main_profile")
+     * @Security("is_granted('ROLE_USER')")
      */
-    public function viewMineProfile(EntityManagerInterface $em, MainMenuService $mainMenuService,
-                                    Request $request, SocialPostCommentRepository $underCommentsRepo,
-                                    SocialPostRepository $postRepo, ProfileDesignSettingsRepository $pdsr,
-                                    ContactRepository $contactRepo, AccountRepository $accRepo)
+    public function viewMineProfile()
     {
-        $mainMenu = $mainMenuService->getMenu();
-        /** @var Account $profile */
-        $profile = $this->getUser();
-       // $profile -> getUsername();
-        $user = $profile;
-        $design = $pdsr->find($profile);
-
-        $tab = !empty($request->query->get('tab')) ? $request->query->get('tab') : "profile";
-        
-        $posts = [];
-        $postsIt=0;
-
-        $csrf = $request->request->get('csrf_token');
-
-        if ($request->request->get('NewSocialPost') == ""){
-            //todo: validation if empty post
-        }
-        //check if token is valid and if post is not null
-        if ($this->isCsrfTokenValid('newpost', $csrf))
-        {
-            $csrf = $request->request->get('wallpaper');
-
-            $SP = new SocialPost();
-            $SP -> setContent($request->request->get('NewSocialPost'));
-            $SP -> setAccount($user);
-            $SP -> setCreatedAt(new \DateTime());
-            $SP -> setSoftDelete('0');
-            $SP -> setLikes('0');
-            if ($request->request->get('wallpaper'))
-            {
-
-                $data = explode(',', $request->request->get('wallpaper'));
-                $contentFile = base64_decode($data[1]);
-                //dd($data);
-
-                $destination = $this->getParameter('kernel.project_dir')."/public/upload/social/BackGrounds/".$user->getUsername();
-                $newFilename = uniqid().'.'.$request->request->get('wallpaperExt');
-
-                if(!file_exists($destination))
-                {
-                    mkdir($destination);
-                }
-
-                $file = fopen($destination.'/'.$newFilename, "wb");
-                fwrite($file, $contentFile);
-                fclose($file);
-
-                $SP -> setBackgroundFilename($newFilename);
-            }else{
-                //invalid token
-            }
-
-            $em->persist($SP);
-            $em->flush();
-        }
-
-        $socialPosts = $postRepo->loadNewPosts($user->getId());
-
-        foreach ($socialPosts as $post) {
-            if ($post->getSoftDelete() == false) {
-                $comments_length = $underCommentsRepo->countAllComments($post->getId());
-                $main_comments_length = $underCommentsRepo->countMainComments($post->getId());
-                $posts[$postsIt] = [
-                    'Id' => $post->getId(),
-                    'Content' => $post->getContent(),
-                    'Author' => $post->getAccount()->getId(),
-                    'AuthorUsername' => $post->getAccount()->getUsername(),
-                    'AuthorFirstName' => $post->getAccount()->getFirstName(),
-                    'AuthorLastName' => $post->getAccount()->getLastName(),
-                    'AuthorAvatarFileName' => $post->getAccount()->getAvatarFileName(),
-                    'AuthorOccupation' => $post->getAccount()->getOccupation(),
-                    'createdAt' => $post->getCreatedAt(),
-                    'modifiedAt' => $post->getModifiedAt(),
-                    'Likes' => $post->getLikes(),
-                    'Comments' => [],
-                    'Comments_length'=>$comments_length[0]['1'],
-                    'MainCommentsLength'=>$main_comments_length[0]['1'],
-                    'BGFilename' => $post->getBackgroundFilename()
-                ];
-                $commentIt = 0;
-                $comments = $underCommentsRepo->findNewestComments($post->getId() ,'3');
-                foreach($comments as $comment){
-                    if ($comment->getSoftDelete() == false and $comment->getUnderAnotherComment() == null) {
-                        array_push($posts[$postsIt]['Comments'], [
-                            'Id' => $comment->getId(),
-                            'Content' => $comment->getContent(),
-                            'Author' => $comment->getAuthor()->getId(),
-                            'AuthorUsername' => $comment->getAuthor()->getUsername(),
-                            'AuthorFirstName' => $comment->getAuthor()->getFirstName(),
-                            'AuthorLastName' => $comment->getAuthor()->getLastName(),
-                            'AuthorAvatarFileName' => $comment->getAuthor()->getAvatarFileName(),
-                            'createdAt' => $comment->getCreatedAt(),
-                            'modifiedAt' => $comment->getModifiedAt(),
-                            'CommentConversation' => []
-                        ]);
-
-                        $underComments = $underCommentsRepo->findBy(['underAnotherComment' => $comment->getId()]);
-                        foreach ($underComments as $underComment) {
-                            array_push($posts[$postsIt]['Comments'][$commentIt]['CommentConversation'], [
-                                'Id' => $underComment->getId(),
-                                'Content' => $underComment->getContent(),
-                                'Author' => $underComment->getAuthor()->getId(),
-                                'AuthorUsername' => $underComment->getAuthor()->getUsername(),
-                                'AuthorFirstName' => $underComment->getAuthor()->getFirstName(),
-                                'AuthorLastName' => $underComment->getAuthor()->getLastName(),
-                                'AuthorAvatarFileName' => $underComment->getAuthor()->getAvatarFileName(),
-                                'createdAt' => $underComment->getCreatedAt(),
-                                'modifiedAt' => $underComment->getModifiedAt()
-                            ]);
-                        }
-                    }
-                    $commentIt++;
-                }
-                $postsIt++;
-            }
-        }
-
-        $contacts = $contactRepo->findContacts($profile->getId());
-        $contactProfile = [];
-
-        $i = 0;
-        foreach ($contacts as $contact){
-            $contactProfile[$i] = $accRepo->find($contact['contact']);//TODO: zrobic wyspecjalizowane wyszukiwanie bez zbednych informacji, sam username i avatar
-            $i++;
-        }
-
-        return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/blank.html.twig",[
-            'title'=>'title',
-            'lang'=>'pl',
-            'APP_NAME'=>$_SERVER['APP_NAME'],
-            'logoSite'=>$_SERVER['SHOW_LOGO'],
-            'navFooter'=>$_SERVER['NAV_FOOTER'],
-            'footer'=>$_SERVER['FOOTER'],
-            'pageName'=>"Profile",
-            'MainMenu' => $mainMenu,
-            'profile'=>$profile,
-            'user'=>$user,
-            'tab'=> $tab,
-            'posts'=>$posts,
-            'design'=>$design,
-            'Contacts'=>$contactProfile,
-        ]);
+        return new RedirectResponse($this->generateUrl('app_profile', ['profile'=>$this->getUser()->getUsername()]));
     }
 
     /**
      * @Route("/profile/{profile}", name="app_profile")
+     * @Security("is_granted('ROLE_USER')")
      */
     public function viewProfile($profile, EntityManagerInterface $entityManager, MainMenuService $mainMenuService,
                                 Request $request, SocialPostCommentRepository $underCommentsRepo,
                                 ProfileDesignSettingsRepository $pdsr, SocialPostRepository $postRepository, ContactRepository $contactRepo,
-                                AccountRepository $accRepo)
+                                AccountRepository $accRepo, GalleryPhotosRepository $galleryPhotosRepository,
+                                UserPrivateForumRepository $forumRepository)
     {
         $mainMenu = $mainMenuService->getMenu();
         $repository = $entityManager->getRepository(Account::class);
 
-        //$userCredentials = $repository->takeUser($profile);
         $userCredentials = $repository->findOneBy(['username' => $profile]);
         $user = $this->getUser();
 
@@ -280,7 +158,9 @@ class ProfileController extends AbstractController
         }
         $tab = !empty($request->query->get('tab')) ? $request->query->get('tab') : "profile";
 
-            $socialPosts = $postRepository->loadNewPosts($userCredentials->getId());
+        $photos = $galleryPhotosRepository->findLast9($userCredentials->getGallery()->getId());
+
+        $socialPosts = $postRepository->loadNewPosts($userCredentials->getId());
         
         $posts = [];
         $postsIt=0;
@@ -355,6 +235,8 @@ class ProfileController extends AbstractController
         }
         //dd($contactProfile);
 
+        $forum = $forumRepository->findOneBy(['UserAdmin'=>$userCredentials, 'softDelete'=>0]);
+
         return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/blank.html.twig",[
             'title'=>'title',
             'lang'=>'pl',
@@ -370,12 +252,16 @@ class ProfileController extends AbstractController
             'posts'=>$posts,
             'design'=>$design,
             'Contacts'=>$contactProfile,
+            'gallery'=>$photos,
+            'SOCIAL_POSTS'=>$_SERVER['SOCIAL_POSTS'],
+            'theme'=>$this->theme,
+            'forum'=>$forum
         ]);
     }
 
     /**
      * @Route("/api/uploadWallpaper/{user}", name="api-upload-wallpaper")
-     * @IsGranted("ROLE_USER")
+     * @Security("is_granted('ROLE_USER')")
      */
     public function uploadWallpaper(Request $request){
         $file  = $request->files->get('wallpaper');
@@ -395,7 +281,7 @@ class ProfileController extends AbstractController
 
     /**
      * @Route("/addCommentToPost/{id}", name="app_addComment")
-     * @IsGranted("ROLE_USER")
+     * @Security("is_granted('ROLE_USER')")
      */
     public function addComment(Request $request, SocialPost $id, EntityManagerInterface $em){
         $token = $request->request->get('_token');
@@ -426,7 +312,7 @@ class ProfileController extends AbstractController
 
     /**
      * @Route("/addLike", name="app_addLike")
-     * @IsGranted("ROLE_USER")
+     * @Security("is_granted('ROLE_USER')")
      */
     public function likes(Request $request, SocialPostRepository $postRepository,EntityManagerInterface $em)
     {

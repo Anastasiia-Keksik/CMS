@@ -15,7 +15,7 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
     </title>
     <meta name="description" content="Page Title">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no, user-scalable=no, minimal-ui">
     <!-- Call App Mode on ios devices -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <!-- Remove Tap Highlight on Windows Phone IE -->
@@ -24,9 +24,9 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
     {% block stylesheets %}
         <link id="vendorsbundle" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/vendors.bundle.css') }}">
         <link id="appbundle" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/app.bundle.css') }}">
-        <link id="mytheme" rel="stylesheet" media="screen, print" href="#">
         <link id="myskin" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/skins/skin-master.css') }}">
         <link id="stingcss" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/stingcms.css') }}">
+        <link id="mytheme" rel="stylesheet" media="screen, print" href="{{ asset(theme) }}">
     {% endblock %}
 
     <!-- Place favicon.ico in the root directory -->
@@ -212,6 +212,40 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
 {% block javascripts %}
     <script src="{{ asset('smartadmin/js/vendors.bundle.js') }}"></script>
     <script src="{{ asset('smartadmin/js/app.bundle.js') }}"></script>
+    <script>
+         function usunModal()
+        {
+
+            carouselItems = document.getElementsByClassName("carousel-item");
+
+            for( i = 0; i < carouselItems.length; i++){
+                if(carouselItems[i].classList.contains('active')){
+                    carouselItems[i].classList.remove('active');
+                }
+            }
+        }
+    </script>
+    <script>
+        //CHECK FOR DARK THEME SETTINGS
+        function DarkLightPrimeThemeOption(theme){
+            $.ajax('{{ path('api_setTheme') }}', {
+                method: "POST",
+                data: {
+                    'teheme' : theme
+                },
+                processData: false,
+                contentType: false,
+                success: function () {
+                    console.log('theme changed');
+                },
+                error: function () {
+                    console.log('theme changing error');
+                }
+            });
+
+            console.log('co jest');
+        }
+    </script>
 {% endblock %}
 <!--This page contains the basic JS and CSS files to get started on your project. If you need aditional addon's or plugins please see scripts located at the bottom of each page in order to find out which JS/CSS files to add.-->
 </body>

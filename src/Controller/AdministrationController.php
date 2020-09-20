@@ -27,6 +27,21 @@ use App\Repository\UserForumTopicRepository;
  */
 class AdministrationController extends AbstractController
 {
+    private $theme;
+
+    public function __construct()
+    {
+        if (isset($_COOKIE["theme"])){
+
+            $this->theme = htmlspecialchars($_COOKIE["theme"]);
+
+        }else{
+
+            $this->theme = "#";
+
+        }
+    }
+
     /**
      * @Route("/administration", name="administration")
      * @IsGranted("ROLE_ADMIN")
@@ -37,8 +52,7 @@ class AdministrationController extends AbstractController
                                    ForumTopicRepository $forumTopicRepository,
                                    UserForumPostRepository $userForumPostRepository,
                                    UserForumTopicRepository $userForumTopicRepository,
-                                   Request $request, MainMenuChildRepository $childRepository,
-                                   MainMenuCategoryRepository $mainMenuCategoryRepository)
+                                   Request $request, MainMenuChildRepository $childRepository)
     {
         if($request->query->get('routeid')){
             $object = $childRepository->find($request->query->get('routeid'));
@@ -96,6 +110,7 @@ class AdministrationController extends AbstractController
             'lastPrivateTopics'=>$lastPrivateTopics,
             'something'=>null,
             'user' => $user,
+            'theme'=>$this->theme
         ]);
     }
 

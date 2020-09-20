@@ -22,7 +22,6 @@ class UserForumPostRepository extends ServiceEntityRepository
     /**
      * @return UserForumPost[] Returns an array of ForumTopic objects
      */
-
     public function findLast10()
     {
         return $this->createQueryBuilder('f')
@@ -31,6 +30,57 @@ class UserForumPostRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    /**
+     * @return UserForumPost[] Returns an array of ForumTopic objects
+     */
+    public function findPostsForThreadWithPagination($topicid)
+    {
+        return $this->createQueryBuilder('p')
+        ->where('p.ForumTopic = :topic')
+        ->setParameter('topic', $topicid)
+        ->addOrderBy('p.createdAt', 'ASC')
+        ;
+    }
+
+    /**
+     * @return UserForumPost[] Returns an array of ForumTopic objects
+     */
+    public function findPostsMinePagination($topicid, $pageid = 0, $postsAmount = 10)
+    {
+        $offset = $pageid * $postsAmount;
+
+        return $this->createQueryBuilder('p')
+        ->where('p.ForumTopic = :topic')
+        ->setParameter('topic', $topicid)
+        ->addOrderBy('p.createdAt', 'ASC')
+        ->setMaxResults($postsAmount)
+        ->setFirstResult($offset)
+        ->getQuery()
+        ->getResult()
+        ;
+    }
+
+    public function threadPostsCount($threadid){
+        return $this->createQueryBuilder('c')
+            ->select('COUNT(\'id\')')
+            ->where('c.ForumTopic = :thread')
+            ->setParameter('thread', $threadid)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
+    public function lastPost($forumid){
+        return $this->createQueryBuilder('c')
+            ->join('c.ForumTopic', 'topic', 'WITH', 'topic.forum = :forum')
+            ->setParameter('forum', $forumid)
+            ->orderBy('c.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
     }
 //     /**
 //      * @return UserForumPost[] Returns an array of ForumPost objects

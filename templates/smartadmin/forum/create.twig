@@ -1,0 +1,101 @@
+{% extends 'smartadmin/base.html.twig' %}
+
+{% block content %}
+    <!-- BEGIN Page Content -->
+    <!-- the #js-page-content id is needed for some plugins to initialize -->
+    <main id="js-page-content" role="main" class="page-content">
+        <ol class="breadcrumb page-breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0);">SmartAdmin</a></li>
+            <li class="breadcrumb-item">Application Intel</li>
+            <li class="breadcrumb-item active">Privacy</li>
+            <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
+        </ol>
+        <div class="subheader">
+            <h1 class="subheader-title">
+                <i class='fal fa-info-circle'></i> Privacy
+                <small>
+                    SmartAdmin Privacy
+                </small>
+            </h1>
+        </div>
+        <div class="">
+            <div class="m-0">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        {% if active == true %}
+                        <h2>You can't Create New Forum while, another one is active!</h2>
+                        {% else %}
+                            {% for message in app.flashes('error') %}
+                                <div class="alert alert-danger alert-dismissible fade show">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        <form method="post">
+                            <div class="form-group">
+                                <label>
+                                    Forum Name
+                                </label>
+                                <input type="text" name="forumName" class="form-control" placeholder="My Greatest Forum Name" value="{{ forumName }}">
+                                <label class="mt-3">
+                                    Forum Description
+                                </label>
+                                <input type="text" name="forumDesc" class="form-control" placeholder="My forum is about..." value="{{ forumDesc }}">
+                                <label class="mt-3">
+                                    Password
+                                </label>
+                                <input type="text" name="password" class="form-control" placeholder="********">
+                                <small>Should this forum be restricted by a password? If you want forum to be open for everyone, leave it blank.</small><br>
+                                <button class="btn btn-dark mt-3">Create</button>
+
+                                <input type="hidden" name="_token" value="{{ csrf_token('createForum') }}">
+                            </div>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- this overlay is activated only when mobile menu is triggered -->
+    <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-regular.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-solid.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-brands.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-duotone.css') }}">
+{% endblock %}
+
+{#
+Variables:
+- navFooter (if enabled and Not false shows Navigation Footer (chat logs, support chat and make a call)
+#}
+{%  block leftMenu %}
+    {% include 'smartadmin/parts/leftMenu.html.twig' %}
+{% endblock %}
+
+{% block header %}
+    {% include 'smartadmin/parts/header.html.twig' %}
+{% endblock %}
+
+{% block footer %}
+    {% include 'smartadmin/parts/footer.twig' %}
+{%  endblock %}
+
+{% block quickmenu %}
+    {% include 'smartadmin/parts/quickmenu.twig' %}
+{% endblock %}
+
+{% block messenger %}
+    {% include 'smartadmin/parts/chat.twig' %}
+{% endblock %}
+
+{% block pagesettings %}
+    {% include 'smartadmin/parts/pagesettings.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

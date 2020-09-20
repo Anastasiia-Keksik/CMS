@@ -56,15 +56,21 @@ class UserForumPost
     private $likes;
 
     /**
-     * @ORM\ManyToOne(targetEntity=UserForumTopic::class, inversedBy="ForumPosts")
+     * @ORM\ManyToOne(targetEntity=UserForumTopic::class, inversedBy="forumPosts")
      * @ORM\JoinColumn(nullable=false)
      */
     private $ForumTopic;
 
+    /**
+     * @ORM\OneToMany(targetEntity=PostsLikes::class, mappedBy="Post")
+     */
+    private $postsLikes;
 
     public function __construct()
     {
         $this->userForumPostConversations = new ArrayCollection();
+        $this->Likings = new ArrayCollection();
+        $this->postsLikes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -183,6 +189,37 @@ class UserForumPost
     public function setForumTopic(?UserForumTopic $ForumTopic): self
     {
         $this->ForumTopic = $ForumTopic;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PostsLikes[]
+     */
+    public function getPostsLikes(): Collection
+    {
+        return $this->postsLikes;
+    }
+
+    public function addPostsLike(PostsLikes $postsLike): self
+    {
+        if (!$this->postsLikes->contains($postsLike)) {
+            $this->postsLikes[] = $postsLike;
+            $postsLike->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostsLike(PostsLikes $postsLike): self
+    {
+        if ($this->postsLikes->contains($postsLike)) {
+            $this->postsLikes->removeElement($postsLike);
+            // set the owning side to null (unless already changed)
+            if ($postsLike->getPost() === $this) {
+                $postsLike->setPost(null);
+            }
+        }
 
         return $this;
     }

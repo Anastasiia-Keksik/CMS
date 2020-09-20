@@ -1,0 +1,243 @@
+{% extends 'smartadmin/base.html.twig' %}
+
+{% block content %}
+<main id="js-page-content" role="main" class="page-content">
+    <ol class="breadcrumb page-breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{{ APP_NAME }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('app_profile', {'profile': profile.Username}) }}">{{ profile.Username }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('user_forum', {'profile': profile.Username}) }}">{{ forumCre.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('app_forum_threads_list', {'forumtableid': forum.id}) }}">{{ forum.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('app_forum_thread_user', {'threadid': thread.id}) }}#">{{ thread.Title }}</a></li>
+        <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
+    </ol>
+    <div class="subheader">
+        <h1 class="subheader-title">
+            <i class='subheader-icon fal fa-plus-circle'></i> Subject: <span class='fw-300'>{{ thread.Title }}</span>
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="input-group input-group-lg mb-g">
+                <input type="text" class="form-control shadow-inset-2" placeholder="Search Discussion">
+                <div class="input-group-append">
+                    <span class="input-group-text"><i class="fal fa-search"></i></span>
+                </div>
+            </div>
+            {% for post in posts_pagination %}
+            <!-- post -->
+            <div class="card mb-g border shadow-0">
+                <a name="{{ post.id }}"></a>
+                <div class="card-header bg-white p-0">
+                    <div class="p-3 d-flex flex-row">
+                        <div class="d-block flex-shrink-0">
+                            <img src="{{ asset('upload/avatars/'~post.Author.Username~'/'~post.Author.AvatarFileName)|imagine_filter('my_thumb_lg') }}" class="img-fluid img-thumbnail" alt="">
+                        </div>
+                        <div class="d-block ml-2">
+                            <span class="h6 font-weight-bold text-uppercase d-block m-0"><a href="/thread/{{ thread.id }}/{{ thread.title|title|replace({' ': '-'}) }}{% if page is not null %}?page={{ page }}{% endif %}#{{ post.id }}"><span class="fw-300">{{ thread.Title }}</span></a> </span>
+                            <a href="{{ path('app_profile', {'profile': post.Author.Username}) }}" class="fs-sm text-info h6 fw-500 mb-0 d-block">{{ post.Author.Username }}</a>
+                            <div class="d-flex mt-1 text-warning align-items-center">
+                                <i class="fas fa-star mr-1"></i>
+                                <i class="fas fa-star mr-1"></i>
+                                <i class="fas fa-star mr-1"></i>
+                                <i class="fas fa-star mr-1"></i>
+                                <i class="fal fa-star mr-1"></i>
+                                <span class="text-muted fs-xs font-italic">
+                                                        Rang name
+                                                    </span>
+                            </div>
+                        </div>
+                        <a href="javascript: postLike('{{ post.id }}')" class="d-inline-flex align-items-center text-dark ml-auto align-self-start">
+                            <span id="likes_{{ post.id }}">{{ post.Likes }}</span>
+                            {% if attribute(postsLikes, post.id) == 0 %}
+                            <i id="likeheart_{{ post.id }}" class="fal fa-heart ml-1 text-muted"></i>
+                            {% else %}
+                            <i id="likeheart_{{ post.id }}" class="fas fa-heart ml-1 text-danger"></i>
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body ">
+                    <p>
+                        {{ post.Content|raw }}
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex align-items-center">
+                        <span class="text-sm text-muted font-italic"><i class="fal fa-clock mr-1"></i> {{ post.CreatedAt|ago }}</span>
+                        <a href="#reply" class="flex-shrink-0 ml-auto">Reply <i class="fal fa-reply ml-2"></i> </a>
+                    </div>
+                </div>
+            </div>
+            <!-- post -end -->
+            {% endfor %}
+
+            <!-- PAGINATION -->
+            {{ knp_pagination_render(posts_pagination) }}
+        </div>
+
+        <!-- ANSWEAR -->
+        <div class="col-12">
+            <div id="panel-1" class="panel">
+                <a name="reply"></a>
+
+                <div class="panel-container show">
+                    <div class="panel-content">
+                        <form action="{{ path('user-forum-new-post', {'thread':thread.id}) }}" method="post">
+
+                            <textarea required id="js-NewPost" id="saveToLocal" name="ContentPost"></textarea>
+                            <div class="mt-2 clearfix">
+                                <div class="float-right">
+                                    <button class="btn btn-light">Create New Post</button>
+                                </div>
+                            </div>
+                        <input type="hidden" name="_token" value="{{ csrf_token('new-post') }}">
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</main>
+<!-- this overlay is activated only when mobile menu is triggered -->
+<div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/froala_editor_forum.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/froala_style.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/code_view.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/draggable.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/colors.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/emoticons.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/image_manager.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/image.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/line_breaker.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/table.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/char_counter.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/video.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/fullscreen.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/file.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/quick_insert.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/help.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/third_party/spell_checker.css') }}">
+    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/special_characters.css') }}">
+
+
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-regular.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-solid.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-brands.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-duotone.css') }}">
+{% endblock %}
+
+{#
+Variables:
+- navFooter (if enabled and Not false shows Navigation Footer (chat logs, support chat and make a call)
+#}
+{%  block leftMenu %}
+    {% include 'smartadmin/parts/leftMenu.html.twig' %}
+{% endblock %}
+
+{% block header %}
+    {% include 'smartadmin/parts/header.html.twig' %}
+{% endblock %}
+
+{% block footer %}
+    {% include 'smartadmin/parts/footer.twig' %}
+{%  endblock %}
+
+{% block quickmenu %}
+    {% include 'smartadmin/parts/quickmenu.twig' %}
+{% endblock %}
+
+{% block messenger %}
+    {% include 'smartadmin/parts/chat.twig' %}
+{% endblock %}
+
+{% block pagesettings %}
+    {% include 'smartadmin/parts/pagesettings.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/froala_editor.pkgd.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/align.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/code_beautifier.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/code_view.min.js') }}"></script>
+    {#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/char_counter.min.js') }}"></script>#}
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/colors.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/draggable.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/emoticons.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/entities.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/file.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/font_size.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/font_family.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/fullscreen.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/image.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/image_manager.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/line_breaker.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/inline_style.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/link.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/lists.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/paragraph_format.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/paragraph_style.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/quick_insert.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/quote.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/table.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/save.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/url.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/video.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/help.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/print.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/third_party/spell_checker.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/special_characters.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/word_paste.min.js') }}"></script>
+
+    <script>
+        (function () {
+            new FroalaEditor("#js-NewPost", {
+                autofocus: true,
+                attribution: false,
+                placeholderText: 'Write something down...',
+                enter: FroalaEditor.ENTER_BR
+            })
+        })()
+    </script>
+    <script>
+        function postLike(post)
+        {
+            $.ajax({
+                url: '/forum/post/like/'+post,
+                dataType: 'html',
+                type: 'POST',
+                data: {
+                    'profile': '{{profile.id}}'
+                },
+                success: function(response) {
+                    let data = JSON.parse(response);
+                    if(data.response == 'removed')
+                    {
+                        $('#likeheart_'+post).addClass('fal');
+                        $('#likeheart_'+post).removeClass('text-danger');
+                        $('#likeheart_'+post).removeClass('fas');
+                        $('#likeheart_'+post).addClass('text-muted');
+                        console.log('usuniety');
+                    }
+                    else if(data.response == 'added')
+                    {
+                        $('#likeheart_'+post).removeClass('fal');
+                        $('#likeheart_'+post).removeClass('text-muted');
+                        $('#likeheart_'+post).addClass('text-danger');
+                        $('#likeheart_'+post).addClass('fas');
+                        console.log('dodany');
+                    }
+                    $('#likes_'+post).html(data.likes)
+                }
+            });
+        }
+    </script>
+{% endblock %}

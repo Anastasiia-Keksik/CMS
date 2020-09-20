@@ -17,3 +17,40 @@ najpierw wyswietlane komentarze od znajomych
 gdy ktos usunie komentarz a ty po wczytaniu strony chcesz zobaczyc wiecej komentarzy a on bedie usuniety, co wtedy?
 
 Kazdy chapter oceniac mozna z osobna, pod katem grafiki i fabuly. Suwakiem od 0 do 100! Ocena komiksu to suma ocen wszystkich chapterow.
+
+image resizing gdzie sie da, regex w loginie, i moze wszedzie, kto online, sprawdzic czy nie ma bledow jakpodajesz zle id w DI
+
+dodac nauke japonskiego. Liste kanji zopisem z tej ksiazki niebieskiej i animowane karty.
+
+przy publikowaniu komiksu daj linka do informacji o tym jak reklamowac swoj komiks
+
+zrobic shadow-5 pod czerwonym paskiem
+
+poprosic kominka o zaprojektowanie nowoczesnej strony pod potrzeby dla blogowiczow!
+
+pokaz pod komiksem kontakty, ktore tez to polubily
+
+walnij kompletion, ile procent przeczytales, wlaczony komiks dodaje sie dokompletion jako przeczytany, mozez zaznaczyc go jako nieprzeczytany!
+pokaz ostatnio przeczytany i kliknij obok,  kontynuuj
+
+zrobic bitwy rysunkowe
+
+Dac na stronie - Japońskie słówka na dziś. i 3 nowe słowka japonskiego do nauki! Jak klikniesz, link do kursow!
+
+Strona po rejestracji z wyborem wygladu! Thema, i innymi opcjami. Jak np. Jestem Otaku, i wtedy pojawiasie opcje to nauki japonskiego.
+Inne opcje zapewnia inny User Experience.
+
+prowadzenie notesu
+
+<div class="col-4 offset-8 col-md-6 offset-md-6 text-right position-absolute" style="height: 50px; border: 0px solid red">
+                    <a href="#" class="btn btn-icon rounded-circle btn-light"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="btn btn-icon rounded-circle btn-light"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="btn btn-icon rounded-circle btn-light"><i class="fab fa-tumblr"></i></a>
+                    <a href="#" class="btn btn-icon rounded-circle btn-light"><i class="fab fa-reddit"></i></a>
+                    <a href="#" class="btn btn-icon rounded-circle btn-light"><i class="fas fa-copy"></i></a>
+                    <a href="#" class="btn btn-icon rounded-circle btn-light"><i class="fas fa-rss"></i></a>
+                </div>
+
+                osobna kategoria dlakontentu 18+
+
+                zrob loterie na swojej stronie

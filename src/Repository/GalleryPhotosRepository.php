@@ -19,22 +19,48 @@ class GalleryPhotosRepository extends ServiceEntityRepository
         parent::__construct($registry, GalleryPhotos::class);
     }
 
-    // /**
-    //  * @return GalleryPhotos[] Returns an array of GalleryPhotos objects
-    //  */
-    /*
-    public function findByExampleField($value)
+     /**
+      * @return GalleryPhotos[] Returns an array of GalleryPhotos objects
+      */
+    public function findLast9($galleryid)
     {
         return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('g.id', 'ASC')
-            ->setMaxResults(10)
+            ->andWhere('g.galleryId = :val')
+            ->setParameter('val', $galleryid)
+            ->orderBy('g.uploadedAt', 'DESC')
+            ->setMaxResults(9)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+
+    /**
+     * @return GalleryPhotos[] Returns an array of GalleryPhotos objects
+     */
+    public function takePhotos($galleryid)
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.galleryId = :val')
+            ->setParameter('val', $galleryid)
+            ->orderBy('g.uploadedAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return GalleryPhotos[] Returns an array of GalleryPhotos objects
+     */
+    public function takeAlbumPhotos($albumid)
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.album = :val')
+            ->setParameter('val', $albumid)
+            ->orderBy('g.uploadedAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 
     /*
     public function findOneBySomeField($value): ?GalleryPhotos

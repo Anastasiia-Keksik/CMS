@@ -35,7 +35,7 @@ class GalleryAlbum
     private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $modifiedAt;
 
@@ -52,6 +52,7 @@ class GalleryAlbum
 
     /**
      * @ORM\OneToMany(targetEntity=GalleryPhotos::class, mappedBy="album")
+     * @ORM\OrderBy({"id"="DESC"})
      */
     private $galleryPhotos;
 
