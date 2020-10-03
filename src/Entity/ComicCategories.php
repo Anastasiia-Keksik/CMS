@@ -6,6 +6,8 @@ use App\Repository\ComicCategoriesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
+
 
 /**
  * @ORM\Entity(repositoryClass=ComicCategoriesRepository::class)
@@ -13,9 +15,9 @@ use Doctrine\ORM\Mapping as ORM;
 class ComicCategories
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string", length=36)
+     * @ORM\Id
      */
     private $id;
 
@@ -25,16 +27,19 @@ class ComicCategories
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comics::class, mappedBy="category1")
+     * @ORM\OneToMany(targetEntity=Comic::class, mappedBy="category1")
      */
-    private $category2;
+    private $comics;
+
 
     public function __construct()
     {
-        $this->category2 = new ArrayCollection();
+        $this->comics = new ArrayCollection();
+
+        $this->id = Uuid::uuid4();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -52,30 +57,30 @@ class ComicCategories
     }
 
     /**
-     * @return Collection|Comics[]
+     * @return Collection|Comic[]
      */
-    public function getCategory2(): Collection
+    public function getComics(): Collection
     {
-        return $this->category2;
+        return $this->comics;
     }
 
-    public function addCategory2(Comics $category2): self
+    public function addComic(Comic $comic): self
     {
-        if (!$this->category2->contains($category2)) {
-            $this->category2[] = $category2;
-            $category2->setCategory1($this);
+        if (!$this->comics->contains($comic)) {
+            $this->comics[] = $comic;
+            $comic->setCategory1($this);
         }
 
         return $this;
     }
 
-    public function removeCategory2(Comics $category2): self
+    public function removeComic(Comic $comic): self
     {
-        if ($this->category2->contains($category2)) {
-            $this->category2->removeElement($category2);
+        if ($this->comics->contains($comic)) {
+            $this->comics->removeElement($comic);
             // set the owning side to null (unless already changed)
-            if ($category2->getCategory1() === $this) {
-                $category2->setCategory1(null);
+            if ($comic->getCategory1() === $this) {
+                $comic->setCategory1(null);
             }
         }
 

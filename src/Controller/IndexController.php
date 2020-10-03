@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Repository\AccountRepository;
 use App\Services\MainMenuService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +19,8 @@ class IndexController extends AbstractController
     public function homepage(MainMenuService $mainMenuService, AuthenticationUtils $authenticationUtils, Request $request)
     {
         $mainMenu = $mainMenuService->getMenu();
+
+
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();

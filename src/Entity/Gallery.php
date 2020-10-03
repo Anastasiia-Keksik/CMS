@@ -6,6 +6,7 @@ use App\Repository\GalleryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=GalleryRepository::class)
@@ -13,9 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Gallery
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string", length=36)
+     * @ORM\Id
      */
     private $id;
 
@@ -70,9 +71,11 @@ class Gallery
     {
         $this->galleryAlbums = new ArrayCollection();
         $this->galleryPhotos = new ArrayCollection();
+
+        $this->id = Uuid::uuid4();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }

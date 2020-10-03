@@ -50,7 +50,6 @@ class AccountRepository extends ServiceEntityRepository implements PasswordUpgra
             ->orWhere('a.lastName like :val')
             ->orWhere('a.lastOnline like :val')
             ->orWhere('a.createdAt like :val')
-            ->orWhere('a.id like :val')
             ->orWhere('a.roles like :val')
             ->setParameter('val', '%'.$value.'%')
             ->orderBy('a.'.$column, $dir)

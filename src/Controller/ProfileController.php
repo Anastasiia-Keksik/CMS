@@ -8,6 +8,7 @@ use App\Entity\GalleryPhotos;
 use App\Entity\SocialPost;
 use App\Entity\SocialPostComment;
 use App\Repository\AccountRepository;
+use App\Repository\ComicRepository;
 use App\Repository\ContactRepository;
 use App\Repository\GalleryPhotosRepository;
 use App\Repository\ProfileDesignSettingsRepository;
@@ -142,10 +143,12 @@ class ProfileController extends AbstractController
                                 Request $request, SocialPostCommentRepository $underCommentsRepo,
                                 ProfileDesignSettingsRepository $pdsr, SocialPostRepository $postRepository, ContactRepository $contactRepo,
                                 AccountRepository $accRepo, GalleryPhotosRepository $galleryPhotosRepository,
-                                UserPrivateForumRepository $forumRepository)
+                                UserPrivateForumRepository $forumRepository, ComicRepository $comicsRepo)
     {
         $mainMenu = $mainMenuService->getMenu();
         $repository = $entityManager->getRepository(Account::class);
+
+        $comics = $comicsRepo->findAll();
 
         $userCredentials = $repository->findOneBy(['username' => $profile]);
         $user = $this->getUser();
@@ -158,10 +161,14 @@ class ProfileController extends AbstractController
         }
         $tab = !empty($request->query->get('tab')) ? $request->query->get('tab') : "profile";
 
-        $photos = $galleryPhotosRepository->findLast9($userCredentials->getGallery()->getId());
+        if ($userCredentials->getGallery()){
+            $photos = $galleryPhotosRepository->findLast9($userCredentials->getGallery()->getId());
+        }else{
+            $photos = null;
+        }
 
         $socialPosts = $postRepository->loadNewPosts($userCredentials->getId());
-        
+
         $posts = [];
         $postsIt=0;
 
@@ -255,7 +262,8 @@ class ProfileController extends AbstractController
             'gallery'=>$photos,
             'SOCIAL_POSTS'=>$_SERVER['SOCIAL_POSTS'],
             'theme'=>$this->theme,
-            'forum'=>$forum
+            'forum'=>$forum,
+            'comics'=>$comics
         ]);
     }
 

@@ -190,41 +190,9 @@ Variables:
                     <i class="fal fa-search"></i>
                 </a>
             </div>
-            <!-- app publish -->
-            <div class="m-auto">
-                <button data-toggle="dropdown" title="" class="btn btn-outline-default btn-pills no-arrow dropdown-toggle px-5" aria-expanded="false" aria-haspopup="true">Publish</button>
-                <div class="dropdown-menu dropdown-menu-animated dropdown-lg">
 
-                    <div class="dropdown-divider m-0"></div>
-                    <div class="dropdown-multilevel dropdown-multilevel-left">
-                        <div class="dropdown-item">
-                            Some Comic Title
-                        </div>
-                        <div class="dropdown-menu">
-                            <a href="#?lang=fr" class="dropdown-item" data-action="lang" data-lang="fr">New Episode</a>
-                        </div>
-                    </div>
-                    <div class="dropdown-divider m-0"></div>
-                    <a href="#" class="dropdown-item" data-action="app-reset">
-                        <span data-i18n="drpdwn.reset_layout">Comic</span>
-                    </a>
-                    <a href="#" class="dropdown-item" data-toggle="modal" data-target=".js-modal-settings">
-                        <span data-i18n="drpdwn.settings">Article</span>
-                    </a>
-                    <a href="#" class="dropdown-item" data-action="app-fullscreen">
-                        <span data-i18n="drpdwn.fullscreen">New Poem/Story or a Book</span>
-                    </a>
-                    <a href="#" class="dropdown-item" data-action="app-print">
-                        <span data-i18n="drpdwn.print">Photo</span>
-                    </a>
-                    <a href="#" class="dropdown-item" data-action="app-print">
-                        <span data-i18n="drpdwn.print">Social Post</span>
-                    </a>
-                    <a href="#" class="dropdown-item" data-action="app-print">
-                        <span data-i18n="drpdwn.print">Blog post</span>
-                    </a>
-                </div>
-            </div>
+            <!-- app publish -->
+            {% include 'smartadmin/parts/publishDropdown.html.twig' %}
             <!-- app message -->
             {% include 'smartadmin/parts/message.html.twig' %}
             <!-- app notification -->

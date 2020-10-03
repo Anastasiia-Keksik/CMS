@@ -11,6 +11,7 @@ use App\Entity\UserForumPost;
 use App\Entity\UserForumTopic;
 use App\Entity\UserPrivateForum;
 use App\Repository\AccountRepository;
+use App\Repository\ComicRepository;
 use App\Repository\ForumCategoryRepository;
 use App\Repository\ForumForumRepository;
 use App\Repository\PostsLikesRepository;
@@ -159,6 +160,8 @@ class UserForumController extends AbstractController
     {
         $mainMenu = $mainMenuService->getMenu();
         $categories = $categoryRepository->takeCategoriesByOrderValue(null);
+        $forumid = $request->query->get('forumid');
+        $forum = $UserForum->find($forumid);
 
         //check if this logged user == slug user id
         if ($userId->getUsername()==$user->getUsername())
@@ -186,7 +189,7 @@ class UserForumController extends AbstractController
                 $catEntity -> setName($request->request->get('CatName'));
                 $catEntity -> setDescription($request->request->get('CatDesc'));
                 $catEntity -> setOrderValue($request->request->get('CatNumber'));
-                $catEntity -> setIsItUserPrivateForum($userId->getUserPrivateForum());
+                $catEntity -> setIsItUserPrivateForum($forum);
 
                 $em->persist($catEntity);
                 $em->flush();
@@ -202,8 +205,8 @@ class UserForumController extends AbstractController
             //TODO: zrobic jakis sensowny komunikat o bledzie
             die('nie ma takiego forum');
         }else{
-            $forumid = $request->query->get('forumid');
-            $forum = $UserForum->find($forumid);
+//            $forumid = $request->query->get('forumid');
+//            $forum = $UserForum->find($forumid);
 
             //sprawdza czy user ktory edytuje badz dodaje kategorie jest wlascicielem forum TODO: zrobic to sprawdzaniu w oparciu o uprawnienia
             if ($forum->getUserAdmin()->getId() == $user->getId()){
@@ -228,7 +231,8 @@ class UserForumController extends AbstractController
             'forumid' => $forumid,
             'forumName' => $forum->getName(),
             'forumDesc' => $forum->getDescription(),
-            'theme'=>$this->theme
+            'theme'=>$this->theme,
+            'profile'=>$userId,
         ]);
     }
 
@@ -261,7 +265,7 @@ class UserForumController extends AbstractController
 
         $mainMenu = $mainMenuService->getMenu();
         //$categories = $categoryRepository->takeCategoriesByOrderValue(null);
-
+        $profile = $user;
         //Check if user id == logged user
         if ($user->getUsername()==$loggedUser->getUsername())
         { //take user forum categories and forum hierarchy
@@ -298,7 +302,8 @@ class UserForumController extends AbstractController
             'category'=>$category,
             'forums'=>$forums,
             'Profiler'=>$user->getUsername(),
-            'theme'=>$this->theme
+            'theme'=>$this->theme,
+            'profile'=>$profile
         ]);
     }
 
@@ -310,10 +315,11 @@ class UserForumController extends AbstractController
                                  MainMenuService $mainMenuService, Request $request, EntityManagerInterface $em){
         //zrobic lepsza autoryzacje usera TODO: czytaj z lewej
         if ($this->getUser() == $kategoria->getIsItUserPrivateForum()->getUserAdmin()){
-            $CategoryOrder = $CategoriesRepository ->takeCategoriesByOrderValue($kategoria->getIsItUserPrivateForum());
+            $CategoryOrder = $CategoriesRepository ->takeCategoriesByOrderValue($kategoria->getIsItUserPrivateForum()->getId());
 
             if ($request->request->get('_token')){
                 if ($this->isCsrfTokenValid('cat_edit', $request->request->get('_token'))){
+
                     $Categories = $CategoriesRepository->findBy(['IsItUserPrivateForum'=>$kategoria->getIsItUserPrivateForum()]);
 
                     foreach ($Categories as $category){
@@ -374,7 +380,7 @@ class UserForumController extends AbstractController
         //zrobic lepsza autoryzacje usera TODO: czytaj z lewej
         $forumPrivate = $forumtable->getCategory()->getIsItUserPrivateForum();
         if ($this->getUser() == $forumPrivate->getUserAdmin()){
-            $Categories = $CategoriesRepository->takeCategoriesByOrderValue($forumPrivate);
+            $Categories = $CategoriesRepository->takeCategoriesByOrderValue($forumPrivate->getId());
 
             $forums = $forumRepository ->findBy(['Category'=>$forumtable->getCategory()]);
 
@@ -457,7 +463,7 @@ class UserForumController extends AbstractController
     public function showForumThreads(MainMenuService $mainMenuService, UserForumForum $forumtableid,
                                      PaginatorInterface $paginator, UserForumTopicRepository $TopicsRepository,
                                      Request $request, SessionInterface $session, UserForumPostRepository $postRepo){
-        $query = $TopicsRepository->findTopicsWithPagination($forumtableid);
+        $query = $TopicsRepository->findTopicsWithPagination($forumtableid->getId());
 
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
@@ -510,16 +516,16 @@ class UserForumController extends AbstractController
             $em->flush();
         }
 
-        $pagination = $forumPostRepo->findPostsMinePagination($threadid, ($request->query->get('page'))? $request->query->get('page') : 0, ($session->get('plimit')) ? $session->get('plimit') : 10);
+        //$pagination = $forumPostRepo->findPostsMinePagination($threadid->getId(), ($request->query->get('page'))? $request->query->get('page') : 0, ($session->get('plimit')) ? $session->get('plimit') : 10);
 //
         $logger->info('REQUEST rejkjawik: '.$request->attributes->get('_request_type'));
 //
-        $query = $forumPostRepo->findPostsForThreadWithPagination($threadid);
-//
+        $query = $forumPostRepo->findPostsForThreadWithPagination($threadid->getId());
+
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
-            ($session->get('plimit')) ? $session->get('plimit') : 10 /*limit per page*/
+            ($session->get('plimit') != null) ? $session->get('plimit') : 10 /*limit per page*/
         );
         $postsLikes = [];
         foreach ($pagination as $post){
@@ -559,7 +565,7 @@ class UserForumController extends AbstractController
     public function makeNewThread(MainMenuService $mainMenuService, UserForumForum $forumtableid,
                                   PaginatorInterface $paginator, UserForumTopicRepository $TopicsRepository, Request $request,
                                   EntityManagerInterface $em){
-        $query = $TopicsRepository->findTopicsWithPagination($forumtableid);
+        //$query = $TopicsRepository->findTopicsWithPagination($forumtableid);
 
         //TODO: Zrobic w ogole sprawdzanie, czy mamy dostep do forum w ktorym robimy nowa kategorie czy forum
 
@@ -692,7 +698,7 @@ class UserForumController extends AbstractController
                     $entityManager->persist($postEntity);
                     $entityManager->flush();
 
-                    $query = $forumPostRepo->findPostsForThreadWithPagination($thread);
+                    $query = $forumPostRepo->findPostsForThreadWithPagination($thread->getId());
 
                     $pagination = $paginator->paginate(
                         $query, /* query NOT result */
@@ -718,7 +724,7 @@ class UserForumController extends AbstractController
      */
     public function createForum($user, AccountRepository $accountRepository, MainMenuService $mainMenuService,
                                 UserPrivateForumRepository $forumRepository, Request $request, EntityManagerInterface $em,
-                                Validation $valid)
+                                Validation $valid, ComicRepository $comicsRepo)
     {
         $user = $accountRepository->findOneBy(["username"=>$user]);
 
@@ -732,6 +738,8 @@ class UserForumController extends AbstractController
 
         $forumDesc = "";
         $forumName = "";
+
+        $comics = $comicsRepo->findAll();
 
         // this goto fucntion is somewhat easter egg of mine. I started programing thanks to this function and i wanted to used somewhere. Leave it be.
         if ($request->request->get('_token')) {
@@ -804,6 +812,7 @@ class UserForumController extends AbstractController
             'active'=>$active,
             'forumDesc'=>$forumDesc,
             'forumName'=>$forumName,
+            'comics'=>$comics
         ]);
     }
 }

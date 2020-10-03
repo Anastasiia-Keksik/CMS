@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\GalleryPhotosRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=GalleryPhotosRepository::class)
@@ -11,9 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 class GalleryPhotos
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string", length=36)
+     * @ORM\Id
      */
     private $id;
 
@@ -56,8 +57,13 @@ class GalleryPhotos
      * @ORM\Column(type="string", length=255)
      */
     private $originalFilename;
+    
+    public function __construct()
+    {
+        $this->id = Uuid::uuid4();
+    }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }

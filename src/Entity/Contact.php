@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ContactRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=ContactRepository::class)
@@ -11,9 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Contact
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string", length=36)
+     * @ORM\Id
      */
     private $id;
 
@@ -34,7 +35,12 @@ class Contact
      */
     private $created_At;
 
-    public function getId(): ?int
+    public function __construct()
+    {
+        $this->id = Uuid::uuid4();
+    }
+
+    public function getId(): ?string
     {
         return $this->id;
     }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\AccountSignatureRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=AccountSignatureRepository::class)
@@ -11,9 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 class AccountSignature
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string", length=36)
+     * @ORM\Id
      */
     private $id;
 
@@ -28,12 +29,17 @@ class AccountSignature
      */
     private $Signature;
 
+    public function __construct()
+    {
+        $this->id = Uuid::uuid4();
+    }
+
     public function __toString()
     {
         return (string) $this->Signature;
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PasswordsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=PasswordsRepository::class)
@@ -11,9 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Passwords
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string", length=36)
+     * @ORM\Id
      */
     private $id;
 
@@ -31,8 +32,13 @@ class Passwords
      * @ORM\OneToOne(targetEntity=Account::class, cascade={"persist", "remove"})
      */
     private $user;
+    
+    public function __construct()
+    {
+        $this->id = Uuid::uuid4();
+    }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }

@@ -1,0 +1,454 @@
+{% extends 'smartadmin/base.html.twig' %}
+
+{% block content %}
+    <!-- BEGIN Page Content -->
+    <!-- the #js-page-content id is needed for some plugins to initialize -->
+    <main id="js-page-content" role="main" class="page-content">
+        <div class="container shadow-5" style="background-color: white">
+            <div class="row">
+                <div class="col-12 text-center mt-0">
+                </div>
+            </div>
+            <div enctype="multipart/form-data" method="post">
+                <div class="row mt-6">
+                    <div class="col-9" style="border-right: 1px #eeeeee solid">
+                        <div class="col-10 offset-1">
+                            <h4>Create episode inside - {{ comic.title }}</h4>
+                        </div>
+                        <div class="form-group col-10 offset-1">
+                            <label class="form-label">Episode Title: <i id="saved" style="display: none">(saved)</i></label>
+                            <input type="text" class="form-control rounded-pill" onkeyup="titlewrite(this.value)" value="{{ episode.title }}">
+                        </div>
+                        <div class="col-10 offset-1">
+                            {% if episode.images %}
+                                <label class="form-label">Already uploaded pages:</label>
+                            <div class="row mx-0 shadow-5 mb-g pb-3" style="background-color: #f0f0f0">
+                            {% for image in episode.images %}
+                            <div id="{{ image }}" class="col-3 text-center mt-3"><img src="{{ asset('upload/comics/'~comic.id~'/'~episode.id~'/'~image) }}" alt="image" width="100%" class="rounded"
+                                                                                      data-toggle="tooltip" data-placement="auto" title="" data-original-title="{{ image }}"><br><a href="javascript: deleteImage('{{ image }}')">Delete</a><br></div>
+                            {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <label class="form-label">Upload File:</label>
+                            <div class="panel-container mb-2" id="upload">
+                                <form action="{{ path('upload_Page') }}" id="uploadComic" class="dropzone needsclick upload" style="min-height: 7rem;" >
+                                    <div class="dz-message needsclick">
+                                        <i class="fal fa-cloud-upload text-muted mb-3"></i> <br>
+                                        <span class="text-uppercase">Drop files here or click to upload.</span>
+                                        <br>
+                                    </div>
+                                    <input type="hidden" name="_token" value="{{ csrf_token('image_upload') }}">
+                                    <input type="hidden" name="cid" value="{{ comic.id }}">
+                                    <input type="hidden" name="eid" value="{{ episode.id }}">
+                                </form>
+                                <div id="removed" class="text-center" style="width:100%"></div>
+                            </div>
+                            <small>Files will be displayed alphabetically - take care of the proper naming. Use only english letters and numbers. Using other language letters will results with wrong sorting!</small>
+                            <br>
+                            <form action="{{ path('publish_Episode', {'episode':episode.id}) }}" method="post" enctype="multipart/form-data">
+                                <input type="hidden" required name="_token" value="{{ csrf_token('publishEpisode') }}">
+                                <button class="btn btn-outline-default mt-3 float-right">Publish</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-3 text-center">
+                        <label class="form-label">Thumbnail</label>
+                        {% if thumbnail == true %}
+                        <div id="preview" style="width: 160px; height: 151px; border: 0px #aaaaaa dotted; border-radius: 15px"
+                        class="mx-auto position-relative">
+                                <img src="{{ asset('/upload/comics/'~episode.comic.id~'/'~episode.id~'/glimpse.png') }}" id="prevImage" style="max-width: 100%; border-radius: 15px">
+                            {% else %}
+                            <div id="preview" style="width: 160px; height: 151px; border: 2px #aaaaaa dotted; border-radius: 15px"
+                                 class="mx-auto position-relative">
+                                <img src="" id="prevImage" class="d-none" style="max-width: 100%; border-radius: 15px">
+                            {% endif %}
+                            <div id="uploadWarning" class="d-none uploadWarning"></div>
+                        </div>
+                        <br>
+                        <form id="formthumbnail" action="{{ path('save_comic_episode_thumbnail', {'episode':episode.id}) }}" method="post" enctype="multipart/form-data">
+                        <div class="custom-file" style="width: 218px">
+                            <input id="thumbnail" type="file" name="thumbnail" value="" class="custom-file-input" required>
+                            <label class="custom-file-label text-muted text-truncate text-left">Chose thumbnail</label>
+                            <input type="hidden" value="{{ csrf_token('send_episode_thumbnail') }}" name="_token">
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+    </main>
+    <!-- this overlay is activated only when mobile menu is triggered -->
+    <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-solid.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/formplugins/dropzone/dropzone.css') }}">
+    <style>
+        .page-wrapper{
+            padding-left: 0px !important;
+        }
+        html{
+            -webkit-box-sizing: unset !important;
+            box-sizing: unset !important;
+        }
+        ul li:first-child {
+            border-top: 1px #eeeeee solid;
+            border-bottom: 1px #eeeeee solid;
+        }
+        ul li {
+            border-bottom: 1px #eeeeee solid;
+        }
+
+        .uploadWarning {
+            padding-top: 55px;
+        }
+
+        .uploadWarning h3{
+            text-align: center;
+            display: flex;
+            font-weight: bold;
+            color: #aaaaaa;
+        }
+
+        /* HIDE RADIO */
+        [type=radio] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* IMAGE STYLES */
+        [type=radio] + img {
+            cursor: pointer;
+        }
+
+        /* CHECKED STYLES */
+        [type=radio]:checked + img {
+            background-color: rgba(138,236,244, 0.2);
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+        }
+    </style>
+{% endblock %}
+
+{#
+Variables:
+- navFooter (if enabled and Not false shows Navigation Footer (chat logs, support chat and make a call)
+#}
+{%  block leftMenu %}
+{#    {% include 'smartadmin/parts/leftMenu.html.twig' %}#}
+{% endblock %}
+
+{% block header %}
+    <header class="page-header" role="banner" style="height: 50px">
+        <!-- we need this logo when user switches to nav-function-top -->
+        <div class="page-logo">
+            <a href="#" class="page-logo-link press-scale-down d-flex align-items-center position-relative" data-toggle="modal" data-target="#modal-shortcut">
+                <img src="{{ asset('smartadmin/img/logo.png') }}" alt="SmartAdmin WebApp" aria-roledescription="logo">
+                <span class="page-logo-text mr-1">SmartAdmin WebApp</span>
+                <span class="position-absolute text-white opacity-50 small pos-top pos-right mr-2 mt-n2"></span>
+                <i class="fal fa-angle-down d-inline-block ml-1 fs-lg color-primary-300"></i>
+            </a>
+        </div>
+        <div class="search">
+            <form class="app-forms hidden-xs-down" role="search" action="page_search.html" autocomplete="off">
+                <input type="text" id="search-field" placeholder="Search for anything" class="form-control" tabindex="1">
+                <a href="#" onclick="return false;" class="btn-danger btn-search-close js-waves-off d-none" data-action="toggle" data-class="mobile-search-on">
+                    <i class="fal fa-times"></i>
+                </a>
+            </form>
+        </div>
+        <div class="ml-auto d-flex">
+            <!-- activate app search icon (mobile) -->
+            <div class="hidden-sm-up">
+                <a href="#" class="header-icon" data-action="toggle" data-class="mobile-search-on" data-focus="search-field" title="Search">
+                    <i class="fal fa-search"></i>
+                </a>
+            </div>
+            <!-- app publish -->
+            <div class="m-auto position-relative">
+                <button data-toggle="dropdown" title="" class="btn btn-outline-default btn-pills no-arrow dropdown-toggle px-5" aria-expanded="false" aria-haspopup="true">Publish</button>
+                <div class="dropdown-menu dropdown-menu-animated dropdown-lg">
+                    <div class="dropdown-divider m-0"></div>
+{#                    <div class="overflow-auto" style="max-height: 212px;">#}
+{#                    {% for comic in comics %}#}
+{#                    <div class="dropdown-multilevel dropdown-multilevel-left">#}
+{#                        <div id="comic_{{ comic.id }}" class="dropdown-item" onmouseover="showPublish('{{ comic.id }}')" onmouseout="leavePublish('{{ comic.id }}')"#}
+{#                        style="#}
+{#                                height: 42px;#}
+{#                            ">#}
+{#                            {{ comic.title }}#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    {% endfor %}#}
+{#                    </div>#}
+                    <div style="margin-left: -100%; width: 200%">
+                        <div class="publishScroll" style="max-height: 210px;">
+                        {% for comic in comics %}
+
+                        <div class="dropdown-multilevel dropdown-multilevel-left" style="width: 50%; margin-left: 50%;">
+                            <div id="comic_{{ comic.id }}" class="dropdown-item"
+                            style="
+                                    height: 42px;
+                                ">
+                                {{ comic.title }}
+                            </div>
+                            <div id="comic_{{ comic.id }}_menu" class="dropdown-menu">
+                                <a href="" class="dropdown-item">New Episode</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    <div class="dropdown-divider m-0"></div>
+                    <a href="#" class="dropdown-item" data-action="app-reset">
+                        <span data-i18n="drpdwn.reset_layout">Comic</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-toggle="modal" data-target=".js-modal-settings">
+                        <span data-i18n="drpdwn.settings">Article</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-action="app-fullscreen">
+                        <span data-i18n="drpdwn.fullscreen">New Poem/Story or a Book</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-action="app-print">
+                        <span data-i18n="drpdwn.print">Photo</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-action="app-print">
+                        <span data-i18n="drpdwn.print">Social Post</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-action="app-print">
+                        <span data-i18n="drpdwn.print">Blog post</span>
+                    </a>
+                </div>
+
+{#                {% set marginTop = 7 %}#}
+{#                {% for comic in comics %}#}
+{#                    <div id="comic_{{ comic.id }}_menu" class="dropdown-item position-absolute"#}
+{#                         style="#}
+{#                            margin-left: -132px;#}
+{#                            margin-top: {{ marginTop }}px;#}
+{#                            border: 0px #000 solid;#}
+{#                            background-color: #0a70bd;#}
+{#                                 width: 132px;#}
+{#                            ">#}
+{#                        <a href="">New Episode</a>#}
+{#                    </div>#}
+{#                    {% set marginTop = marginTop + 42 %}#}
+{#                {% endfor %}#}
+            </div>
+            <!-- app message -->
+            {% include 'smartadmin/parts/message.html.twig' %}
+            <!-- app notification -->
+            {% include 'smartadmin/parts/notification.html.twig' %}
+            <!-- app shortcuts -->
+            {% include 'smartadmin/parts/shortcuts.html.twig' %}
+            <!-- app user menu -->
+            {% if is_granted("ROLE_USER") %}
+            <div>
+                <a href="#" data-toggle="dropdown" title="drlantern@gotbootstrap.com" class="header-icon d-flex align-items-center justify-content-center ml-2">
+                    <img src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}" class="profile-image mine-avatar rounded-circle" alt="Dr. Codex Lantern">
+                    <!-- you can also add username next to the avatar with the codes below:
+                    <span class="ml-1 mr-1 text-truncate text-truncate-header hidden-xs-down">Me</span>
+                    <i class="ni ni-chevron-down hidden-xs-down"></i> -->
+                </a>
+                <div class="dropdown-menu dropdown-menu-animated dropdown-lg">
+                    <a href="{{path('app_profile', {'profile':user.Username})}}">
+                        <div class="dropdown-header bg-trans-gradient d-flex flex-row py-4 rounded-top">
+                            <div class="d-flex flex-row align-items-center mt-1 mb-1 color-white">
+                                            <span class="mr-2">
+                                                <img src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}" class="rounded-circle profile-image" alt="Dr. Codex Lantern">
+                                            </span>
+                                <div class="info-card-text">
+                                    <div class="fs-lg text-truncate text-truncate-lg">{{ user.Username }}</div>
+                                    <span class="text-truncate text-truncate-md opacity-80">{{ user.email }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider m-0"></div>
+                    <a href="#" class="dropdown-item" data-action="app-reset">
+                        <span data-i18n="drpdwn.reset_layout">Reset Layout</span>
+                    </a>
+                    <a href="#" class="dropdown-item" data-toggle="modal" data-target=".js-modal-settings">
+                        <span data-i18n="drpdwn.settings">Settings</span>
+                    </a>
+                    <div class="dropdown-divider m-0"></div>
+                    <a href="#" class="dropdown-item" data-action="app-fullscreen">
+                        <span data-i18n="drpdwn.fullscreen">Fullscreen</span>
+                        <i class="float-right text-muted fw-n">F11</i>
+                    </a>
+                    <a href="#" class="dropdown-item" data-action="app-print">
+                        <span data-i18n="drpdwn.print">Print</span>
+                        <i class="float-right text-muted fw-n">Ctrl + P</i>
+                    </a>
+                    <div class="dropdown-multilevel dropdown-multilevel-left">
+                        <div class="dropdown-item">
+                            Language
+                        </div>
+                        <div class="dropdown-menu">
+                            <a href="#?lang=fr" class="dropdown-item" data-action="lang" data-lang="fr">Français</a>
+                            <a href="#?lang=en" class="dropdown-item active" data-action="lang" data-lang="en">English (US)</a>
+                            <a href="#?lang=es" class="dropdown-item" data-action="lang" data-lang="es">Español</a>
+                            <a href="#?lang=ru" class="dropdown-item" data-action="lang" data-lang="ru">Русский язык</a>
+                            <a href="#?lang=jp" class="dropdown-item" data-action="lang" data-lang="jp">日本語</a>
+                            <a href="#?lang=ch" class="dropdown-item" data-action="lang" data-lang="ch">中文</a>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider m-0"></div>
+                    <a class="dropdown-item fw-500 pt-3 pb-3" href="{{ path('app_logout') }}">
+                        <span data-i18n="drpdwn.page-logout">Logout</span>
+                        <span class="float-right fw-n d-none">{{ user.Username }}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </header>
+{% endblock %}
+
+{% block footer %}
+    {% include 'smartadmin/parts/footer.twig' %}
+{%  endblock %}
+
+{% block quickmenu %}
+{% endblock %}
+
+{% block messenger %}
+{% endblock %}
+
+{% block pagesettings %}
+    {% include 'smartadmin/parts/pagesettings.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('smartadmin/js/formplugins/dropzone/dropzone.js') }}"></script>
+    <script>
+        initApp.pushSettings("layout-composed", true);
+        initApp.pushSettings("nav-function-hidden", false);
+
+        $('#thumbnail').change(function () {
+            const file = this.files[0];
+
+
+            if (file) {
+                const reader = new FileReader();
+
+                console.log(this.height)
+
+                reader.addEventListener("load", function() {
+                    let image = new Image();
+
+                    image.src  = this.result;
+
+                    image.onload = function(){
+
+                        console.log(image.width);
+
+                        if ((image.width/image.height) == 1){
+                            $('#uploadWarning').addClass('d-none')
+                            $('#prevImage').attr('src', image.src);
+                            $('#prevImage').removeClass('d-none');
+                            $('#preview').css('border', '0px #aaaaaa solid');
+                            $('#formthumbnail').submit();
+                        }else{
+                            $('#uploadWarning').html('<br><h3>Nieodpowiedni rozmiar<br>Obraz musi być kwadratowy</h3>');
+                            $('#uploadWarning').removeClass('d-none');
+                            $('#prevImage').addClass('d-none');
+                            $('#preview').css('border', '0px #aaaaaa solid');
+                        }
+                    }
+                });
+
+                reader.readAsDataURL(file);
+            }
+        })
+    </script>
+    <script>
+        $('.dropzone').dropzone({
+            acceptedFiles: "image/jpg,image/jpeg,image/gif,image/png",
+            paramName: "page", // The name that will be used to transfer the file
+            maxFilesize: 2, // MB
+            maxFiles: 100,// zobaczymy, trzba zrobic jeszcze albumy
+            init: function() {
+9
+                this.on("maxfilesexceeded", function(file) {
+                    //alert("You are not allowed to chose more than 10 files at once!");
+                    this.removeFile(file);
+
+                });
+
+            },
+            success: function( file, response ) {
+                console.log(response);
+
+                file.previewElement.querySelector("img").src = response.src;
+                file.previewElement.querySelector("img").alt = response.imagefilename;
+                file.propername = response.imagefilename;
+            },
+            addRemoveLinks: true,
+            removedfile: function(file) {
+                let fileName = file.propername;
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/deleteImage/'+fileName+'/{{ episode.id }}',
+                    data: {'_token': '{{ csrf_token('delete_image_episode') }}'},
+                    sucess: function(data){
+                        console.log('success: ' + data);
+                    }
+                });
+
+                var _ref;
+                return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
+            }
+        });
+    </script>
+    <script>
+        function deleteImage(image) {
+            $.ajax({
+                url: '/deleteImage/'+image+'/{{ episode.id }}',
+                data: {
+                    '_token': '{{ csrf_token('delete_image_episode') }}'
+                },
+                method: 'POST',
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log(data.image);
+                    $(document.getElementById(data.image)).addClass('hidden-xs-up');
+                }
+            });
+        }
+    </script>
+    <script>
+        function titlewrite(val) {
+            console.log('ajax '+val);
+            $.ajax({
+                url: '{{ path('saveTitle', {'episodeid': episode.id}) }}',
+                data: {
+                    '_token': '{{ csrf_token('save_title') }}',
+                    'title': val,
+                },
+                method: 'POST',
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log('saved: ' + data.title);
+                    $(document.getElementById('saved')).show();
+
+                    setTimeout(fade_out, 1000);
+
+                    function fade_out() {
+                        $("#saved").fadeOut();
+                    }
+                }
+            });
+        }
+    </script>
+{% endblock %}

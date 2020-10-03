@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\IpLastLogonLogRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=IpLastLogonLogRepository::class)
@@ -11,9 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 class IpLastLogonLog
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string", length=36)
+     * @ORM\Id
      */
     private $id;
 
@@ -42,8 +43,13 @@ class IpLastLogonLog
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $sessionId;
+    
+    public function __construct()
+    {
+        $this->id = Uuid::uuid4();
+    }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }

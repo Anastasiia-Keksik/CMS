@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PostsLikesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=PostsLikesRepository::class)
@@ -11,9 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 class PostsLikes
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string", length=36)
+     * @ORM\Id
      */
     private $id;
 
@@ -28,8 +29,13 @@ class PostsLikes
      * @ORM\JoinColumn(nullable=false)
      */
     private $Post;
+    
+    public function __construct()
+    {
+        $this->id = Uuid::uuid4();
+    }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }

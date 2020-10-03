@@ -20,6 +20,21 @@ class UserFixture extends BaseFixture
 
     protected function loadData(ObjectManager $manager)
     {
+        $user = new Account();
+        $user->setEmail('skorpss@gmail.com');
+        $user->setFirstName('Szymon');
+        $user->setLastName('Zachariasz');
+        $user->setUsername('Ostwind');
+        $user->setCreatedAt($this->faker->dateTime('now'));
+        $user->terms();
+        $user->setPassword($this->passwordEncoder->encodePassword(
+            $user,
+            "Chwdp1235"
+        ));
+        $user->setAvatarFileName('empty-avatar.png');
+
+        $manager->persist($user);
+
         $this->createMany(10, 'main_users', function($i){
             $user = new Account();
             $user->setEmail(sprintf('sting%d@sting.cms', $i));
@@ -27,11 +42,12 @@ class UserFixture extends BaseFixture
             $user->setLastName($this->faker->lastName);
             $user->setUsername($this->faker->userName);
             $user->setCreatedAt($this->faker->dateTime('now'));
-
+            $user->terms();
             $user->setPassword($this->passwordEncoder->encodePassword(
                 $user,
                 "sting123"
             ));
+            $user->setAvatarFileName('empty-avatar.png');
             return $user;
         });
 

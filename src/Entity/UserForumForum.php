@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=UserForumForumRepository::class)
@@ -14,9 +15,9 @@ use Doctrine\ORM\Mapping as ORM;
 class UserForumForum
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string", length=36)
+     * @ORM\Id
      */
     private $id;
 
@@ -75,9 +76,10 @@ class UserForumForum
     {
         $this->forumTopics = new ArrayCollection();
         $this->forumPosts = new ArrayCollection();
+        $this->id = Uuid::uuid4();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }

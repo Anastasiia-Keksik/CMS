@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=AccountRepository::class)
@@ -23,9 +24,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class Account implements UserInterface
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string", length=36)
+     * @ORM\Id
      */
     private $id;
 
@@ -254,6 +255,16 @@ class Account implements UserInterface
      */
     private $themeDoL;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ComicSubscriptions::class, mappedBy="UserId", orphanRemoval=true)
+     */
+    private $comicSubscriptions;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Comic::class, mappedBy="Author")
+     */
+    private $comics;
+
     public function __construct()
     {
         $this->mainMenuCategories = new ArrayCollection();
@@ -272,9 +283,13 @@ class Account implements UserInterface
         $this->contacts_backward = new ArrayCollection();
         $this->PostsLikes = new ArrayCollection();
         $this->postsLikes = new ArrayCollection();
+        $this->comicSubscriptions = new ArrayCollection();
+        $this->comics = new ArrayCollection();
+
+        $this->id = Uuid::uuid4();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -1122,6 +1137,68 @@ class Account implements UserInterface
     public function setThemeDoL(?int $themeDoL): self
     {
         $this->themeDoL = $themeDoL;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ComicSubscriptions[]
+     */
+    public function getComicSubscriptions(): Collection
+    {
+        return $this->comicSubscriptions;
+    }
+
+    public function addComicSubscription(ComicSubscriptions $comicSubscription): self
+    {
+        if (!$this->comicSubscriptions->contains($comicSubscription)) {
+            $this->comicSubscriptions[] = $comicSubscription;
+            $comicSubscription->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComicSubscription(ComicSubscriptions $comicSubscription): self
+    {
+        if ($this->comicSubscriptions->contains($comicSubscription)) {
+            $this->comicSubscriptions->removeElement($comicSubscription);
+            // set the owning side to null (unless already changed)
+            if ($comicSubscription->getUserId() === $this) {
+                $comicSubscription->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comic[]
+     */
+    public function getComics(): Collection
+    {
+        return $this->comics;
+    }
+
+    public function addComic(Comic $comic): self
+    {
+        if (!$this->comics->contains($comic)) {
+            $this->comics[] = $comic;
+            $comic->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComic(Comic $comic): self
+    {
+        if ($this->comics->contains($comic)) {
+            $this->comics->removeElement($comic);
+            // set the owning side to null (unless already changed)
+            if ($comic->getAuthor() === $this) {
+                $comic->setAuthor(null);
+            }
+        }
 
         return $this;
     }

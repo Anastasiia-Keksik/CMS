@@ -2081,6 +2081,9 @@ Variables:
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+        initApp.pushSettings("navbar-fixed-top", true);
+    </script>
 
     <script src="{{ asset('smartadmin/js/less.js') }}"></script>
     <script type="text/javascript">
@@ -3210,6 +3213,5 @@ Variables:
                 $inputImage2.prop('disabled', true).parent().addClass('disabled');
             }
         });
-
     </script>
 {% endblock %}

@@ -82,6 +82,8 @@ class ForumController extends AbstractController
 
         //TODO zrobic rozne prawa dla roznych userow na prywatnych forumach
 
+        $profile = $this->getUser();
+
 
         // dump($user->getId);die;
         //dd($categories);
@@ -95,7 +97,8 @@ class ForumController extends AbstractController
             'pageName'=>"Forum",
             'MainMenu' => $mainMenu,
             'categories' => $categories,
-            'theme'=>$this->theme
+            'theme'=>$this->theme,
+            'profile'=>$profile
         ]);
     }
 

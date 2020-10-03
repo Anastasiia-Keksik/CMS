@@ -54,3 +54,8 @@ prowadzenie notesu
                 osobna kategoria dlakontentu 18+
 
                 zrob loterie na swojej stronie
+
+bezpieczenstwo
+    jak sie wysyla posta do bazy toprzechodziprzez filtr htmlaa gdy zniego wychodzi dekoduje sie go
+
+    cosie stanie jak wpiszesz zle ID przy wyszukiwaniu go w URL w przypadku np. forum albo addEpisode.

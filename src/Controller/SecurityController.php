@@ -97,7 +97,9 @@ SecurityController extends AbstractController
                 $form['plainPassword']->getData()
             ));
 
-            mkdir($this->getParameter('kernel.project_dir') . "/public/upload/avatars/".$account->getUsername());
+            if(!file_exists($this->getParameter('kernel.project_dir') . "/public/upload/avatars/".$account->getUsername())){
+                mkdir($this->getParameter('kernel.project_dir') . "/public/upload/avatars/".$account->getUsername());
+            }
             copy($this->getParameter('kernel.project_dir') . "/public/default/empty-avatar.png", $this->getParameter('kernel.project_dir') . "/public/upload/avatars/".$account->getUsername()."/empty-avatar.png");
 
             $account->setCreatedAt(new \DateTime());

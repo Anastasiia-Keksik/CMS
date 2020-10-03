@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ForumPostConversationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=ForumPostConversationRepository::class)
@@ -11,9 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 class ForumPostConversation
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string", length=36)
+     * @ORM\Id
      */
     private $id;
 
@@ -38,7 +39,12 @@ class ForumPostConversation
      */
     private $softDelete = false;
 
-    public function getId(): ?int
+    public function __construct()
+    {
+        $this->id = Uuid::uuid4();
+    }
+
+    public function getId(): ?string
     {
         return $this->id;
     }

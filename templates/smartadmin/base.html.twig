@@ -246,6 +246,25 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
             console.log('co jest');
         }
     </script>
+    <script>
+        $(document).ready(function()
+        {
+            console.log($('.publishScroll').height());
+
+            if ($('.publishScroll').height() > 210){
+                $('.publishScroll').slimScroll(
+                    {
+                        position: 'right',
+                        height: '210',
+                        railVisible: true,
+                        alwaysVisible: true
+                    });
+            }
+
+
+        });
+
+    </script>
 {% endblock %}
 <!--This page contains the basic JS and CSS files to get started on your project. If you need aditional addon's or plugins please see scripts located at the bottom of each page in order to find out which JS/CSS files to add.-->
 </body>
