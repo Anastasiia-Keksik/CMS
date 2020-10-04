@@ -16,6 +16,10 @@
 ###< symfony/phpunit-bridge ###
 
 /public/upload/gallery
+/public/upload/comics
+/public/upload/avatars
+/public/upload/social/BackGrounds
+/public/upload/social/diaryImages
 ###> liip/imagine-bundle ###
 /public/media/cache/
 ###< liip/imagine-bundle ###
