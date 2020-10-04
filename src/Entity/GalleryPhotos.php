@@ -163,4 +163,16 @@ class GalleryPhotos
 
         return $this;
     }
+
+    public function getGalleryId(): ?Gallery
+    {
+        return $this->galleryId;
+    }
+
+    public function setGalleryId(?Gallery $galleryId): self
+    {
+        $this->galleryId = $galleryId;
+
+        return $this;
+    }
 }

@@ -160,4 +160,17 @@ class UserForumCategory
 
         return $this;
     }
+
+    public function removeForumForum(UserForumForum $forumForum): self
+    {
+        if ($this->forumForum->contains($forumForum)) {
+            $this->forumForum->removeElement($forumForum);
+            // set the owning side to null (unless already changed)
+            if ($forumForum->getCategory() === $this) {
+                $forumForum->setCategory(null);
+            }
+        }
+
+        return $this;
+    }
 }

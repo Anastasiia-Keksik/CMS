@@ -287,6 +287,7 @@ class Account implements UserInterface
         $this->comics = new ArrayCollection();
 
         $this->id = Uuid::uuid4();
+        $this->userPrivateForum = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -1199,6 +1200,13 @@ class Account implements UserInterface
                 $comic->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function setAgreedTermsAt(\DateTimeInterface $agreedTermsAt): self
+    {
+        $this->agreedTermsAt = $agreedTermsAt;
 
         return $this;
     }

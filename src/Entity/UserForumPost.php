@@ -73,6 +73,7 @@ class UserForumPost
         $this->Likings = new ArrayCollection();
         $this->postsLikes = new ArrayCollection();
         $this->id = Uuid::uuid4();
+        $this->forumPostConversations = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -220,6 +221,37 @@ class UserForumPost
             // set the owning side to null (unless already changed)
             if ($postsLike->getPost() === $this) {
                 $postsLike->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserForumPostConversation[]
+     */
+    public function getForumPostConversations(): Collection
+    {
+        return $this->forumPostConversations;
+    }
+
+    public function addForumPostConversation(UserForumPostConversation $forumPostConversation): self
+    {
+        if (!$this->forumPostConversations->contains($forumPostConversation)) {
+            $this->forumPostConversations[] = $forumPostConversation;
+            $forumPostConversation->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeForumPostConversation(UserForumPostConversation $forumPostConversation): self
+    {
+        if ($this->forumPostConversations->contains($forumPostConversation)) {
+            $this->forumPostConversations->removeElement($forumPostConversation);
+            // set the owning side to null (unless already changed)
+            if ($forumPostConversation->getPost() === $this) {
+                $forumPostConversation->setPost(null);
             }
         }
 
