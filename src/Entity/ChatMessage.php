@@ -4,10 +4,13 @@ namespace App\Entity;
 
 use App\Repository\ChatMessageRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index;
 use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=ChatMessageRepository::class)
+ * @ORM\Table(indexes={@Index(name="created_at_index", columns={"created_at"})})
+ * @ORM\HasLifecycleCallbacks()
  */
 class ChatMessage
 {
@@ -40,12 +43,14 @@ class ChatMessage
      */
     private $createdAt;
 
+    private $mine;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -96,5 +101,21 @@ class ChatMessage
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMine()
+    {
+        return $this->mine;
+    }
+
+    /**
+     * @param mixed $mine
+     */
+    public function setMine($mine): void
+    {
+        $this->mine = $mine;
     }
 }

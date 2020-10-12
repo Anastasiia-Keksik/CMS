@@ -19,32 +19,45 @@ class ChatParticipantRepository extends ServiceEntityRepository
         parent::__construct($registry, ChatParticipant::class);
     }
 
-    // /**
-    //  * @return ChatParticipant[] Returns an array of ChatParticipant objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findParticipantByConverstionIdAndUserId($conversationId, $userId)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('p');
+        $qb->
+        where(
+            $qb->expr()->andX(
+                $qb->expr()->eq('p.conversation', ':conversationId'),
+                $qb->expr()->neq('p.user', ':userId')
+            )
+        )
+            ->setParameters([
+                'conversationId' => $conversationId,
+                'userId' => $userId
+            ]);
 
-    /*
-    public function findOneBySomeField($value): ?ChatParticipant
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $qb->getQuery()->getResult();
     }
-    */
+
+
+    public function findParticipantsByConverstionIdAndUserId($conversationId, $userId)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->
+            select('otherUser.username', 'otherUser.avatarFileName', 'otherUser.firstName', 'otherUser.lastName',
+            'otherUser.Occupation', 'otherUser.email')
+            ->addSelect('con.id')
+            ->where(
+            $qb->expr()->andX(
+                $qb->expr()->eq('p.conversation', ':conversationId'),
+                $qb->expr()->neq('p.user', ':userId')
+                )
+            )->andWhere('p.activeStatus = 1')
+            ->innerJoin('p.user', 'otherUser')
+            ->innerJoin('p.conversation', 'con')
+            ->setParameters([
+                'conversationId' => $conversationId,
+                'userId' => $userId
+            ]);
+
+        return $qb->getQuery()->getResult();
+    }
 }

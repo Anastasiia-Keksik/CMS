@@ -3471,7 +3471,10 @@ html {
   margin: 0 2rem 0.5rem 0; }
   .chat-segment-get.chat-start .chat-message {
     border-bottom-left-radius: 3px; }
-  .chat-segment-get.chat-start + :not(.chat-end) .chat-message {
+  /*.chat-segment-get .chat-start ~ :not(.chat-end) .chat-message {*/
+  /*  border-bottom-left-radius: 3px;*/
+  /*  border-top-left-radius: 3px; }*/
+  .chat-segment-get.chat-middle .chat-message {
     border-bottom-left-radius: 3px;
     border-top-left-radius: 3px; }
   .chat-segment-get.chat-end .chat-message {
@@ -3487,7 +3490,10 @@ html {
   margin: 0 0 .5rem 3rem; }
   .chat-segment-sent.chat-start .chat-message {
     border-bottom-right-radius: 3px; }
-  .chat-segment-sent.chat-start + :not(.chat-end) .chat-message {
+  /*.chat-segment-sent .chat-start ~ :not(chat-end) .chat-message {*/
+  /*  border-bottom-right-radius: 3px;*/
+  /*  border-top-right-radius: 3px; }*/
+  .chat-segment-sent.chat-middle .chat-message {
     border-bottom-right-radius: 3px;
     border-top-right-radius: 3px; }
   .chat-segment-sent.chat-end .chat-message {
@@ -3512,9 +3518,9 @@ html {
   margin-bottom: 3px !important; }
   .chat-start .time-stamp {
     display: none; }
-  .chat-start + .chat-segment:not(.chat-end) {
+  .chat-start ~ .chat-segment:not(.chat-end) {
     margin-bottom: 3px !important; }
-    .chat-start + .chat-segment:not(.chat-end) .time-stamp {
+    .chat-start ~ .chat-segment:not(.chat-end) .time-stamp {
       display: none; }
 
 /* modal shadow */

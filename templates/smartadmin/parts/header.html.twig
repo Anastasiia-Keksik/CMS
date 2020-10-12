@@ -47,21 +47,22 @@
                 <i class="fal fa-search"></i>
             </a>
         </div>
-        <!-- app publish -->
-        {% include 'smartadmin/parts/publishDropdown.html.twig' %}
-        <!-- app settings -->
-        {% include 'smartadmin/parts/settings.html.twig' %}
+{#        <!-- app settings -->#}
+{#        {% include 'smartadmin/parts/settings.html.twig' %}#}
         <!-- app shortcuts -->
         {% include 'smartadmin/parts/shortcuts.html.twig' %}
         <!-- app message -->
         {% include 'smartadmin/parts/message.html.twig' %}
         <!-- app notification -->
         {% include 'smartadmin/parts/notification.html.twig' %}
+        <!-- app publish -->
+        {% include 'smartadmin/parts/publishDropdown.html.twig' %}
+
         <!-- app user menu -->
         {% if is_granted("ROLE_USER") %}
         <div>
-            <a href="#" data-toggle="dropdown" title="drlantern@gotbootstrap.com" class="header-icon d-flex align-items-center justify-content-center ml-2">
-                <img src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}" class="profile-image mine-avatar rounded-circle border-primary" style="border-width: 2px; border-style: solid;" alt="Dr. Codex Lantern">
+            <a href="#" data-toggle="dropdown" title="drlantern@gotbootstrap.com" class="header-icon ml-2">
+                <img src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}" class="profile-image mine-avatar rounded-circle bg-primary border-primary" style="border-width: 2px; border-style: solid;" alt="Dr. Codex Lantern">
                 <!-- you can also add username next to the avatar with the codes below:
                 <span class="ml-1 mr-1 text-truncate text-truncate-header hidden-xs-down">Me</span>
                 <i class="ni ni-chevron-down hidden-xs-down"></i> -->

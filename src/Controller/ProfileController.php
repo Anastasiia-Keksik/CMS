@@ -15,6 +15,7 @@ use App\Repository\ProfileDesignSettingsRepository;
 use App\Repository\SocialPostRepository;
 use App\Repository\UserForumPostRepository;
 use App\Repository\UserPrivateForumRepository;
+use App\Services\GetContactsService;
 use App\Services\MainMenuService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -143,7 +144,7 @@ class ProfileController extends AbstractController
                                 Request $request, SocialPostCommentRepository $underCommentsRepo,
                                 ProfileDesignSettingsRepository $pdsr, SocialPostRepository $postRepository, ContactRepository $contactRepo,
                                 AccountRepository $accRepo, GalleryPhotosRepository $galleryPhotosRepository,
-                                UserPrivateForumRepository $forumRepository, ComicRepository $comicsRepo)
+                                UserPrivateForumRepository $forumRepository, ComicRepository $comicsRepo, GetContactsService $getContactsService)
     {
         $mainMenu = $mainMenuService->getMenu();
         $repository = $entityManager->getRepository(Account::class);
@@ -232,15 +233,8 @@ class ProfileController extends AbstractController
             }
         }
 
-        $contacts = $contactRepo->findContacts($userCredentials->getId());
-        $contactProfile = [];
+        $contacts = $getContactsService->getContacts($userCredentials->getId());
 
-        $i = 0;
-        foreach ($contacts as $contact){
-            $contactProfile['fhd'.$i] = $accRepo->findJustUsernameAndAvatar($contact['contact']);//TODO: zrobic wyspecjalizowane wyszukiwanie bez zbednych informacji, sam username i avatar
-            $i++;
-        }
-        //dd($contactProfile);
 
         $forum = $forumRepository->findOneBy(['UserAdmin'=>$userCredentials, 'softDelete'=>0]);
 
@@ -258,7 +252,7 @@ class ProfileController extends AbstractController
             'tab'=>$tab,
             'posts'=>$posts,
             'design'=>$design,
-            'Contacts'=>$contactProfile,
+            'Contacts'=>$contacts,
             'gallery'=>$photos,
             'SOCIAL_POSTS'=>$_SERVER['SOCIAL_POSTS'],
             'theme'=>$this->theme,

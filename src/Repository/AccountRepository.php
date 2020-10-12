@@ -66,7 +66,7 @@ class AccountRepository extends ServiceEntityRepository implements PasswordUpgra
     public function findJustUsernameAndAvatar($id)
     {
         return $this->createQueryBuilder('a')
-            ->select(['a.username', 'a.avatarFileName'])
+            ->select(['a.username', 'a.firstName', 'a.lastName', 'a.avatarFileName'])
             ->andWhere('a.id like :id')
             ->setParameter('id', $id)
 
@@ -75,33 +75,4 @@ class AccountRepository extends ServiceEntityRepository implements PasswordUpgra
             ;
     }
 
-
-    // /**
-    //  * @return Account[] Returns an array of Account objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Account
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -1,0 +1,201 @@
+    <script>
+        let conversations = new Array();
+        let activeConversation;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // let url = new URL('http://127.0.0.1:3000/.well-known/mercure');
+            //
+            // url.searchParams.append('topic', '/pies');
+            //
+            // const eventSource = new EventSource(url);
+            //
+            // eventSource.onmessage = (event) => {
+            //     console.log(event);
+            // }
+
+            fetch('/conversations').then(result => result.json()).then (data => {
+                    console.log(data);
+
+                    data.forEach(elm => {
+                         $('#showObject').append('<br><br>');
+                        for (let key in elm){
+                            $('#showObject').append('' +
+                                 key + ' : ' + elm[key] +
+                                '<br>')
+                        }
+
+                        conversations[elm['conversationId']] = elm;
+
+                        let names = '';
+                        let namesIt = 0;
+                        elm['participants'].forEach(participant =>{
+                            namesIt++;
+
+                            if (elm['participants'].length === namesIt){
+                                names += participant['firstName'] + " " + participant['username'] + " " + participant['lastName'];
+                            }else{
+                                names += participant['firstName'] + " " + participant['username'] + " " + participant['lastName'] + "<br>";
+                            }
+
+                        });
+
+                        $('#active_conversations').append('' +
+                            '<div onclick="loadMessages(\''+ elm['conversationId'] +'\')" class="mx-2 tooltip-appending" data-toggle="tooltip" data-placement="auto" title="" data-original-title="' + names + '" data-html="true">\n' +
+                            '  <div class="align-middle status status-success status-sm">\n' +
+                            '    <span class="profile-image-md rounded-circle d-block" style="background-image:url(\''+ elm['participants'][Math.floor(Math.random() * elm['participants'].length)]['avatarFileName'] +'\'); background-size: cover;"></span>\n' +
+                            '  </div>\n' +
+                            '</div>' +
+                            '');
+
+                    });
+
+                $('body').on('mouseenter', '.tooltip-appending', function () {
+                    if ($(this).attr('data-toggle') == 'tooltip') {
+                        $(this).tooltip({
+                            container: 'body',
+                            placement: 'auto',
+                            trigger: 'hover'
+                        }).tooltip('show');
+                    }
+                });
+
+                let url = new URL('http://127.0.0.1:3000/.well-known/mercure');
+
+                url.searchParams.append('topic', '/pies');
+
+                const eventSource = new EventSource(url);
+
+                eventSource.onmessage = (event) => {
+                    console.log(event);
+                }
+            })
+        });
+
+        let conversationLoaded = new Array();
+        let conversationMessages = new Array();
+        let active = new Array(); //active Segment, mine or not
+        let isFirst = new Array();
+        let lastMessage;
+        let lastMessageBarricade = false;
+        let actualMessage;
+        let isSegmentStarted = false;
+
+        function loadMessages(id) {
+            activeConversation = id;
+
+            if (conversations[id]['participants'].length > 1){
+                $('#chat-name').text('Conference');
+            }else{
+                if (conversations[id]['participants'][0]['firstName'] === null && conversations[id]['participants'][0]['lastName'] === null){
+                    $('#chat-name').text(conversations[id]['participants'][0]['username']);
+                }else{
+                    $('#chat-name').text(conversations[id]['participants'][0]['firstName'] + ' ' + conversations[id]['participants'][0]['lastName']);
+                }
+                $('#chat-occupancy').text(conversations[id]['participants'][0]['Occupation']);
+            }
+
+            if (conversationLoaded[id]!==true){
+                fetch('/messages/'+ id).then(result => result.json()).then (data => {
+                    $('#chat-header').removeClass('hidden-xs-up');
+
+                    isFirst[id] = true
+                    conversationMessages[id] = data;
+                    console.log(conversationMessages[id]);
+                    for (let key in active){
+                        if (active[key]===true && key !== id && conversationLoaded[key] === true){
+                            $('#chat_conversation_'+key).addClass('hidden-xs-up');
+                            active[key] = false;
+                        }
+                        console.log(key + ' ' + active[key]);
+                    }
+
+                    console.log(conversations[id]);
+
+                    $('#chat_container').append('<div id="chat_conversation_'+ id +'" class="w-100"></div>')
+                    let nextSegment = false;
+                    conversationMessages[id].forEach(msg => {
+                        actualMessage = '#message_'+msg['id'];
+                        if (msg['mine']===true){
+                            //$('#message_'+lastMessage).addClass('chat-end');
+                            $('#chat_conversation_'+id).append('' +
+                                '<!-- start .chat-segment -->' +
+                                '<div class="chat-segment">'+
+                                '<div id="message_'+ msg['id'] +'" class="chat-segment-sent">\n' +
+                                ' <div class="chat-message tooltip-appending" data-toggle="tooltip" data-placement="auto" title="" data-original-title="' + msg['createdAt'] + '" data-html="true">\n' +
+                                '  <p>\n' +
+                                msg['content'] +
+                                '  </p>\n' +
+                                ' </div>\n' +
+                                '</div>\n' +
+                                '</div>'+
+                                '<!--  end .chat-segment -->' +
+                                '');
+
+                            if (isFirst === true || lastMessageBarricade === false && isSegmentStarted === false){
+                                $(actualMessage).addClass('chat-start');
+                                isSegmentStarted = true;
+                            }
+                        }else{
+                            //$('#message_'+lastMessage).addClass('chat-end');
+                            $('#chat_conversation_'+id).append('' +
+                                '<!-- start .chat-segment -->\n' +
+                                '<div id="message_'+ msg['id'] +'" class="chat-segment chat-segment-get">\n' +
+                                ' <div class="chat-message">\n' +
+                                '  <p>\n' +
+                                msg['content'] +
+                                '  </p>\n' +
+                                ' </div>\n' +
+                                ' <div class="text-right fw-300 text-muted mt-1 fs-xs">\n' +
+                                msg['createdAt'] +
+                                ' </div>\n' +
+                                '</div>\n' +
+                                '<!--  end .chat-segment -->' +
+                                '');
+
+                            if (isFirst === true || lastMessageBarricade === true){
+                                $(actualMessage).addClass('chat-start');
+                            }
+                        }
+                        isFirst[id] = false;
+                        lastMessage = msg['id'];
+                        lastMessageBarricade = msg['mine'];
+                    });
+                    active[id]=true;
+                });
+                console.log('conversation: '+ id +' loaded');
+                conversationLoaded[id] = true;
+            }else{
+                if (active[id]===false){
+                    active[id]=true;
+                    $('#chat_conversation_'+id).removeClass('hidden-xs-up');
+                }
+                for (let key in active){
+                    if (active[key]===true && key !== id){
+                        $('#chat_conversation_'+key).addClass('hidden-xs-up');
+                        active[key] = false;
+                    }
+                    console.log(key + ' ' + active[key]);
+                }
+                console.log(conversationMessages[id]);
+            }
+        }
+        //zrobic ze jeslikasuje conversacje, activeConversationId jest kasowane na false
+        function send_msgr_input() {
+            if (activeConversation !== false){
+                $.ajax('/messages/'+activeConversation, {
+                    method: "POST",
+                    data: {
+                        'content' : $('msgr_input').html()
+                    },
+                    processData: false,
+                    contentType: false,
+                    success: function () {
+                        console.log('msg sent');
+                    },
+                    error: function () {
+                        console.log('error - msg not sent');
+                    }
+                });
+            }
+        }
+    </script>

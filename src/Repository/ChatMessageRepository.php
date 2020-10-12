@@ -19,32 +19,32 @@ class ChatMessageRepository extends ServiceEntityRepository
         parent::__construct($registry, ChatMessage::class);
     }
 
-    // /**
-    //  * @return ChatMessage[] Returns an array of ChatMessage objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findMessageByConversationId($conversationId)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
+        $qb = $this->createQueryBuilder('m');
+        $qb->where('m.conversation = :conversationId')
+            ->setParameter('conversationId', $conversationId)
+            ->orderBy('m.createdAt', "DESC")
+            ->setMaxResults(60)
         ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?ChatMessage
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $qb->getQuery()->getResult();
     }
-    */
+
+
+    public function findMessagesPagination($conversationId, int $page)
+    {
+        $page = $page * 60;
+        $page = $page + 1;
+
+        $qb = $this->createQueryBuilder('m');
+        $qb->where('m.conversation = :conversationId')
+            ->setParameter('conversationId', $conversationId)
+            ->orderBy('m.createdAt', "DESC")
+            ->setMaxResults(60)
+            ->setFirstResult($page)
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
 }

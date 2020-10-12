@@ -4,13 +4,10 @@ namespace App\Entity;
 
 use App\Repository\ChatParticipantRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Index;
 use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=ChatParticipantRepository::class)
- * @ORM\Table(indexes={@Index(name="created_at_index", columns={"created_at"})})
- * @ORM\HasLifecycleCallbacks()
  */
 class ChatParticipant
 {
@@ -37,12 +34,17 @@ class ChatParticipant
      */
     private $conversation;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $activeStatus;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -79,6 +81,18 @@ class ChatParticipant
     public function setConversation(?ChatConversation $conversation): self
     {
         $this->conversation = $conversation;
+
+        return $this;
+    }
+
+    public function getActiveStatus(): ?int
+    {
+        return $this->activeStatus;
+    }
+
+    public function setActiveStatus(int $activeStatus): self
+    {
+        $this->activeStatus = $activeStatus;
 
         return $this;
     }

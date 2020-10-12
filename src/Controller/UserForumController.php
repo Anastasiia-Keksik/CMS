@@ -20,6 +20,7 @@ use App\Repository\UserForumForumRepository;
 use App\Repository\UserForumPostRepository;
 use App\Repository\UserForumTopicRepository;
 use App\Repository\UserPrivateForumRepository;
+use App\Services\GetContactsService;
 use App\Services\MainMenuService;
 use App\Services\Validation;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,7 +47,9 @@ class UserForumController extends AbstractController
 {
     private $theme;
 
-    public function __construct()
+    private $contacts;
+
+    public function __construct(GetContactsService $contactsRepository)
     {
         if (isset($_COOKIE["theme"])){
 
@@ -64,7 +67,7 @@ class UserForumController extends AbstractController
      */
     public function user_forum(string $profile, EntityManagerInterface $entityManager, MainMenuService $mainMenuService,
                                UserPrivateForumRepository $forumRepository, UserForumCategoryRepository $catRepo,
-                               UserForumPostRepository $postRepo)
+                               UserForumPostRepository $postRepo, GetContactsService $contactsRepository)
     {
         $mainMenu = $mainMenuService->getMenu();
         $userRepository = $entityManager->getRepository(Account::class);
@@ -77,6 +80,12 @@ class UserForumController extends AbstractController
         }else{
             $username = NULL;
         }
+
+
+        $contacts = $contactsRepository->getContacts($this->getUser()->getId());
+        $comics = $contactsRepository->getComics($this->getUser()->getId());
+        
+        
 
         $userCredentials = $userRepository->findOneBy(['username' => $profile]);
 
@@ -94,7 +103,9 @@ class UserForumController extends AbstractController
                 'error_msg' => 'There is no username with this name.',
                 'middle_error_msg' => '',
                 'lower_error_msg' => '<a href="javascript:history.back();">Go Back!</a>',
-                'theme'=>$this->theme
+                'theme'=>$this->theme,
+                'Contacts' => $contacts,
+                'comics' => $comics
             ]);
         }
 
@@ -114,7 +125,9 @@ class UserForumController extends AbstractController
                 'error_msg' => 'This username does not have forum',
                 'middle_error_msg' => '',
                 'lower_error_msg' => '<a href="javascript:history.back();">Go Back!</a>',
-                'theme'=>$this->theme
+                'theme'=>$this->theme,
+                'Contacts' => $contacts,
+                'comics' => $comics
             ]);
         }
 
@@ -143,7 +156,9 @@ class UserForumController extends AbstractController
             'user'=>$user,
             'lastPost'=>$lastPost,
             'SocialPosts'=>$_SERVER['SOCIAL_POSTS'],
-            'theme'=>$this->theme
+            'theme'=>$this->theme,
+            'Contacts' => $contacts,
+            'comics' => $comics
         ]);
     }
 
@@ -156,12 +171,15 @@ class UserForumController extends AbstractController
      */
     public function makeNewCategoryForUser(Account $userId = NULL, UserForumCategoryRepository $categoryRepository,
                                            MainMenuService $mainMenuService, UserInterface $user, Request $request,
-                                           UserPrivateForumRepository $UserForum, EntityManagerInterface $em)
+                                           UserPrivateForumRepository $UserForum, EntityManagerInterface $em, GetContactsService $contactsRepository)
     {
         $mainMenu = $mainMenuService->getMenu();
         $categories = $categoryRepository->takeCategoriesByOrderValue(null);
         $forumid = $request->query->get('forumid');
         $forum = $UserForum->find($forumid);
+
+        $contacts = $contactsRepository->getContacts($this->getUser()->getId());
+        $comics = $contactsRepository->getComics($this->getUser()->getId());
 
         //check if this logged user == slug user id
         if ($userId->getUsername()==$user->getUsername())
@@ -179,7 +197,9 @@ class UserForumController extends AbstractController
                 'footer'=>$_SERVER['FOOTER'],
                 'pageName'=>"Forum",
                 'MainMenu' => $mainMenu,
-                'theme'=>$this->theme
+                'theme'=>$this->theme,
+                'Contacts' => $contacts,
+                'comics' => $comics
             ]);
         }
 
@@ -233,6 +253,8 @@ class UserForumController extends AbstractController
             'forumDesc' => $forum->getDescription(),
             'theme'=>$this->theme,
             'profile'=>$userId,
+            'Contacts' => $contacts,
+            'comics' => $comics
         ]);
     }
 
@@ -243,7 +265,7 @@ class UserForumController extends AbstractController
     public function makeNewForumForUser(Account $user = NULL, UserForumCategoryRepository $categoryRepository,
                                         UserForumForumRepository $forumRepository, MainMenuService $mainMenuService,
                                         UserInterface $loggedUser, Request $request, UserPrivateForumRepository $UserForum,
-                                        EntityManagerInterface $em){
+                                        EntityManagerInterface $em, GetContactsService $contactsRepository){
         if ($request->request->get('ForumName')){
             if ($request->request->get('_token') and $this->isCsrfTokenValid('make_new_forum_list', $request->request->get('_token'))){
                 $cat = $categoryRepository->find($request->request->get('CatId'));
@@ -262,6 +284,9 @@ class UserForumController extends AbstractController
                 die('CSRF TOKEN INVALID');
             }
         }
+        $contacts = $contactsRepository->getContacts($this->getUser()->getId());
+        $comics = $contactsRepository->getComics($this->getUser()->getId());
+
 
         $mainMenu = $mainMenuService->getMenu();
         //$categories = $categoryRepository->takeCategoriesByOrderValue(null);
@@ -284,7 +309,9 @@ class UserForumController extends AbstractController
                 'footer'=>$_SERVER['FOOTER'],
                 'pageName'=>"Forum",
                 'MainMenu' => $mainMenu,
-                'theme'=>$this->theme
+                'theme'=>$this->theme,
+                'Contacts' => $contacts,
+                'comics' => $comics
             ]);
         }
 
@@ -303,7 +330,9 @@ class UserForumController extends AbstractController
             'forums'=>$forums,
             'Profiler'=>$user->getUsername(),
             'theme'=>$this->theme,
-            'profile'=>$profile
+            'profile'=>$profile,
+            'Contacts' => $contacts,
+            'comics' => $comics
         ]);
     }
 
@@ -312,7 +341,8 @@ class UserForumController extends AbstractController
      * @Security("is_granted('ROLE_USER')")
      */
     public function editCategory(UserForumCategory $kategoria, UserForumCategoryRepository $CategoriesRepository,
-                                 MainMenuService $mainMenuService, Request $request, EntityManagerInterface $em){
+                                 MainMenuService $mainMenuService, Request $request, EntityManagerInterface $em,
+                                 GetContactsService $contactsRepository){
         //zrobic lepsza autoryzacje usera TODO: czytaj z lewej
         if ($this->getUser() == $kategoria->getIsItUserPrivateForum()->getUserAdmin()){
             $CategoryOrder = $CategoriesRepository ->takeCategoriesByOrderValue($kategoria->getIsItUserPrivateForum()->getId());
@@ -351,6 +381,9 @@ class UserForumController extends AbstractController
             die('nie masz praw aby edytowac te forum');
         }
 
+        $contacts = $contactsRepository->getContacts($this->getUser()->getId());
+        $comics = $contactsRepository->getComics($this->getUser()->getId());
+
         $mainMenu = $mainMenuService->getMenu();
 
         return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/forum/EditExistingForumCategory.twig', [
@@ -366,7 +399,9 @@ class UserForumController extends AbstractController
             'user'=>$this->getUser(),
             'CategoryOrder'=>$CategoryOrder,
             'profile'=>$kategoria->getIsItUserPrivateForum()->getUserAdmin(),
-            'theme'=>$this->theme
+            'theme'=>$this->theme,
+            'Contacts' => $contacts,
+            'comics' => $comics
         ]);
     }
 
@@ -376,7 +411,7 @@ class UserForumController extends AbstractController
      */
     public function editForumCategory(UserForumForum $forumtable, UserForumCategoryRepository $CategoriesRepository,
                                       MainMenuService $mainMenuService, Request $request, EntityManagerInterface $em,
-                                      UserForumForumRepository $forumRepository){
+                                      UserForumForumRepository $forumRepository, GetContactsService $contactsRepository){
         //zrobic lepsza autoryzacje usera TODO: czytaj z lewej
         $forumPrivate = $forumtable->getCategory()->getIsItUserPrivateForum();
         if ($this->getUser() == $forumPrivate->getUserAdmin()){
@@ -436,6 +471,9 @@ class UserForumController extends AbstractController
             die('nie masz praw aby edytowac te forum');
         }
 
+        $contacts = $contactsRepository->getContacts($this->getUser()->getId());
+        $comics = $contactsRepository->getComics($this->getUser()->getId());
+
         $mainMenu = $mainMenuService->getMenu();
         //dd($Categories);
         return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/forum/EditExistingForumTable.twig', [
@@ -452,7 +490,9 @@ class UserForumController extends AbstractController
             'user'=>$this->getUser(),
             'CategoryOrder'=>$Categories,
             'profile' => $forumPrivate->getUserAdmin(),
-            'theme'=>$this->theme
+            'theme'=>$this->theme,
+            'Contacts' => $contacts,
+            'comics' => $comics
         ]);
     }
 
@@ -462,7 +502,8 @@ class UserForumController extends AbstractController
      */
     public function showForumThreads(MainMenuService $mainMenuService, UserForumForum $forumtableid,
                                      PaginatorInterface $paginator, UserForumTopicRepository $TopicsRepository,
-                                     Request $request, SessionInterface $session, UserForumPostRepository $postRepo){
+                                     Request $request, SessionInterface $session, UserForumPostRepository $postRepo,
+                                     GetContactsService $contactsRepository){
         $query = $TopicsRepository->findTopicsWithPagination($forumtableid->getId());
 
         $pagination = $paginator->paginate(
@@ -478,6 +519,9 @@ class UserForumController extends AbstractController
             //dd($postRepo->threadPostsCount($watek->getId()));
             $iloscPodstron[$watek->getId()] = (int) ceil($postRepo->threadPostsCount($watek->getId())[1]/10);
         }
+
+        $contacts = $contactsRepository->getContacts($this->getUser()->getId());
+        $comics = $contactsRepository->getComics($this->getUser()->getId());
 
         $mainMenu = $mainMenuService->getMenu();
         return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/forum/threads_list.twig', [
@@ -495,7 +539,9 @@ class UserForumController extends AbstractController
             'forum'=>$forumtableid,
             'thread_pagination'=>$pagination,
             'iloscPodstron'=>$iloscPodstron,
-            'theme'=>$this->theme
+            'theme'=>$this->theme,
+            'Contacts' => $contacts,
+            'comics' => $comics
         ]);
     }
 
@@ -506,7 +552,7 @@ class UserForumController extends AbstractController
     public function openThread(MainMenuService $mainMenuService, PaginatorInterface $paginator,
                                UserForumPostRepository $forumPostRepo, Request $request,
                                UserForumTopic $threadid, SessionInterface $session, EntityManagerInterface $em,
-                               LoggerInterface $logger, PostsLikesRepository $like){
+                               LoggerInterface $logger, PostsLikesRepository $like, GetContactsService $contactsRepository){
         $referer_array = explode('/', parse_url($request->headers->get('referer'))['path']);
         if ($referer_array[1] != 'thread' and $referer_array[2] != $threadid->getId()) {
             $views = $threadid->getViews();
@@ -535,6 +581,9 @@ class UserForumController extends AbstractController
         }
         $mainMenu = $mainMenuService->getMenu();
 
+        $contacts = $contactsRepository->getContacts($this->getUser()->getId());
+        $comics = $contactsRepository->getComics($this->getUser()->getId());
+
         return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/forum/Thread_View.twig', [
             'title'=>'Forum - '.$_SERVER['APP_NAME'],
             'lang'=>'pl',
@@ -552,8 +601,9 @@ class UserForumController extends AbstractController
             'posts_pagination'=>$pagination,
             'postsLikes'=>$postsLikes,
             'page'=> $request->query->get('page'),
-            'theme'=>$this->theme
-
+            'theme'=>$this->theme,
+            'Contacts' => $contacts,
+            'comics' => $comics
         ]);
         //return new Response('done');
     }
@@ -564,7 +614,7 @@ class UserForumController extends AbstractController
      */
     public function makeNewThread(MainMenuService $mainMenuService, UserForumForum $forumtableid,
                                   PaginatorInterface $paginator, UserForumTopicRepository $TopicsRepository, Request $request,
-                                  EntityManagerInterface $em){
+                                  EntityManagerInterface $em, GetContactsService $contactsRepository){
         //$query = $TopicsRepository->findTopicsWithPagination($forumtableid);
 
         //TODO: Zrobic w ogole sprawdzanie, czy mamy dostep do forum w ktorym robimy nowa kategorie czy forum
@@ -618,6 +668,9 @@ class UserForumController extends AbstractController
         }
 
 
+        $contacts = $contactsRepository->getContacts($this->getUser()->getId());
+        $comics = $contactsRepository->getComics($this->getUser()->getId());
+
 
         $mainMenu = $mainMenuService->getMenu();
         return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/forum/makeNewThread.twig', [
@@ -633,7 +686,9 @@ class UserForumController extends AbstractController
             'forum'=>$forumtableid,
             'forumCre'=>$forumtableid->getCategory()->getIsItUserPrivateForum(),
             'profile'=>$forumtableid->getCategory()->getIsItUserPrivateForum()->getUserAdmin(),
-            'theme'=>$this->theme
+            'theme'=>$this->theme,
+            'Contacts' => $contacts,
+            'comics' => $comics
         ]);
     }
 
@@ -642,7 +697,7 @@ class UserForumController extends AbstractController
      * @Security("is_granted('ROLE_USER')")
      */
     public function likePost(UserForumPost $postid, EntityManagerInterface $em, PostsLikesRepository $like,
-                             AccountRepository $account)
+                             AccountRepository $account, GetContactsService $contactsRepository)
     {
         $wynik = $like->getPostLike($postid->getId(), $this->getUser());
         $user = $account->find($this->getUser());
@@ -678,7 +733,7 @@ class UserForumController extends AbstractController
      */
     public function makeNewPost(UserForumTopic $thread, EntityManagerInterface $entityManager, Request $request,
                                 UserForumPostRepository $forumPostRepo, PaginatorInterface $paginator,
-                                SessionInterface $session)
+                                SessionInterface $session, GetContactsService $contactsRepository)
     {
         if ($request->request->get('_token')) {
             if ($this->isCsrfTokenValid('new-post', $request->request->get('_token'))) {
@@ -724,7 +779,7 @@ class UserForumController extends AbstractController
      */
     public function createForum($user, AccountRepository $accountRepository, MainMenuService $mainMenuService,
                                 UserPrivateForumRepository $forumRepository, Request $request, EntityManagerInterface $em,
-                                Validation $valid, ComicRepository $comicsRepo)
+                                Validation $valid, GetContactsService $contactsRepository)
     {
         $user = $accountRepository->findOneBy(["username"=>$user]);
 
@@ -738,8 +793,6 @@ class UserForumController extends AbstractController
 
         $forumDesc = "";
         $forumName = "";
-
-        $comics = $comicsRepo->findAll();
 
         // this goto fucntion is somewhat easter egg of mine. I started programing thanks to this function and i wanted to used somewhere. Leave it be.
         if ($request->request->get('_token')) {
@@ -795,6 +848,9 @@ class UserForumController extends AbstractController
                 $forumName = trim($request->request->get('forumName'));
             }
         }
+        $contacts = $contactsRepository->getContacts($this->getUser()->getId());
+        $comics = $contactsRepository->getComics($this->getUser()->getId());
+
 
         $mainMenu = $mainMenuService->getMenu();
         return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/forum/create.twig', [
@@ -812,7 +868,8 @@ class UserForumController extends AbstractController
             'active'=>$active,
             'forumDesc'=>$forumDesc,
             'forumName'=>$forumName,
-            'comics'=>$comics
+            'Contacts' => $contacts,
+            'comics' => $comics
         ]);
     }
 }
