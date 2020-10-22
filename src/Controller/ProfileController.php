@@ -161,11 +161,16 @@ class ProfileController extends AbstractController
             throw $this->createNotFoundException('Nie znaleziono takiego uzytkownika');
         }
         $tab = !empty($request->query->get('tab')) ? $request->query->get('tab') : "profile";
+        $avatar = !empty($request->query->get('avatar')) ? $request->query->get('avatar') : null;
 
         if ($userCredentials->getGallery()){
-            $photos = $galleryPhotosRepository->findLast9($userCredentials->getGallery()->getId());
+            $photos = $galleryPhotosRepository->findLast15($userCredentials->getGallery()->getId());
         }else{
             $photos = null;
+        }
+
+        if ($userCredentials == $user){
+            $albums = $userCredentials->getGallery()->getGalleryAlbums();
         }
 
         $socialPosts = $postRepository->loadNewPosts($userCredentials->getId());
@@ -257,7 +262,9 @@ class ProfileController extends AbstractController
             'SOCIAL_POSTS'=>$_SERVER['SOCIAL_POSTS'],
             'theme'=>$this->theme,
             'forum'=>$forum,
-            'comics'=>$comics
+            'comics'=>$comics,
+            'avatar'=>$avatar,
+            'albums' => $albums
         ]);
     }
 

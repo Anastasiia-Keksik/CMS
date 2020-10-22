@@ -1,4 +1,4 @@
-<header class="page-header{% if pageName=='Profile' %} position-fixed{% endif %}" role="banner">
+<header class="page-header" role="banner">
     <!-- we need this logo when user switches to nav-function-top -->
     <div class="page-logo">
         <a href="#" class="page-logo-link press-scale-down d-flex align-items-center position-relative" data-toggle="modal" data-target="#modal-shortcut">
@@ -47,8 +47,8 @@
                 <i class="fal fa-search"></i>
             </a>
         </div>
-{#        <!-- app settings -->#}
-{#        {% include 'smartadmin/parts/settings.html.twig' %}#}
+        <!-- app settings -->
+        {% include 'smartadmin/parts/settings.html.twig' %}
         <!-- app shortcuts -->
         {% include 'smartadmin/parts/shortcuts.html.twig' %}
         <!-- app message -->

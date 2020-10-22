@@ -2871,6 +2871,11 @@ input[type="button"].btn-block {
   .fade:not(.show) {
     opacity: 0; }
 
+.fade-d-none {
+  display: initial}
+.fade-d-none:not(.show) {
+  display:none;}
+
 .collapse:not(.show) {
   display: none; }
 

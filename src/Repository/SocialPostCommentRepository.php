@@ -39,6 +39,24 @@ class SocialPostCommentRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return SocialPostComment[] Returns an array of SocialPost objects
+     */
+
+    public function calendarGet($user, $start, $end)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.author = :val')
+            ->andWhere('c.createdAt >= :start')
+            ->andWhere('c.createdAt <= :end')
+            ->setParameter('val', $user)
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
      * @return SocialPostComment[] Returns an array of SocialPostComment objects
      */
     public function findNewestCommentConversation($value, $commentId)

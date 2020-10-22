@@ -2029,7 +2029,7 @@ html {
       z-index: 1;
       top: 0;
       bottom: 0;
-      left: 16.875rem;
+      left: 0.625rem;
       width: 2.1rem; }
     .nav-function-hidden:not(.nav-function-top) .page-sidebar:hover {
       left: 0;

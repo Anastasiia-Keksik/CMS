@@ -19,19 +19,86 @@ class GalleryPhotosRepository extends ServiceEntityRepository
         parent::__construct($registry, GalleryPhotos::class);
     }
 
-     /**
-      * @return GalleryPhotos[] Returns an array of GalleryPhotos objects
-      */
+    /**
+     * @return GalleryPhotos[] Returns an array of GalleryPhotos objects
+     */
     public function findLast9($galleryid)
     {
         return $this->createQueryBuilder('g')
             ->andWhere('g.galleryId = :val')
+            ->andWhere('g.softDelete = 0')
             ->setParameter('val', $galleryid)
             ->orderBy('g.uploadedAt', 'DESC')
             ->setMaxResults(9)
             ->getQuery()
             ->getResult()
-        ;
+            ;
+    }
+
+    /**
+     * @return GalleryPhotos[] Returns an array of GalleryPhotos objects
+     */
+    public function findLast15($galleryid)
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.galleryId = :val')
+            ->andWhere('g.softDelete = 0')
+            ->setParameter('val', $galleryid)
+            ->orderBy('g.uploadedAt', 'DESC')
+            ->setMaxResults(15)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return GalleryPhotos[] Returns an array of GalleryPhotos objects
+     */
+    public function findNext18galleryImages($galleryid, $first)
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.galleryId = :val')
+            ->andWhere('g.softDelete = 0')
+            ->setParameter('val', $galleryid)
+            ->orderBy('g.uploadedAt', 'DESC')
+            ->setMaxResults(18)
+            ->setFirstResult($first)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return GalleryPhotos[] Returns an array of GalleryPhotos objects
+     */
+    public function findLast15inAlbum($albumid)
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.album = :val')
+            ->andWhere('a.softDelete = 0')
+            ->setParameter('val', $albumid)
+            ->orderBy('a.uploadedAt', 'DESC')
+            ->setMaxResults(15)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return GalleryPhotos[] Returns an array of GalleryPhotos objects
+     */
+    public function findNext18inAlbum($albumid, $first)
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.album = :val')
+            ->andWhere('a.softDelete = 0')
+            ->setParameter('val', $albumid)
+            ->orderBy('a.uploadedAt', 'DESC')
+            ->setMaxResults(18)
+            ->setFirstResult($first)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
     /**
@@ -41,6 +108,7 @@ class GalleryPhotosRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('g')
             ->andWhere('g.galleryId = :val')
+            ->andWhere('g.softDelete = 0')
             ->setParameter('val', $galleryid)
             ->orderBy('g.uploadedAt', 'DESC')
             ->getQuery()
@@ -55,6 +123,7 @@ class GalleryPhotosRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('g')
             ->andWhere('g.album = :val')
+            ->andWhere('g.softDelete = 0')
             ->setParameter('val', $albumid)
             ->orderBy('g.uploadedAt', 'DESC')
             ->getQuery()

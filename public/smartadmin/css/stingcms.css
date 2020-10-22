@@ -292,3 +292,16 @@
 .text-black{
     color: black;
 }
+
+.rounded-right-0 {
+    border-bottom-right-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
+.rounded-top-right-0 {
+    border-top-right-radius: 0 !important;
+}
+
+.rounded-bottom-right-0 {
+    border-bottom-right-radius: 0 !important;
+}

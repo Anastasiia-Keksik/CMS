@@ -37,6 +37,24 @@ class SocialPostRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @return SocialPost[] Returns an array of SocialPost objects
+     */
+
+    public function calendarGet($user, $start, $end)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.Account = :val')
+            ->andWhere('p.createdAt >= :start')
+            ->andWhere('p.createdAt <= :end')
+            ->setParameter('val', $user)
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     public function loadNewPostsOffset($id, $offset)
     {
         return $this->createQueryBuilder('p')

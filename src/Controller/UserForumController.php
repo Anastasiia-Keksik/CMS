@@ -199,7 +199,8 @@ class UserForumController extends AbstractController
                 'MainMenu' => $mainMenu,
                 'theme'=>$this->theme,
                 'Contacts' => $contacts,
-                'comics' => $comics
+                'comics' => $comics,
+                'user' => $userId
             ]);
         }
 
@@ -254,7 +255,8 @@ class UserForumController extends AbstractController
             'theme'=>$this->theme,
             'profile'=>$userId,
             'Contacts' => $contacts,
-            'comics' => $comics
+            'comics' => $comics,
+            'user' => $userId
         ]);
     }
 

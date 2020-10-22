@@ -265,6 +265,11 @@ class Account implements UserInterface
      */
     private $comics;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Wallet::class, mappedBy="User", cascade={"persist", "remove"})
+     */
+    private $wallet;
+
     public function __construct()
     {
         $this->mainMenuCategories = new ArrayCollection();
@@ -1207,6 +1212,23 @@ class Account implements UserInterface
     public function setAgreedTermsAt(\DateTimeInterface $agreedTermsAt): self
     {
         $this->agreedTermsAt = $agreedTermsAt;
+
+        return $this;
+    }
+
+    public function getWallet(): ?Wallet
+    {
+        return $this->wallet;
+    }
+
+    public function setWallet(Wallet $wallet): self
+    {
+        $this->wallet = $wallet;
+
+        // set the owning side of the relation if necessary
+        if ($wallet->getUser() !== $this) {
+            $wallet->setUser($this);
+        }
 
         return $this;
     }

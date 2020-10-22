@@ -1,0 +1,200 @@
+{% extends 'smartadmin/base.html.twig' %}
+
+{% block content %}
+    <!-- the #js-page-content id is needed for some plugins to initialize -->
+    <main id="js-page-content" role="main" class="page-content">
+        <ol class="breadcrumb page-breadcrumb">
+            <li class="breadcrumb-item"><a href="/">{{ APP_NAME }}</a></li>
+            <li class="breadcrumb-item active"><a href="{{ path('app_gallery', {'profile':profile.Username }) }}">Activity</a></li>
+            <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
+        </ol>
+        <div class="subheader">
+            <h1 class="subheader-title">
+                <i class='subheader-icon fal fa-globe'></i>  {{ profile.Username }}'s activity
+            </h1>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div id="panel-1" class="panel">
+
+                    <div class="panel-container show">
+                        <div class="panel-content">
+                            <div>
+                                <div class="btn-group btn-group-justified d-flex mb-g">
+                                    <a class="btn btn-light" href="{{ path('calendarPostsAndComments', {'user': user.Username}) }}">Social Posts & Comments</a>
+                                    <a class="btn btn-light" href="{{ path('calendarComicsSub', {'user': user.Username}) }}">Subscribed Creations</a>
+                                    <a class="btn btn-light" href="{{ path('calendarComicsRead', {'user': user.Username}) }}">Viewed Creations</a>
+                                    <a class="btn btn-light" href="{{ path('calendarFollowed', {'user': user.Username}) }}">Followed Users</a>
+                                    <button class="btn btn-light mr-2" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen">FullScreen</button>
+                                </div>
+                            </div>
+                               <div id="calendarAll"></div>
+                            <!-- Modal : TODO -->
+                            <!-- Modal end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- this overlay is activated only when mobile menu is triggered -->
+    <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/miscellaneous/fullcalendar/fullcalendar.bundle.css') }}">
+{% endblock %}
+
+{%  block leftMenu %}
+    {% include 'smartadmin/parts/leftMenu.html.twig' %}
+{% endblock %}
+
+{% block header %}
+    {% include 'smartadmin/parts/header.html.twig' %}
+{% endblock %}
+
+{% block footer %}
+    {% include 'smartadmin/parts/footer.twig' %}
+{%  endblock %}
+
+{% block quickmenu %}
+    {% include 'smartadmin/parts/quickmenu.twig' %}
+{% endblock %}
+
+{% block messenger %}
+    {% include 'smartadmin/parts/chat.twig' %}
+{% endblock %}
+
+{% block pagesettings %}
+    {% include 'smartadmin/parts/pagesettings.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- moment.js (dependency for the demo only); you do not have to use it unless you need it
+	DOC: Parse, validate, manipulate, and display dates and times in JavaScript. (https://momentjs.com/) -->
+    <script src="{{ asset('smartadmin/js/dependency/moment/moment.js') }}"></script>
+    <!-- fullcalendar bundle:
+	 DOC: you may remove the extensions if you do not plan on using them. Learn more about these extensions at https://fullcalendar.io
+				+ core/main.js (core)
+				+ daygrid/main.js (extension)
+				+ list/main.js (extension)
+				+ timegrid/main.js (extension)
+				+ interaction/main.js (extension)
+				+ src/../bootstrap-main-cust.js (core) -->
+    <script src="{{ asset('smartadmin/js/miscellaneous/fullcalendar/fullcalendar.bundle.js') }}"></script>
+    <script>
+        var todayDate = moment().startOf('day');
+        var YM = todayDate.format('YYYY-MM');
+        var YESTERDAY = todayDate.clone().subtract(1, 'day').format('YYYY-MM-DD');
+        var TODAY = todayDate.format('YYYY-MM-DD');
+        var TOMORROW = todayDate.clone().add(1, 'day').format('YYYY-MM-DD');
+        var month;
+
+        document.addEventListener('DOMContentLoaded', function()
+        {
+            var calendarEl1 = document.getElementById('calendarAll');
+
+            var calendar1 = new FullCalendar.Calendar(calendarEl1,
+                {
+                    plugins: ['dayGrid', 'list', 'timeGrid', 'interaction', 'bootstrap'],
+                    themeSystem: 'bootstrap',
+                    timeZone: 'UTC',
+                    //dateAlignment: "month", //week, month
+                    buttonText:
+                        {
+                            today: 'today',
+                            month: 'month',
+                            week: 'week',
+                            day: 'day',
+                            list: 'list'
+                        },
+                    eventTimeFormat:
+                        {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            meridiem: 'short',
+                            hour12: false,
+                        },
+                    navLinks: true,
+                    firstDay: 1,
+                    header:
+                        {
+                            left: 'prev,next today addEventButton',
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                        },
+                    footer:
+                        {
+                            left: '',
+                            center: '',
+                            right: ''
+                        },
+                    customButtons:
+                        {
+                            addEventButton:
+                                {
+                                    text: '+',
+                                    click: function()
+                                    {
+                                        var dateStr = prompt('Enter a date in YYYY-MM-DD format');
+                                        var date = new Date(dateStr + 'T00:00:00'); // will be in local time
+
+                                        if (!isNaN(date.valueOf()))
+                                        { // valid?
+                                            calendar.addEvent(
+                                                {
+                                                    title: 'dynamic event',
+                                                    start: date,
+                                                    allDay: true
+                                                });
+                                            alert('Great. Now, update your database...');
+                                            //update data
+                                        }
+                                        else
+                                        {
+                                            alert('Invalid date.');
+                                        }
+                                    }
+                                }
+                        },
+                    //height: 700,
+                    editable: false,
+                    eventLimit: true, // allow "more" link when too many events
+                    views:
+                        {
+                            sevenDays:
+                                {
+                                    type: 'agenda',
+                                    buttonText: '7 Days',
+                                    visibleRange: function(currentDate)
+                                    {
+                                        return {
+                                            start: currentDate.clone().subtract(2, 'days'),
+                                            end: currentDate.clone().add(5, 'days'),
+                                        };
+                                    },
+                                    duration:
+                                        {
+                                            days: 7
+                                        },
+                                    dateIncrement:
+                                        {
+                                            days: 1
+                                        },
+                                },
+                        },
+                    events:{
+                        url: '{{ path('calendar_fetchData') }}',
+                        method: 'POST'
+                    },
+                });
+
+            calendar1.render();
+
+
+
+        });
+    </script>
+{% endblock %}

@@ -19,9 +19,9 @@ class GalleryAlbumRepository extends ServiceEntityRepository
         parent::__construct($registry, GalleryAlbum::class);
     }
 
-    // /**
-    //  * @return GalleryAlbum[] Returns an array of GalleryAlbum objects
-    //  */
+//     /**
+//      * @return GalleryAlbum[] Returns an array of GalleryAlbum objects
+//      */
     /*
     public function findByExampleField($value)
     {

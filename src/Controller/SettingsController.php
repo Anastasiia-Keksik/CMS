@@ -66,7 +66,11 @@ class SettingsController extends AbstractController
 
         $sygnatura = $id->getSignature();
 
-        $sygnatura->setSignature($request->request->get("Signature"));
+        if ($sygnatura !=  null){
+            $sygnatura->setSignature($request->request->get("Signature"));
+            $em -> persist($sygnatura);
+        }
+
        
 
         if ($request->request->get("country")!="") { $id->setCountry($request->request->get("country")); }
@@ -87,7 +91,6 @@ class SettingsController extends AbstractController
 
 
 
-        $em -> persist($sygnatura);
         $em->persist($id);
         $em->flush();
 

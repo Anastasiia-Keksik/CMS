@@ -7,8 +7,11 @@ use App\Entity\MainMenuCategory;
 use App\Form\ChoseMenuCategoryFormType;
 use App\Form\MakeNewMenuCategoryFormType;
 use App\Form\MakeNewRouteFormType;
+use App\Repository\ComicRepository;
+use App\Repository\ContactRepository;
 use App\Repository\MainMenuCategoryRepository;
 use App\Repository\MainMenuChildRepository;
+use App\Services\GetContactsService;
 use App\Services\MainMenuService;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -52,7 +55,8 @@ class AdministrationController extends AbstractController
                                    ForumTopicRepository $forumTopicRepository,
                                    UserForumPostRepository $userForumPostRepository,
                                    UserForumTopicRepository $userForumTopicRepository,
-                                   Request $request, MainMenuChildRepository $childRepository)
+                                   Request $request, MainMenuChildRepository $childRepository,
+                                   GetContactsService $getContacts)
     {
         if($request->query->get('routeid')){
             $object = $childRepository->find($request->query->get('routeid'));
@@ -92,7 +96,6 @@ class AdministrationController extends AbstractController
         }
         $user = $this->getUser();
 
-
         return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/administration/administration.page.twig', [
             'title'=>'Forum - '.$_SERVER['APP_NAME'],
             'lang'=>'pl',
@@ -110,7 +113,10 @@ class AdministrationController extends AbstractController
             'lastPrivateTopics'=>$lastPrivateTopics,
             'something'=>null,
             'user' => $user,
-            'theme'=>$this->theme
+            'profile' => $user,
+            'theme'=>$this->theme,
+            'Contacts' => $getContacts->getContacts($this->getUser()->getId()),
+            'comics' => $getContacts->getComics($this->getUser()->getId()),
         ]);
     }
 
