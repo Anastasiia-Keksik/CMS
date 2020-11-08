@@ -46,10 +46,10 @@ class UserPrivateForum
      */
     private $password;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Account::class, inversedBy="userPrivateForums")
-     */
-    private $Members;
+//    /**
+//     * @ORM\ManyToMany(targetEntity=Account::class, inversedBy="userPrivateForums")
+//     */
+//    private $Members;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -67,12 +67,23 @@ class UserPrivateForum
      */
     private $description;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ForumMembers::class, mappedBy="Forum", orphanRemoval=true)
+     */
+    private $ForumMembers;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $roles = [];
+
     public function __construct()
     {
-        $this->Members = new ArrayCollection();
+//        $this->Members = new ArrayCollection();
         $this->forumCategories = new ArrayCollection();
 
         $this->id = Uuid::uuid4();
+        $this->ForumsMembers = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -140,31 +151,31 @@ class UserPrivateForum
         return $this;
     }
 
-    /**
-     * @return Collection|Account[]
-     */
-    public function getMembers(): Collection
-    {
-        return $this->Members;
-    }
-
-    public function addMember(Account $member): self
-    {
-        if (!$this->Members->contains($member)) {
-            $this->Members[] = $member;
-        }
-
-        return $this;
-    }
-
-    public function removeMember(Account $member): self
-    {
-        if ($this->Members->contains($member)) {
-            $this->Members->removeElement($member);
-        }
-
-        return $this;
-    }
+//    /**
+//     * @return Collection|Account[]
+//     */
+//    public function getMembers(): Collection
+//    {
+//        return $this->Members;
+//    }
+//
+//    public function addMember(Account $member): self
+//    {
+//        if (!$this->Members->contains($member)) {
+//            $this->Members[] = $member;
+//        }
+//
+//        return $this;
+//    }
+//
+//    public function removeMember(Account $member): self
+//    {
+//        if ($this->Members->contains($member)) {
+//            $this->Members->removeElement($member);
+//        }
+//
+//        return $this;
+//    }
 
     public function getSoftDelete(): ?bool
     {
@@ -220,4 +231,48 @@ class UserPrivateForum
 
         return $this;
     }
+
+    /**
+     * @return Collection|ForumMembers[]
+     */
+    public function getForumMembers(): Collection
+    {
+        return $this->ForumMembers;
+    }
+
+    public function addForumMembers(ForumMembers $forumMembers): self
+    {
+        if (!$this->ForumMembers->contains($forumMembers)) {
+            $this->ForumMembers[] = $forumMembers;
+            $forumMembers->setForum($this);
+        }
+
+        return $this;
+    }
+
+    public function removeForumMembers(ForumMembers $forumMembers): self
+    {
+        if ($this->ForumMembers->contains($forumMembers)) {
+            $this->ForumMembers->removeElement($forumMembers);
+            // set the owning side to null (unless already changed)
+            if ($forumMembers->getForum() === $this) {
+                $forumMembers->setForum(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getRoles(): ?array
+    {
+        return $this->roles;
+    }
+
+    public function setRoles(?array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
 }

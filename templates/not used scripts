@@ -1,0 +1,21 @@
+<script>
+    $(document).ready(function() {
+        var settings = initApp.getSettings();
+        if (settings)
+        {
+        console.log('settings: '+settings)
+            let array = settings.split(" ")
+            for (const element of array)
+            {
+                if (element === 'nav-function-hidden')
+                {
+
+                }
+            }
+        }
+        else
+        {
+        console.log('class is empty or nothing to return')
+        }
+    })
+</script>

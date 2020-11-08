@@ -190,10 +190,10 @@ class Account implements UserInterface
      */
     private $userPrivateForum;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=UserPrivateForum::class, mappedBy="Members")
-     */
-    private $userPrivateForums;
+//    /**
+//     * @ORM\ManyToMany(targetEntity=UserPrivateForum::class, mappedBy="Members")
+//     */
+//    private $userPrivateForums;
 
     /**
      * @ORM\OneToOne(targetEntity=Gallery::class, mappedBy="account", cascade={"persist", "remove"})
@@ -270,6 +270,21 @@ class Account implements UserInterface
      */
     private $wallet;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $BackgroundFileName;
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $bgPosition = 0;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ForumMembers::class, mappedBy="Member", orphanRemoval=true)
+     */
+    private $forumsMember;
+
     public function __construct()
     {
         $this->mainMenuCategories = new ArrayCollection();
@@ -279,7 +294,7 @@ class Account implements UserInterface
         $this->userForumTopics = new ArrayCollection();
         $this->userForumPosts = new ArrayCollection();
         $this->userForumPostConversations = new ArrayCollection();
-        $this->userPrivateForums = new ArrayCollection();
+//        $this->userPrivateForums = new ArrayCollection();
         $this->galleries = new ArrayCollection();
         $this->IP = new ArrayCollection();
         $this->socialPosts = new ArrayCollection();
@@ -293,6 +308,7 @@ class Account implements UserInterface
 
         $this->id = Uuid::uuid4();
         $this->userPrivateForum = new ArrayCollection();
+        $this->forumsMember = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -829,7 +845,10 @@ class Account implements UserInterface
 
     //END DODANE PRZE ZE MNIE
 
-    public function getUserPrivateForum(): ?UserPrivateForum
+    /**
+     * @return Collection|UserPrivateForum[]
+     */
+    public function getUserPrivateForum(): Collection
     {
         return $this->userPrivateForum;
     }
@@ -846,33 +865,33 @@ class Account implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|UserPrivateForum[]
-     */
-    public function getUserPrivateForums(): Collection
-    {
-        return $this->userPrivateForums;
-    }
-
-    public function addUserPrivateForum(UserPrivateForum $userPrivateForum): self
-    {
-        if (!$this->userPrivateForums->contains($userPrivateForum)) {
-            $this->userPrivateForums[] = $userPrivateForum;
-            $userPrivateForum->addMember($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserPrivateForum(UserPrivateForum $userPrivateForum): self
-    {
-        if ($this->userPrivateForums->contains($userPrivateForum)) {
-            $this->userPrivateForums->removeElement($userPrivateForum);
-            $userPrivateForum->removeMember($this);
-        }
-
-        return $this;
-    }
+//    /**
+//     * @return Collection|UserPrivateForum[]
+//     */
+//    public function getUserPrivateForums(): Collection
+//    {
+//        return $this->userPrivateForums;
+//    }
+//
+//    public function addUserPrivateForum(UserPrivateForum $userPrivateForum): self
+//    {
+//        if (!$this->userPrivateForums->contains($userPrivateForum)) {
+//            $this->userPrivateForums[] = $userPrivateForum;
+//            $userPrivateForum->addMember($this);
+//        }
+//
+//        return $this;
+//    }
+//
+//    public function removeUserPrivateForum(UserPrivateForum $userPrivateForum): self
+//    {
+//        if ($this->userPrivateForums->contains($userPrivateForum)) {
+//            $this->userPrivateForums->removeElement($userPrivateForum);
+//            $userPrivateForum->removeMember($this);
+//        }
+//
+//        return $this;
+//    }
 
     public function getGallery(): ?Gallery
     {
@@ -1228,6 +1247,61 @@ class Account implements UserInterface
         // set the owning side of the relation if necessary
         if ($wallet->getUser() !== $this) {
             $wallet->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getBackgroundFileName(): ?string
+    {
+        return $this->BackgroundFileName;
+    }
+
+    public function setBackgroundFileName(?string $BackgroundFileName): self
+    {
+        $this->BackgroundFileName = $BackgroundFileName;
+
+        return $this;
+    }
+
+    public function getBgPosition(): ?int
+    {
+        return $this->bgPosition;
+    }
+
+    public function setBgPosition(int $bgPosition): self
+    {
+        $this->bgPosition = $bgPosition;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ForumMembers[]
+     */
+    public function getForumsMember(): Collection
+    {
+        return $this->forumsMember;
+    }
+
+    public function addForumsMember(ForumMembers $forumsMember): self
+    {
+        if (!$this->forumsMember->contains($forumsMember)) {
+            $this->forumsMember[] = $forumsMember;
+            $forumsMember->setMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeForumsMember(ForumMembers $forumsMember): self
+    {
+        if ($this->forumsMember->contains($forumsMember)) {
+            $this->forumsMember->removeElement($forumsMember);
+            // set the owning side to null (unless already changed)
+            if ($forumsMember->getMember() === $this) {
+                $forumsMember->setMember(null);
+            }
         }
 
         return $this;

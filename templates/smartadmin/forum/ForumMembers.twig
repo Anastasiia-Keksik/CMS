@@ -1,0 +1,147 @@
+{% extends 'smartadmin/base.html.twig' %}
+
+{% block content %}
+    <!-- BEGIN Page Content -->
+    <!-- the #js-page-content id is needed for some plugins to initialize -->
+    <main id="js-page-content" role="main" class="page-content">
+        <ol class="breadcrumb page-breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">{{ APP_NAME }}</a></li>
+            <li class="breadcrumb-item active">Forum</li>
+            <li class="breadcrumb-item active"><a href="{{ path('user_forum', {'id': forum.Id}) }}">{{ forum.Name }}</a></li>
+            <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
+        </ol>
+        <div class="subheader">
+            <h1 class="subheader-title">
+                <i class='subheader-icon fal fa-plus-circle'></i> Forum: <span class='fw-300'>{{ forum.Name }}</span>
+                <small>
+                    {{ forum.description }}
+                </small>
+            </h1>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-12">
+                <form action="{{ path('app_forum_members', {'id':forum.Id}) }}" method="GET">
+                <div class="input-group input-group-lg mb-2">
+                    <input type="text" class="form-control shadow-inset-2" placeholder="Find User" name="string">
+                    <div class="input-group-append">
+                        <button class="input-group-text"><i class="fal fa-search"></i></button>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="panel">
+                    <div class="panel-content justify-content-around d-flex py-1">
+
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'A'}) }}">A</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'B'}) }}">B</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'C'}) }}">C</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'D'}) }}">D</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'E'}) }}">E</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'F'}) }}">F</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'G'}) }}">G</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'H'}) }}">H</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'I'}) }}">I</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'J'}) }}">J</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'K'}) }}">K</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'L'}) }}">L</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'M'}) }}">M</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'N'}) }}">N</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'O'}) }}">O</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'P'}) }}">P</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'Q'}) }}">Q</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'R'}) }}">R</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'S'}) }}">S</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'T'}) }}">T</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'U'}) }}">U</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'V'}) }}">V</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'W'}) }}">W</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'X'}) }}">X</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'Y'}) }}">Y</a>
+                        <a href="{{ path('app_forum_members', {'id':forum.Id, 'letter':'Z'}) }}">Z</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    {% for user in members %}
+                    <div class="col-md-4 col-xs-12 col-sm-6 col-lg-4 col-xl-3">
+                        <a href="{{ path('app_profile', {'profile':user.username}) }}">
+                        <div class="card mb-g position-relative shadow-hover-5">
+                            <div class="card-header" style="height: 76px;
+                            {% if user.BackgroundFileName != '' %}
+                                background: url('{{ asset('/upload/gallery/'~user.username~'/'~user.BackgroundFileName) }}') {{ user.bgPosition }}%;
+                                background-size: cover;
+                            {% endif %}
+                                    "></div>
+                            <div class="position-absolute" style="top: 30px; left: 50%; margin-left: -25px">
+                                <img src="{{ asset('upload/avatars/'~user.username~'/'~user.avatarFileName)|imagine_filter('my_thumb') }}"
+                                     class="img-thumbnail" >
+                            </div>
+                            <div class="card-body" style="min-height: 66px">
+                                <span class="fw-500">{{ user.firstName }} {{ user.lastName }} - {{ user.username }}</span>
+                                <br>
+                                <span class="">Rola</span><span class="float-right">{{ user.role|join("|") }}</span>
+                                <br>
+                                <span class="">Ranga</span><span class="float-right">{{ user.Rank }}</span>
+                                <br>
+                                <span class="">Tematów</span><span class="float-right">0</span>
+                                <br>
+                                <span class="">Postów</span><span class="float-right">0</span>
+                                <br>
+                                <span class="">last online</span><span class="float-right">{{ user.lastOnline|ago }}</span>
+                            </div>
+                        </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                    <div class="row">
+                        <div class="col-12">
+                            {{ knp_pagination_render(members) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- this overlay is activated only when mobile menu is triggered -->
+    <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{%  block leftMenu %}
+    {% include 'smartadmin/parts/leftMenu.html.twig' %}
+{% endblock %}
+
+{% block header %}
+    {% include 'smartadmin/parts/header.html.twig' %}
+{% endblock %}
+
+{% block footer %}
+    {% include 'smartadmin/parts/footer.twig' %}
+{%  endblock %}
+
+{% block quickmenu %}
+    {% include 'smartadmin/parts/quickmenu.twig' %}
+{% endblock %}
+
+{% block messenger %}
+    {% include 'smartadmin/parts/chat.twig' %}
+{% endblock %}
+
+{% block pagesettings %}
+    {% include 'smartadmin/parts/pagesettings.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

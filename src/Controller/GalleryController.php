@@ -205,7 +205,8 @@ class GalleryController extends AbstractController
         $photos = [];
         $i=0;
         foreach ($photosObj as $photo){
-            $photos[$i++]['fileName'] = $cacheManager->getBrowserPath('/upload/gallery/'.$album->getGallery()->getAccount()->getUsername().'/'.$photo->getFileName(), 'gallery_thumb');
+            $photos[$i]['fileUrl'] = $cacheManager->getBrowserPath('/upload/gallery/'.$album->getGallery()->getAccount()->getUsername().'/'.$photo->getFileName(), 'gallery_thumb');
+            $photos[$i++]['fileName'] = $photo->getFileName();
         }
 
         return new JsonResponse($photos);
@@ -215,7 +216,7 @@ class GalleryController extends AbstractController
      * @Route("showNext18albumImages/{album}", name="showNext18albumImages")
      * @Security("is_granted('ROLE_USER')")
      */
-    public function show1Next18AlbumImages(GalleryAlbum $album, GalleryPhotosRepository $galleryPhotosRepository, CacheManager $cacheManager, Request $request)
+    public function showNext18AlbumImages(GalleryAlbum $album, GalleryPhotosRepository $galleryPhotosRepository, CacheManager $cacheManager, Request $request)
     {
         if ($album->getGallery()->getAccount()->getId() != $this->getUser()->getId()){
             Die('You are not allowed to visit this page!');
@@ -226,7 +227,8 @@ class GalleryController extends AbstractController
         $photos = [];
         $i=0;
         foreach ($photosObj as $photo){
-            $photos[$i++]['fileName'] = $cacheManager->getBrowserPath('/upload/gallery/'.$album->getGallery()->getAccount()->getUsername().'/'.$photo->getFileName(), 'gallery_thumb');
+            $photos[$i]['fileUrl'] = $cacheManager->getBrowserPath('/upload/gallery/'.$album->getGallery()->getAccount()->getUsername().'/'.$photo->getFileName(), 'gallery_thumb');
+            $photos[$i++]['fileName'] = $photo->getFileName();
         }
 
         return new JsonResponse($photos);
@@ -243,7 +245,8 @@ class GalleryController extends AbstractController
         $photos = [];
         $i=0;
         foreach ($photosObj as $photo){
-            $photos[$i++]['fileName'] = $cacheManager->getBrowserPath('/upload/gallery/'.$this->getUser()->getUsername().'/'.$photo->getFileName(), 'gallery_thumb');
+            $photos[$i]['fileUrl'] = $cacheManager->getBrowserPath('/upload/gallery/'.$this->getUser()->getUsername().'/'.$photo->getFileName(), 'gallery_thumb');
+            $photos[$i++]['fileName'] = $photo->getFileName();
         }
 
         return new JsonResponse($photos);

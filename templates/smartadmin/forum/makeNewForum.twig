@@ -48,7 +48,7 @@
                     <input type="hidden" value="{{ category.id }}" name="CatId">
                     <input type="hidden" value="{{ csrf_token('make_new_forum_list') }}" name="_token">
 
-                    <a href="{{ path('user_forum', {'profile':Profiler}) }}" class="btn btn-outline-danger float-left">Cancel</a>
+                    <a href="{{ path('user_forum', {'id':forum.Id}) }}" class="btn btn-outline-danger float-left">Cancel</a>
                     <button class="btn btn-outline-success float-right">Make Me!</button>
 
                 </form>

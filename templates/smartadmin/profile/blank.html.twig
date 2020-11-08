@@ -14,10 +14,27 @@
                 <div id="profile-background" class="w-100 text-center shadow-5 position-absolute"
                      style="
                         height: 300px; top: 0;
-                        background: url('{{ asset('upload/profile/background/night_sky.jpg') }}');
+                             {% if profile.BackgroundFileName != '' and profile.BackgroundFileName is not null %}
+                        background: url('{{ asset('/upload/gallery/'~profile.Username~'/'~profile.BackgroundFileName) }}');
+                             {% endif %}
                         background-size: cover;
+                        background-position: 0% {{ profile.bgPosition }}%;
+
                         display: table; z-index: 4
                              ">
+
+                    {% if user.Username == profile.Username %}
+                    <div id="background-position" class="position-absolute p-2 w-50 d-flex justify-content-center rounded-bottom {% if bgopen is not defined or bgopen != 'open' %}hidden-xs-up{% endif %}" style="background: rgba(0,0,0, 0.2); left: 25%">
+                        <div class="form-group">
+                            <lablel class="form-label text-white">Background position (0-100)</lablel>
+                                <div class="input-group">
+                                    <input type="number" min="0" max="100" class="form-control d-flex" style="color:black; width: 150px; background: rgba(255,255,255, 0.8)" onchange="changeBackgroundPosition(this.value)" value="{% if profile.bgPosition is null %}0{% else %}{{ profile.bgPosition }}{% endif %}">
+                                    <button class="btn btn-light btn-icon input-group-append rounded-left-0" onclick="sendBackGroundPosition()"><i class="fal fa-check"></i></button>
+                                </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
                     <div id="typed" style=""></div>
                 </div>
 
@@ -56,17 +73,22 @@
                 </div>
                 <div class="rounded position-absolute" style="border: 0 white dashed; right: 30%; left: 70%; margin-left: -75px; bottom: 40px; z-index:4; height: 150px; width: 150px; z-index: 6">
                     <div class="position-relative">
-                        <button type="button" class="btn btn-outline-light position-absolute" style="right:-135px; top: -25px; z-index: 6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-camera"></i> Dodaj zdjęcie tła</button>
-                        <div class="dropdown-menu fadeinright" style="">
+                        <button type="button" class="btn btn-icon position-absolute" style="color:white; mix-blend-mode: difference ;background: rgba(0,0,0, 0); right:-25px; top: -25px; z-index: 6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-2x fa-camera-alt"></i> {# background #}
+                        </button>
+                        <div id="bg-dropdown" class="dropdown-menu fadeinright" style="">
                             <button class="dropdown-item" type="button" data-toggle="modal" data-target="#profile-background-upload" onclick="checkForActiveBackgroundTab()"><i class="fal fa-images"></i> Wybierz zdjęcie</button>
-                            <button class="dropdown-item" type="button"><i class="fal fa-arrow-alt-from-bottom"></i> Przeslij zdjęcie</button>
-                            <button class="dropdown-item" type="button"><i class="fal fa-arrows"></i> Zmień pozycję</button>
-                            <div class="dropdown-divider m-0"></div>
-                            <button class="dropdown-item" type="button" style="color: darkred"><i class="fal fa-trash"></i> Usuń</button>
+                            <form action="{{ path('app_setSentProfileBackground', {'profile': profile.Id}) }}" id="background-send" method="post" enctype="multipart/form-data">
+                                <input type="file" id="selectedFile" name="file" oninput="sendBackground()" class="hidden-xs-up">
+                                <div class="dropdown-item" onclick="document.getElementById('selectedFile').click();"><i class="fal fa-arrow-alt-from-bottom"></i> Przeslij zdjęcie</div>
+                            </form>
+                            <button id="bg-1" class="dropdown-item" type="button" data-toggle="dropdown" data-target="#bg-dropdown" onclick="changePosition()"><i class="fal fa-arrows"></i> Zmień pozycję</button>
+                            <div id="bg-3" class="dropdown-divider m-0"></div>
+                            <button id="bg-2" class="dropdown-item" type="button" style="color: darkred" onclick="deleteBg()"><i class="fal fa-trash"></i> Usuń</button>
                         </div>
-                        <a href="{{ path('app_profile', {'tab': 'settings', 'avatar':'true', 'profile':user.Username}) }}" class="btn btn-outline-light position-absolute" style="left:-80px; top: -25px;">
-                            Avatar <i class="fas fa-camera-alt"></i></a>
+                        <a href="{{ path('app_profile', {'tab': 'settings', 'avatar':'true', 'profile':user.Username}) }}" class="btn position-absolute btn-icon" style="color:white; mix-blend-mode: difference; background: rgba(0,0,0, 0); left:-25px; top: -25px;">
+                            <i class="fas fa-user-circle fa-2x"></i>{# avatar #}
+                        </a>
                         <img src="{{ asset('upload/avatars/'~profile.Username~'/'~profile.AvatarFileName)|imagine_filter('my_thumb_even_larger') }}"
                              class="rounded-circle shadow-5 img-thumbnail mine-avatar" alt=""
                              style="height: 150px; width: 150px;z-index:4">
@@ -130,14 +152,19 @@
                         <div class="tab-content py-0 backgroundChoseScroll">
                             <div class="tab-pane fade show active" id="background-all-images" role="tabpanel">
                                 {% if profile.gallery %}
-                                    <div id="galleryImagesPlacement" class="row pr-3">
-                                        {% for photo in gallery|slice(0,15) %}
-                                            <div class="col-4 p-0">
-                                                <div class="m-1" style="background: url('{{ asset('upload/gallery/'~profile.Username~'/'~photo.FileName)|imagine_filter('gallery_thumb') }}'); background-size: cover; height: 150px; background-position: center; border-radius: 5px;">
+                                    <div class="row pl-3">
+                                        <div id="galleryImagesPlacement" class="col-12">
+                                            {% for photo in gallery|slice(0,15) %}
+                                                {#                                            <div class="col-4 p-0">#}
+                                                {#                                                <div class="m-1" style="background: url('{{ asset('upload/gallery/'~profile.Username~'/'~photo.FileName)|imagine_filter('gallery_thumb') }}'); background-size: cover; height: 150px; background-position: center; border-radius: 5px;">#}
 
-                                                </div>
-                                            </div>
-                                        {% endfor %}
+                                                {#                                                </div>#}
+                                                {#                                            </div>#}
+                                                <a class="" href="javascript:setBackground('{{ photo.FileName }}')">
+                                                    <img class="img-responsive" style="border-radius: 5px" src="{{ asset('upload/gallery/'~profile.Username~'/'~photo.FileName)|imagine_filter('gallery_thumb') }}">
+                                                </a>
+                                            {% endfor %}
+                                        </div>
                                     </div>
                                 {% endif %}
                             </div>
@@ -173,13 +200,13 @@
                         </div>
                         <div>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
                         </div>
                     </div>
                 </div>
             </div>
-            {% endif %}
         </div>
+            {% endif %}
+
         <div class="row profile">
 
             {#    <div class="col-lg-6 col-xl-3 order-lg-1 order-xl-1" style="width: 280px">#}
@@ -343,42 +370,89 @@
                         </div>
                     </div>
                 {% endif %}
-                {% if forum == true %}
-                    <div class="card mb-2" id="window1profile-menu"
-                         {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>
-                        <div class="card-body" style="padding: 0.2vw">
-                            <div class="hidden-xs-down justify-content-end">
-                                <a class="btn btn-outline-primary rounded w-100"
-                                   href="{{ path('user_forum', {'profile': profile.Username}) }}"
-                                   style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Forum</span></a>
-                            </div>
-                        </div>
-                    </div>
-                {% elseif forum != true and profile.Username == user.Username %}
-                    <div class="card mb-2" id="window1profile-menu"
-                         {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>
-                        <div class="card-body" style="padding: 0.2vw">
-                            <div class="hidden-xs-down justify-content-end">
-                                <a class="btn btn-outline-primary rounded w-100"
-                                   href="{{ path('create_forum', {'user': user.Username}) }}"
-                                   style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Create Forum</span></a>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-                {% if profile.gallery %}
-                    <div class="card mb-2" id="window1profile-menu"
-                         {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>
-                        <div class="card-body" style="padding: 0.2vw">
-                            <div class="hidden-xs-down justify-content-end">
-                                <a class="btn btn-outline-primary rounded w-100"
-                                   href="{{ path('app_gallery', {'profile': profile.Username}) }}"
-                                   style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Gallery</span></a>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
+{#                {% if forum == true %}#}
+{#                    <div class="card mb-2" id="window1profile-menu"#}
+{#                         {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>#}
+{#                        <div class="card-body" style="padding: 0.2vw">#}
+{#                            <div class="hidden-xs-down justify-content-end">#}
+{#                                <a class="btn btn-outline-primary rounded w-100"#}
+{#                                   href="{{ path('user_forum', {'': profile.Username}) }}"#}
+{#                                   style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Forum</span></a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                {% elseif forum != true and profile.Username == user.Username %}#}
+{#                    <div class="card mb-2" id="window1profile-menu"#}
+{#                         {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>#}
+{#                        <div class="card-body" style="padding: 0.2vw">#}
+{#                            <div class="hidden-xs-down justify-content-end">#}
+{#                                <a class="btn btn-outline-primary rounded w-100"#}
+{#                                   href="{{ path('create_forum', {'user': user.Username}) }}"#}
+{#                                   style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Create Forum</span></a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                {% endif %}#}
+{#                {% if profile.gallery %}#}
+{#                    <div class="card mb-2" id="window1profile-menu"#}
+{#                         {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>#}
+{#                        <div class="card-body" style="padding: 0.2vw">#}
+{#                            <div class="hidden-xs-down justify-content-end">#}
+{#                                <a class="btn btn-outline-primary rounded w-100"#}
+{#                                   href="{{ path('app_gallery', {'profile': profile.Username}) }}"#}
+{#                                   style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Gallery</span></a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                {% endif %}#}
 
+                <!-- photos -->
+
+                {% if profile.gallery is not null %}
+                    <div class="card mb-g position-relative rounded-bottom-0" id="photos"
+                         style="{% if design.settings.w2.s1 is defined and design.settings.w2.s1 is not null%}background-color: {{ design.settings.w2.s1 }};{% endif %}">
+                        <div class="row row-grid no-gutters rounded-bottom-0" style="padding-bottom: 0px">
+{#                            <div class="col-12">#}
+
+{#                                <!--- color change --->#}
+{#                                {% if profile.Username == user.Username %}#}
+{#                                    <div class="position-absolute m-0 p-0" style="right: 0px; top: 0px">#}
+{#                                        <button class="btn btn-icon" data-toggle="modal" data-target="#photos2"><i#}
+{#                                                    class="fal fa-flower-tulip"></i></button>#}
+{#                                    </div>#}
+{#                                {% endif %}#}
+
+{#                                <!--- end of color change --->#}
+{#                                <div class="p-3"#}
+{#                                     style="{% if design.settings.w2.c1 is defined and design.settings.w2.c1 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">#}
+{#                                    <h2 class="mb-0 w-font" id="photosFont"#}
+{#                                        style="{% if design.settings.w2.s2 is defined and design.settings.w2.s2 is not null%}color: {{ design.settings.w2.s2 }};{% endif %}">#}
+{#                                        Photos#}
+{#                                    </h2>#}
+{#                                </div>#}
+{#                            </div>#}
+                            <div class="col-12">
+                                <div class="p-1 text-center rounded-bottom" id="photosBottom"
+                                     style="{% if design.settings.w2.s3 is defined and design.settings.w2.s3 is not null%}background-color: {{ design.settings.w2.s3 }};{% endif %}">
+                                    {#                                    <a href="gallery/" id="photosBottomLinkColor"#}
+                                    {#                                       class="btn-link font-weight-bold w-font-small-2"#}
+                                    {#                                       style="{% if design.settings.w2.s4 is defined and design.settings.w2.s4 is not null%}color: {{ design.settings.w2.s4 }};{% endif %} {% if design.settings.w2.c2 is defined and design.settings.w2.c2 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">View#}
+                                    {#                                        all</a>#}
+                                    <a class="btn btn-outline-primary rounded w-100"
+                                       href="{{ path('app_gallery', {'profile': profile.Username}) }}"
+                                       style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Gallery</span></a>
+                                </div>
+                            </div>
+                            <div id="profileMiniGallery" class="w-100" style="max-height: 600px">
+                            {% for photo in gallery|slice(0,9) %}
+                                <a class="" href="{{ asset('/'~profile.Username~'/gallery#lg=1&slide='~loop.index0) }}">
+                                    <img class="img-responsive" src="{{ asset('upload/gallery/'~profile.Username~'/'~photo.FileName)|imagine_filter('gallery_thumb') }}" style="border-radius: 5px">
+                                </a>
+                            {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
 
                 <!-- add : -->
                 <div class="card mb-2">
@@ -418,52 +492,7 @@
                         </a>
                     </div>
                 </div>
-                <!-- photos -->
 
-                {% if profile.gallery is not null %}
-                    <div class="card mb-g position-relative" id="photos"
-                         style="{% if design.settings.w2.s1 is defined and design.settings.w2.s1 is not null%}background-color: {{ design.settings.w2.s1 }};{% endif %}">
-                        <div class="row row-grid no-gutters">
-                            <div class="col-12">
-
-                                <!--- color change --->
-                                {% if profile.Username == user.Username %}
-                                    <div class="position-absolute m-0 p-0" style="right: 0px; top: 0px">
-                                        <button class="btn btn-icon" data-toggle="modal" data-target="#photos2"><i
-                                                    class="fal fa-flower-tulip"></i></button>
-                                    </div>
-                                {% endif %}
-
-                                <!--- end of color change --->
-                                <div class="p-3"
-                                     style="{% if design.settings.w2.c1 is defined and design.settings.w2.c1 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">
-                                    <h2 class="mb-0 w-font" id="photosFont"
-                                        style="{% if design.settings.w2.s2 is defined and design.settings.w2.s2 is not null%}color: {{ design.settings.w2.s2 }};{% endif %}">
-                                        Photos
-                                    </h2>
-                                </div>
-                            </div>
-                            {% for photo in gallery|slice(0,9) %}
-                                <div class="col-4">
-                                    <a href="{{ asset('/'~profile.Username~'/gallery#lg=1&slide='~loop.index0) }}"
-                                       class="text-center px-3 py-4 d-flex position-relative height-10 border">
-                                        <span class="position-absolute pos-top pos-left pos-right pos-bottom"
-                                              style="background-image: url('{{ asset('upload/gallery/'~profile.Username~'/'~photo.FileName)|imagine_filter('gallery_thumb') }}');background-size: cover; background-position: center"></span>
-                                    </a>
-                                </div>
-                            {% endfor %}
-                            <div class="col-12">
-                                <div class="p-3 text-center rounded-bottom" id="photosBottom"
-                                     style="{% if design.settings.w2.s3 is defined and design.settings.w2.s3 is not null%}background-color: {{ design.settings.w2.s3 }};{% endif %}">
-                                    <a href="gallery/" id="photosBottomLinkColor"
-                                       class="btn-link font-weight-bold w-font-small-2"
-                                       style="{% if design.settings.w2.s4 is defined and design.settings.w2.s4 is not null%}color: {{ design.settings.w2.s4 }};{% endif %} {% if design.settings.w2.c2 is defined and design.settings.w2.c2 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">View
-                                        all</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
                 <!-- contacts -->
                 <div class="card mb-g" id="ContactWindow"
                      style="{% if design.settings.w3.s1 is defined and design.settings.w3.s1 is not null%}background-color: {{ design.settings.w3.s1 }};{% endif %}">
@@ -1251,7 +1280,7 @@
             }
         }
     </style>
-
+    <link rel="stylesheet" href="{{ asset('smartadmin/css/miscellaneous/justifiedGallery/justifiedGallery.min.css') }}" />
 {% endblock %}
 
 {% block scripts %}
@@ -1872,6 +1901,20 @@ Variables:
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset('smartadmin/js/formplugins/ion-rangeslider/ion-rangeslider.js') }}"></script>
+    <script src="{{ asset('smartadmin/js/miscellaneous/justifiedGallery/jquery.justifiedGallery.min.js') }}"></script>
+    <script>
+        $(window).ready(function() {
+            $('#profileMiniGallery').justifiedGallery({
+                rowHeight: 100,
+                maxRowHeight: 120,
+                maxRowsCount: 4,
+                margins: 0,
+                lastRow: 'hide',
+                randomize: true,
+                waitThumbnailsLoad: false,
+            });
+        });
+    </script>
     <script>
         initApp.pushSettings("navbar-fixed-top", true);
     </script>
@@ -1884,7 +1927,11 @@ Variables:
         let offset = {{ SOCIAL_POSTS }};
 
         {# TODO: if scroll to somecomment is empty scroll then #}
-        window.scrollTo(0, 180);
+        {% if bgopen is not defined or bgopen != 'open' %}
+        $(document).ready(function () {
+            $('html, body').animate({scrollTop: '180px'}, 500);
+        });
+        {% endif %}
         $(window).scroll(function () {
             if (nav_page == true) {
                 if ($(window).scrollTop() > height) {
@@ -3113,16 +3160,20 @@ Variables:
             });
         {% endif %}
 
-        $(document).ready(function(){
-            $('.backgroundChoseScroll').slimScroll(
-                {
-                    position: 'right',
-                    height: '500',
-                    railVisible: true,
-                    alwaysVisible: true
-                });
-        });
 
+        {% if profile.BackgroundFileName == '' or profile.BackgroundFileName is null %}
+        let bg = false;
+        {% else %}
+        let bg = true;
+        {% endif %}
+
+        $(document).ready(function(){
+            if (bg === false){
+                $('#bg-1').addClass('hidden-xs-up')
+                $('#bg-2').addClass('hidden-xs-up')
+                $('#bg-3').addClass('hidden-xs-up')
+            }
+        })
 
         let albumLoaded = new Array();
         let albumactive;
@@ -3142,18 +3193,19 @@ Variables:
                         data.forEach(function (data){
                             console.log(data)
                             $('#albumImagesPlacement').append('<div id="imagesFor_'+albumid+'" class="row imagesForAlbum">  </div>')
-                            $('#imagesFor_'+albumid).append('<div class="col-4 p-0">' +
-                                '                                                <div class="m-1" style="background: url(\''+ data.fileName +'\'); background-size: cover; height: 150px; background-position: center; border-radius: 5px;">\n' +
-                                '\n' +
-                                '                                                </div>\n' +
-                                '                                            </div>')
+                            $('#imagesFor_'+albumid).append('<a class="" href="javascript:setBackground(\''+data.fileName+'\')">'+
+                                '<img class="img-responsive" style="border-radius: 5px" src="'+data.fileUrl+'">'+
+                                '</a>')
 
                         })
                         albumLoaded[albumid] = true;
                         albumactive = albumid;
 
                         albumOpen =true;
-                        offsetBG[albumid] = offsetBG[albumid] + 18
+                        $('#imagesFor_'+albumactive).justifiedGallery({
+                            rowHeight: 180,
+                            margins: 5
+                        });
                     },
                     error: function () {
                         console.log('failed to load album images');
@@ -3215,14 +3267,14 @@ Variables:
                         success: function (data) {
                             data.forEach(function (data){
                                 console.log(data)
-                                $('#galleryImagesPlacement').append('<div class="col-4 p-0">' +
-                                    '                                                <div class="m-1" style="background: url(\''+ data.fileName +'\'); background-size: cover; height: 150px; background-position: center; border-radius: 5px;">\n' +
-                                    '\n' +
-                                    '                                                </div>\n' +
-                                    '                                            </div>')
+                                $('#galleryImagesPlacement').append(
+                                    '<a class="" href="javascript:setBackground(\''+data.fileName+'\')">'+
+                                    '<img class="img-responsive" style="border-radius: 5px" src="'+data.fileUrl+'">'+
+                                    '</a>')
 
                             })
                             offsetBG['last'] = offsetBG['last'] + 18
+                            $('#galleryImagesPlacement').justifiedGallery('norewind');
                         },
                         error: function () {
                             console.log('failed to load last images');
@@ -3239,14 +3291,13 @@ Variables:
                         success: function (data) {
                             data.forEach(function (data){
                                 console.log(data)
-                                $('#imagesFor_'+albumactive).append('<div class="col-4 p-0">' +
-                                    '                                                <div class="m-1" style="background: url(\''+ data.fileName +'\'); background-size: cover; height: 150px; background-position: center; border-radius: 5px;">\n' +
-                                    '\n' +
-                                    '                                                </div>\n' +
-                                    '                                            </div>')
+                                $('#imagesFor_'+albumactive).append('<a class="" href="javascript:setBackground(\''+data.fileName+'\')">'+
+                                    '<img class="img-responsive" style="border-radius: 5px" src="'+data.fileUrl+'">'+
+                                    '</a>')
 
                             })
                             offsetBG[albumactive] = offsetBG[albumactive] + 18
+                            $('#imagesFor_'+albumactive).justifiedGallery('norewind');
                         },
                         error: function () {
                             console.log('failed to load album images');
@@ -3263,14 +3314,13 @@ Variables:
                     success: function (data) {
                         data.forEach(function (data){
                             console.log(data)
-                            $('#galleryImagesPlacement').append('<div class="col-4 p-0">' +
-                                '                                                <div class="m-1" style="background: url(\''+ data.fileName +'\'); background-size: cover; height: 150px; background-position: center; border-radius: 5px;">\n' +
-                                '\n' +
-                                '                                                </div>\n' +
-                                '                                            </div>')
+                            $('#galleryImagesPlacement').append('<a class="" href="javascript:setBackground(\''+data.fileName+'\')">'+
+                                '<img class="img-responsive" style="border-radius: 5px" src="'+data.fileUrl+'">'+
+                            '</a>')
 
                         })
                         offsetBG['last'] = offsetBG['last'] + 18
+                        $('#galleryImagesPlacement').justifiedGallery('norewind');
 
                     },
                     error: function () {
@@ -3279,5 +3329,102 @@ Variables:
                 });
             }
         }
+
+        function setBackground (file) {
+            $.ajax('/setProfileBackground/{{ profile.Id }}', {
+                method: 'POST',
+                data: {
+                    fileName: file
+                },
+                success: function () {
+                    $('#profile-background').css('background', 'url(\'/upload/gallery/{{ profile.Username }}/'+file+'\')');
+                    $('#profile-background').css('background-repeat', 'no-repeat');
+                    $('#profile-background').css('background-size', 'cover');
+                    $('#background-position').removeClass('hidden-xs-up');
+                    $('#profile-background-upload').modal('hide');
+
+                    $('#bg-1').removeClass('hidden-xs-up')
+                    $('#bg-2').removeClass('hidden-xs-up')
+                    $('#bg-3').removeClass('hidden-xs-up')
+                },
+                error: function () {
+                    console.log('failed to set background images');
+                }
+            });
+        }
+
+        function deleteBg () {
+            $.ajax('/deleteProfileBackground/{{ profile.Id }}', {
+                method: 'POST',
+                success: function () {
+                    $('#profile-background').css('background', 'none');
+
+                    $('#bg-1').addClass('hidden-xs-up')
+                    $('#bg-2').addClass('hidden-xs-up')
+                    $('#bg-3').addClass('hidden-xs-up')
+
+                    $('#background-position').addClass('hidden-xs-up')
+                },
+                error: function () {
+                    console.log('failed to delete background');
+                }
+            });
+        }
     </script>
+    <script>
+        $(window).ready(function()
+        {
+            $('#galleryImagesPlacement').justifiedGallery({
+                rowHeight: 180,
+                margins: 5
+            });
+        });
+
+        $(document).ready(function(){
+            $('.backgroundChoseScroll').slimScroll(
+                {
+                    position: 'right',
+                    height: '500',
+                    railVisible: true,
+                    alwaysVisible: true
+                });
+        });
+
+    </script>
+    {% if user.Username == profile.Username %}
+    <script>
+        let BGposition = {% if profile.bgPosition is null %}0{% else %}{{ profile.bgPosition }}{% endif %};
+
+        function changeBackgroundPosition(value){
+            $('#profile-background').css('background-position', '0% '+value+'%');
+            BGposition = value;
+        }
+
+        function changePosition() {
+            $('#background-position').removeClass('hidden-xs-up');
+
+        }
+
+        function sendBackGroundPosition() {
+            $.ajax('/setProfileBackgroundPosition/{{ profile.Id }}', {
+                method: 'POST',
+                data: {
+                    position: BGposition
+                },
+                success: function () {
+                    $('#background-position').addClass('hidden-xs-up');
+                    console.log('success');
+                },
+                error: function () {
+                    console.log('failed to set background images');
+                    $('#background-position').addClass('hidden-xs-up');
+                }
+            });
+        }
+
+        function sendBackground() {
+            $('#background-send').submit();
+        }
+    </script>
+    {% endif %}
 {% endblock %}

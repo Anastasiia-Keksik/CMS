@@ -46,6 +46,10 @@
         padding-right: 0.75rem;
         padding-left: 0.75rem;
     }
+
+    .w-xs-100 {
+        width: 100% !important;
+    }
 }
 
 @media (min-width: 576px){
@@ -304,4 +308,30 @@
 
 .rounded-bottom-right-0 {
     border-bottom-right-radius: 0 !important;
+}
+
+.rounded-bottom-0 {
+    border-bottom-right-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.rounded-left-0 {
+    border-bottom-left-radius: 0 !important;
+    border-top-left-radius: 0 !important;
+}
+
+.mod-skin-light:not(.mod-skin-dark) .page-sidebar{
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.07);
+}
+
+.mod-skin-light:not(.mod-skin-dark) .slimScrollBar {
+    background: #333 !important;
+}
+
+.hover-red:hover {
+    color: darkred;
+}
+
+.hover-blue:hover {
+    color: darkblue;
 }

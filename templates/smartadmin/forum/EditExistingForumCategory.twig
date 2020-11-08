@@ -42,7 +42,7 @@
                     <input type="hidden" name="CatId" value="{{ category.id }}">
                     <br><br>
                     <input type="hidden" name="_token" value="{{ csrf_token('cat_edit') }}">
-                    <a href="{{ path('user_forum', {'profile':category.IsItUserPrivateForum.UserAdmin.Username}) }}" class="btn btn-outline-danger float-left">Cancel</a>
+                    <a href="{{ path('user_forum', {'id':category.IsItUserPrivateForum.Id}) }}" class="btn btn-outline-danger float-left">Cancel</a>
                     <button class="btn btn-outline-success float-right">Save Changes!</button>
                 </form>
             </div>

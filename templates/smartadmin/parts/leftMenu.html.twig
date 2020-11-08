@@ -37,6 +37,46 @@
             TIP: The menu items are not auto translated. You must have a residing lang file associated with the menu saved inside dist/media/data with reference to each 'data-i18n' attribute.
             -->
             <ul id="js-nav-menu" class="nav-menu">
+                {% if mod is defined and mod == "forum" and pageName != "Create forum" %}
+{#                    Jesli jestes tworca forum #}
+                    {% if member.role[0] == 'ADMINISTRATOR' %}
+                        <li class="text-center justify-content-center">
+                            <span class="text-white">To forum należy do Ciebie</span>
+                        </li>
+                    {% else %}
+{#                        Jesli nie jestes czonkiem forum #}
+                        {% if member is null %}
+                            <li class="text-center justify-content-center text-white-50">
+                                You are not a member of this forum
+                                <a href="{{ path('app_forum_join', {'forumid':forum.Id}) }}"  title="Join Forum" data-filter-tags="join forum" class="text-center mx-auto text-white" style="display: block">Join</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                    {% if pageName == "Forum" and member is not null and member.role[0] == 'ADMINISTRATOR' %}
+                        <li class="">
+                            <a href="{{ path('app_forum_settings', {'id':forum.Id}) }}" title="Enter Settings" data-filter-tags="enter settings">
+                                <i class="fal fa-globe"></i>
+                                <span class="nav-link-text" data-i18n="nav.blankpage">Enter Settings</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if pageName == "Forum Settings" or pageName == "Forum Members" %}
+                        <li class="">
+                            <a href="{{ path('user_forum', {'id':forum.Id}) }}" title="Go back to Forum" data-filter-tags="go back to forum">
+                                <i class="fal fa-globe"></i>
+                                <span class="nav-link-text" data-i18n="nav.blankpage">Go back to Forum</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if pageName == "Forum" %}
+                        <li class="">
+                            <a href="{{ path('app_forum_members', {'id':forum.Id}) }}" title="Blank Project" data-filter-tags="blank page">
+                                <i class="fal fa-globe"></i>
+                                <span class="nav-link-text" data-i18n="nav.blankpage">Członkowie</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endif %}
                 <li class="active">
                     <a href="blank.html" title="Blank Project" data-filter-tags="blank page">
                         <i class="fal fa-globe"></i>

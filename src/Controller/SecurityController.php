@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\AccountSignature;
+use App\Entity\Gallery;
 use App\Entity\Passwords;
 use App\Form\LoginFormType;
 use App\Form\RecoverPasswordFormType;
@@ -123,11 +124,17 @@ SecurityController extends AbstractController
             $signature -> setAccount($account);
             $signature -> setSignature("I am a new User. Welcome!");
 
+            $gallery = new Gallery();
+            $gallery -> setAccount($account);
+            $gallery -> setAlbums(0);
+            $gallery -> setCreatedAt(new \DateTime());
+            $gallery -> setPhotos(0);
 
             $em = $this -> getDoctrine()->getManager();
             $em->persist($account);
             $em->persist($password);
             $em->persist($signature);
+            $em->persist($gallery);
             $em->flush();
 
             $this->addFlash('success',"Zarejestrowano pomyślnie.");
