@@ -77,6 +77,16 @@ class UserPrivateForum
      */
     private $roles = [];
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserForumRanks::class, mappedBy="forum", orphanRemoval=true)
+     */
+    private $userForumRanks;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Themes::class, mappedBy="underForum", cascade={"persist", "remove"})
+     */
+    private $themes;
+
     public function __construct()
     {
 //        $this->Members = new ArrayCollection();
@@ -84,6 +94,7 @@ class UserPrivateForum
 
         $this->id = Uuid::uuid4();
         $this->ForumsMembers = new ArrayCollection();
+        $this->userForumRanks = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -271,6 +282,55 @@ class UserPrivateForum
     public function setRoles(?array $roles): self
     {
         $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserForumRanks[]
+     */
+    public function getUserForumRanks(): Collection
+    {
+        return $this->userForumRanks;
+    }
+
+    public function addUserForumRank(UserForumRanks $userForumRank): self
+    {
+        if (!$this->userForumRanks->contains($userForumRank)) {
+            $this->userForumRanks[] = $userForumRank;
+            $userForumRank->setForum($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserForumRank(UserForumRanks $userForumRank): self
+    {
+        if ($this->userForumRanks->contains($userForumRank)) {
+            $this->userForumRanks->removeElement($userForumRank);
+            // set the owning side to null (unless already changed)
+            if ($userForumRank->getForum() === $this) {
+                $userForumRank->setForum(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getThemes(): ?Themes
+    {
+        return $this->themes;
+    }
+
+    public function setThemes(?Themes $themes): self
+    {
+        $this->themes = $themes;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newUnderForum = null === $themes ? null : $this;
+        if ($themes->getUnderForum() !== $newUnderForum) {
+            $themes->setUnderForum($newUnderForum);
+        }
 
         return $this;
     }

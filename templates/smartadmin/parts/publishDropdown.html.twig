@@ -1,7 +1,6 @@
 <div class="position-relative align-content-center d-flex" style="height:66px">
-    <div class="border-left border-right hidden-xs-down align-content-center d-flex" style="height: 66px">
         <button data-toggle="dropdown" title="" class="mx-3 hidden-xs-down my-auto btn btn-outline-primary btn-pills no-arrow dropdown-toggle px-5" aria-expanded="false" aria-haspopup="true">Publish</button>
-    </div>
+
     <a data-toggle="dropdown" title="" class="hidden-sm-up header-icon my-auto no-arrow dropdown-toggle" aria-expanded="false" aria-haspopup="true"><i class="fal fa-file-upload"></i></a>
     <div class="dropdown-menu dropdown-menu-animated dropdown-lg hidden-xs-down">
         <div class="dropdown-divider m-0"></div>
@@ -17,6 +16,8 @@
                             {{ comic.title }}
                         </div>
                         <div id="comic_{{ comic.id }}_menu" class="dropdown-menu">
+                            <a href="{{ path('app_komiks', {'comicid':comic.id}) }}" class="dropdown-item bg-primary-100">Open It</a>
+                            <span class="dropdown-item disabled">Episodes {{ comic.comicEpisodes|length }}</span>
                             <a href="{{ path('add_episode', {'comicid':comic.id}) }}" class="dropdown-item">New Episode</a>
                         </div>
                     </div>
@@ -24,23 +25,23 @@
             </div>
         </div>
         <div class="dropdown-divider m-0"></div>
-        <a href="#" class="dropdown-item" data-action="app-reset">
-            <span data-i18n="drpdwn.reset_layout">Comic</span>
+        <a href="{{ path('create_comic') }}" class="dropdown-item">
+            <span>New Comic</span>
         </a>
         <a href="#" class="dropdown-item" data-toggle="modal" data-target=".js-modal-settings">
-            <span data-i18n="drpdwn.settings">Article</span>
+            <span data-i18n="drpdwn.settings">New Article</span>
         </a>
         <a href="#" class="dropdown-item" data-action="app-fullscreen">
             <span data-i18n="drpdwn.fullscreen">New Poem/Story or a Book</span>
         </a>
         <a href="#" class="dropdown-item" data-action="app-print">
-            <span data-i18n="drpdwn.print">Photo</span>
+            <span data-i18n="drpdwn.print">New Image</span>
         </a>
         <a href="#" class="dropdown-item" data-action="app-print">
-            <span data-i18n="drpdwn.print">Social Post</span>
+            <span data-i18n="drpdwn.print">New Social Post</span>
         </a>
         <a href="#" class="dropdown-item" data-action="app-print">
-            <span data-i18n="drpdwn.print">Blog post</span>
+            <span data-i18n="drpdwn.print">New Blog post</span>
         </a>
     </div>
 

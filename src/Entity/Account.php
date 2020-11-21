@@ -77,7 +77,7 @@ class Account implements UserInterface
     private $facebook;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", options={"default":"CURRENT_TIMESTAMP"})
      */
     private $createdAt;
 
@@ -137,7 +137,7 @@ class Account implements UserInterface
     private $youtube;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(type="boolean", nullable=true, options={"default":0})
      */
     private $newsletter;
 
@@ -147,7 +147,7 @@ class Account implements UserInterface
     private $template;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime",  options={"default":0})
      */
     private $agreedTermsAt;
 
@@ -276,14 +276,24 @@ class Account implements UserInterface
     private $BackgroundFileName;
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="smallint", options={"default":0})
      */
-    private $bgPosition = 0;
+    private $bgPosition;
 
     /**
      * @ORM\OneToMany(targetEntity=ForumMembers::class, mappedBy="Member", orphanRemoval=true)
      */
     private $forumsMember;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=UserForumRanks::class, mappedBy="User")
+     */
+    private $userForumRanks;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Favourites::class, mappedBy="User", orphanRemoval=true)
+     */
+    private $yes;
 
     public function __construct()
     {
@@ -309,6 +319,8 @@ class Account implements UserInterface
         $this->id = Uuid::uuid4();
         $this->userPrivateForum = new ArrayCollection();
         $this->forumsMember = new ArrayCollection();
+        $this->userForumRanks = new ArrayCollection();
+        $this->yes = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -1301,6 +1313,65 @@ class Account implements UserInterface
             // set the owning side to null (unless already changed)
             if ($forumsMember->getMember() === $this) {
                 $forumsMember->setMember(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserForumRanks[]
+     */
+    public function getUserForumRanks(): Collection
+    {
+        return $this->userForumRanks;
+    }
+
+    public function addUserForumRank(UserForumRanks $userForumRank): self
+    {
+        if (!$this->userForumRanks->contains($userForumRank)) {
+            $this->userForumRanks[] = $userForumRank;
+            $userForumRank->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserForumRank(UserForumRanks $userForumRank): self
+    {
+        if ($this->userForumRanks->contains($userForumRank)) {
+            $this->userForumRanks->removeElement($userForumRank);
+            $userForumRank->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Favourites[]
+     */
+    public function getYes(): Collection
+    {
+        return $this->yes;
+    }
+
+    public function addYe(Favourites $ye): self
+    {
+        if (!$this->yes->contains($ye)) {
+            $this->yes[] = $ye;
+            $ye->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeYe(Favourites $ye): self
+    {
+        if ($this->yes->contains($ye)) {
+            $this->yes->removeElement($ye);
+            // set the owning side to null (unless already changed)
+            if ($ye->getUser() === $this) {
+                $ye->setUser(null);
             }
         }
 

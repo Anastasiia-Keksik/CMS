@@ -65,7 +65,11 @@ class UserForumPost
     /**
      * @ORM\OneToMany(targetEntity=PostsLikes::class, mappedBy="Post")
      */
-    private $postsLikes;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Favourites::class, mappedBy="UserForumPosts")
+     */
+    private $favourites;
 
     public function __construct()
     {
@@ -74,6 +78,7 @@ class UserForumPost
         $this->postsLikes = new ArrayCollection();
         $this->id = Uuid::uuid4();
         $this->forumPostConversations = new ArrayCollection();
+        $this->favourites = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -252,6 +257,37 @@ class UserForumPost
             // set the owning side to null (unless already changed)
             if ($forumPostConversation->getPost() === $this) {
                 $forumPostConversation->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Favourites[]
+     */
+    public function getFavourites(): Collection
+    {
+        return $this->favourites;
+    }
+
+    public function addFavourite(Favourites $favourite): self
+    {
+        if (!$this->favourites->contains($favourite)) {
+            $this->favourites[] = $favourite;
+            $favourite->setForumPosts($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavourite(Favourites $favourite): self
+    {
+        if ($this->favourites->contains($favourite)) {
+            $this->favourites->removeElement($favourite);
+            // set the owning side to null (unless already changed)
+            if ($favourite->getForumPosts() === $this) {
+                $favourite->setForumPosts(null);
             }
         }
 

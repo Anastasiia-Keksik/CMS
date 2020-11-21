@@ -47,15 +47,25 @@ class ComicController extends AbstractController
     }
 
     /**
-     * @Route("/komiks", name="app_komiks")
+     * @Route("/komiks/{comicid}", name="app_komiks")
      */
-    public function index(MainMenuService $mainMenuService, ComicRepository $comicRepo)
+    public function index(MainMenuService $mainMenuService, ComicRepository $comicRepo, Comic $comicid,
+                          ComicEpisodeRepository $comicEpisodeRepository, Request $request)
     {
 
         $user = $this->getUser();
         $profile = $user;
 
         $mainMenu = $mainMenuService->getMenu();
+
+        if ($request->query->get('page')){
+            $page = $request->query->get('page');
+        }else{
+            $page = 1;
+        }
+
+        $comicEpisodes = $comicEpisodeRepository->get10Episodes($comicid->getId(), $page);
+        $episodesCount = $comicEpisodeRepository->getCountEpisodesPublished($comicid->getId())[0][1];
 
         $comics = $comicRepo->findAll();
 
@@ -72,7 +82,11 @@ class ComicController extends AbstractController
             'profile' => $profile,
             'user' => $user,
             'NotComposed' => true,
-            'comics'=>$comics
+            'comics'=>$comics,
+            'comic'=>$comicid,
+            'comicEpisodes' => $comicEpisodes,
+            'episodesCount' => $episodesCount,
+            'page' => $page
         ]);
     }
 
@@ -179,7 +193,14 @@ class ComicController extends AbstractController
                 $destination = $this->getParameter('kernel.project_dir')."/public/upload/social/diaryImages/".$this->getUser()->getUsername()."/".$diary->getId();
                 $fileAsset = $package->getUrl("/upload/social/diaryImages/".$this->getUser()->getUsername()."/".$diary->getId()."/".$newFilename);
 
-                $file -> move($destination, $newFilename);
+                $file->move($destination, $newFilename);
+
+                $imm = new ImageManager(array('driver'=>'gd'));
+                $img = $imm->make($destination.'/'.$newFilename);
+                $img -> fit(400);
+                $img -> save($destination.'/'.$newFilename);
+                //unlink($destination.'/'.$newFilename);
+
 
                 $diary->setCreatedAt(new \DateTime());
                 $diary->setContent('<div style="text-align: center">Comic:</div> <h4 style="text-align: center;"><span style="font-size: 48px; color: black">'.$request->request->get('title').'</span><br><span style="font-size: 14px;">has been created</span></h4><br><div style="text-align: justify;">'.substr($request->request->get('description'),0,501).'</div><br><div style="text-align: center"><img src="'.$fileAsset.'" width="418px"></div><br><br>');
@@ -462,7 +483,7 @@ class ComicController extends AbstractController
 
             $img = $imm->make($destination.$filename);
 
-            $img->fit(120);
+            $img -> fit(120);
 
             $img -> save($this->getParameter('kernel.project_dir')."/public/upload/comics/$comicid/$episodeid/$filenamethumb");
 

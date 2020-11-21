@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ComicEpisodeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
@@ -34,14 +36,14 @@ class ComicEpisode
     private $createdAt;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default":0})
      */
-    private $likes;
+    private $likes = 0;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\Column(type="float", nullable=false, options={"default":0})
      */
-    private $price;
+    private $price = 0;
 
     /**
      * @ORM\ManyToOne(targetEntity=Comic::class, inversedBy="comicEpisodes")
@@ -50,9 +52,9 @@ class ComicEpisode
     private $comic;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default":0})
      */
-    private $Views;
+    private $Views = 0;
 
     /**
      * @ORM\Column(type="array", nullable=true)
@@ -60,13 +62,19 @@ class ComicEpisode
     private $images = [];
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default":0})
      */
-    private $published;
+    private $published = 0;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Favourites::class, mappedBy="ComicEpisodes")
+     */
+    private $favourites;
 
     public function __construct()
     {
         $this->id = Uuid::uuid4();
+        $this->favourites = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -178,6 +186,37 @@ class ComicEpisode
     public function setPublished(bool $published): self
     {
         $this->published = $published;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Favourites[]
+     */
+    public function getFavourites(): Collection
+    {
+        return $this->favourites;
+    }
+
+    public function addFavourite(Favourites $favourite): self
+    {
+        if (!$this->favourites->contains($favourite)) {
+            $this->favourites[] = $favourite;
+            $favourite->setComicEpisodes($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavourite(Favourites $favourite): self
+    {
+        if ($this->favourites->contains($favourite)) {
+            $this->favourites->removeElement($favourite);
+            // set the owning side to null (unless already changed)
+            if ($favourite->getComicEpisodes() === $this) {
+                $favourite->setComicEpisodes(null);
+            }
+        }
 
         return $this;
     }

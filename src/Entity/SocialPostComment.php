@@ -38,7 +38,7 @@ class SocialPostComment
 
     /**
      * @ORM\ManyToOne(targetEntity=SocialPost::class, inversedBy="socialPostComments")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $Post;
 
@@ -67,10 +67,16 @@ class SocialPostComment
      */
     private $likes;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Favourites::class, mappedBy="SocialPostComment")
+     */
+    private $favourites;
+
     public function __construct()
     {
         $this->socialPostComments = new ArrayCollection();
         $this->id = Uuid::uuid4();
+        $this->favourites = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -201,6 +207,37 @@ class SocialPostComment
     public function setLikes(int $likes): self
     {
         $this->likes = $likes;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Favourites[]
+     */
+    public function getFavourites(): Collection
+    {
+        return $this->favourites;
+    }
+
+    public function addFavourite(Favourites $favourite): self
+    {
+        if (!$this->favourites->contains($favourite)) {
+            $this->favourites[] = $favourite;
+            $favourite->setSocialPostComment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavourite(Favourites $favourite): self
+    {
+        if ($this->favourites->contains($favourite)) {
+            $this->favourites->removeElement($favourite);
+            // set the owning side to null (unless already changed)
+            if ($favourite->getSocialPostComment() === $this) {
+                $favourite->setSocialPostComment(null);
+            }
+        }
 
         return $this;
     }

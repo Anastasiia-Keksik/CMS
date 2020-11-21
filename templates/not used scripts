@@ -19,3 +19,23 @@
         }
     })
 </script>
+
+UPLOADING:
+            $uploadedFile = $request->files->get('file');
+            $destination = $this->getParameter('kernel.project_dir') . "/public/upload/gallery/" . $profile->getUsername();
+
+            if ($uploadedFile->getClientOriginalExtension() !== 'jpg' and $uploadedFile->getClientOriginalExtension() !== 'gif'
+                and $uploadedFile->getClientOriginalExtension() !== 'png' and $uploadedFile->getClientOriginalExtension() !== 'jpeg'){
+                Die('wrong format: .'.$uploadedFile->getClientOriginalExtension());
+            }
+
+            $originalFilename = pathinfo($uploadedFile->getClientOriginalName() . '.' . $uploadedFile->getClientOriginalExtension(), PATHINFO_FILENAME);
+            $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
+
+             if($uploadedFile->getSize() > 2000000)
+             {
+                 $this->addFlash('error', "file was to big");
+                 return $this->redirectToRoute("app_main_profile", ['tab'=>'settings']);
+             }
+
+            $uploadedFile->move($destination, $newFilename);

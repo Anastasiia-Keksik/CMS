@@ -8,6 +8,7 @@ use App\Entity\PostsLikes;
 use App\Entity\UserForumCategory;
 use App\Entity\UserForumForum;
 use App\Entity\UserForumPost;
+use App\Entity\UserForumRanks;
 use App\Entity\UserForumTopic;
 use App\Entity\UserPrivateForum;
 use App\Repository\AccountRepository;
@@ -16,6 +17,7 @@ use App\Repository\PostsLikesRepository;
 use App\Repository\UserForumCategoryRepository;
 use App\Repository\UserForumForumRepository;
 use App\Repository\UserForumPostRepository;
+use App\Repository\UserForumRanksRepository;
 use App\Repository\UserForumTopicRepository;
 use App\Repository\UserPrivateForumRepository;
 use App\Services\GetContactsService;
@@ -25,6 +27,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,6 +58,7 @@ class UserForumController extends AbstractController
 
     /**
      * @Route("/forum/{id}", name="user_forum")
+     * @Security("is_granted('ROLE_USER')")
      * @param UserPrivateForum $forum
      * @param EntityManagerInterface $entityManager
      * @param MainMenuService $mainMenuService
@@ -327,6 +331,14 @@ class UserForumController extends AbstractController
     /**
      * @Route("{kategoria}/forum/EditForumCategory", name="forum_edit_category_user")
      * @Security("is_granted('ROLE_USER')")
+     * @param UserForumCategory $kategoria
+     * @param UserForumCategoryRepository $CategoriesRepository
+     * @param MainMenuService $mainMenuService
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param GetContactsService $contactsRepository
+     * @param ForumMembersRepository $membersRepo
+     * @return RedirectResponse|Response
      */
     public function editCategory(UserForumCategory $kategoria, UserForumCategoryRepository $CategoriesRepository,
                                  MainMenuService $mainMenuService, Request $request, EntityManagerInterface $em,
@@ -402,6 +414,15 @@ class UserForumController extends AbstractController
     /**
      * @Route("{forumtable}/forum/EditForumTable/", name="forum_edit_forumtable_user")
      * @Security("is_granted('ROLE_USER')")
+     * @param UserForumForum $forumtable
+     * @param UserForumCategoryRepository $CategoriesRepository
+     * @param MainMenuService $mainMenuService
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param UserForumForumRepository $forumRepository
+     * @param GetContactsService $contactsRepository
+     * @param ForumMembersRepository $membersRepo
+     * @return RedirectResponse|Response
      */
     public function editForumCategory(UserForumForum $forumtable, UserForumCategoryRepository $CategoriesRepository,
                                       MainMenuService $mainMenuService, Request $request, EntityManagerInterface $em,
@@ -497,8 +518,18 @@ class UserForumController extends AbstractController
     }
 
     /**
-     * @Route("forum/{forumtableid}", name="app_forum_threads_list")
+     * @Route("forum/section/{forumtableid}", name="app_forum_threads_list")
      * @Security("is_granted('ROLE_USER')")
+     * @param MainMenuService $mainMenuService
+     * @param UserForumForum $forumtableid
+     * @param PaginatorInterface $paginator
+     * @param UserForumTopicRepository $TopicsRepository
+     * @param Request $request
+     * @param SessionInterface $session
+     * @param UserForumPostRepository $postRepo
+     * @param GetContactsService $contactsRepository
+     * @param ForumMembersRepository $membersRepo
+     * @return Response
      */
     public function showForumThreads(MainMenuService $mainMenuService, UserForumForum $forumtableid,
                                      PaginatorInterface $paginator, UserForumTopicRepository $TopicsRepository,
@@ -937,6 +968,9 @@ class UserForumController extends AbstractController
      * @param UserPrivateForum $forum
      * @param Request $request
      * @param MainMenuService $mainMenuService
+     * @param GetContactsService $getContacts
+     * @param ForumMembersRepository $membersRepo
+     * @param UserForumForumRepository $sectionRepo
      * @return Response
      */
     public function forumSettings(UserPrivateForum $forum, Request $request, MainMenuService $mainMenuService,
@@ -947,7 +981,6 @@ class UserForumController extends AbstractController
         $member = null;
         $member = $membersRepo->findMember($forum->getId(), $this->getUser()->getId());
 
-        //wyswietlanie rol
         $roles = [];
         //dd($forum->getRoles());
         $y = $forum->getRoles();
@@ -996,9 +1029,6 @@ class UserForumController extends AbstractController
             }
         }
 
-        dump($forum->getRoles());
-
-
         $contacts = $getContacts->getContacts($this->getUser()->getId());
         $comics = $getContacts->getComics($this->getUser()->getId());
         $mainMenu = $mainMenuService->getMenu();
@@ -1024,6 +1054,7 @@ class UserForumController extends AbstractController
             'member' => $member,
             'roles' => $roles,
             'editroles' => $forum->getRoles(),
+
         ]);
     }
 
@@ -1162,10 +1193,13 @@ class UserForumController extends AbstractController
     /**
      * @Route("/forum/saveOld/settings/{forum}", name="app_forum_settings_saveOld")
      */
-    public function forumSettingsSaveOld(UserPrivateForum $forum, Request $request, EntityManagerInterface $em)
+    public function forumSettingsSaveOld(UserPrivateForum $forum, Request $request, EntityManagerInterface $em,
+                                         ForumMembersRepository $membersRepository)
     {
-        //TODO: sprawdzaj czy ma prawda admina
-        if ($forum->getUserAdmin() == $this->getUser())
+        /** @var ForumMembers $member */
+        $member = $membersRepository->findMember($forum->getId(), $this->getUser()->getId());
+        $memberRole = $member->getRole();
+        if ($forum->getUserAdmin() == $this->getUser() or isset($memberRole['administrator']))
         {
             if ($this->isCsrfTokenValid('forumSettings', $request->request->get('_token'))){
                 $name = strip_tags($request->request->get('name'));
@@ -1207,6 +1241,91 @@ class UserForumController extends AbstractController
             }
         }else{
             Die("It is not your forum");
+        }
+
+        return new RedirectResponse($this->generateUrl("app_forum_settings", ['id' =>  $forum->getId()]));
+    }
+
+    /**
+     * @Route("/forum/save/newRank/{forum}", name="app_forum_save_new_rank")
+     */
+    public function saveNewRank(UserPrivateForum $forum, Request $request, ForumMembersRepository $membersRepository,
+                                EntityManagerInterface $em, UserForumRanksRepository $ranksRepository){
+        /** @var ForumMembers $member */
+        $member = $membersRepository->findMember($forum->getId(), $this->getUser()->getId());
+        $memberRole = $member->getRole();
+        if ($forum->getUserAdmin() == $this->getUser() or isset($memberRole['administrator']))
+        {
+            if ($this->isCsrfTokenValid('forumSettings', $request->request->get('_token'))) {
+                $error = 0;
+
+                $lastRank = $ranksRepository->findLastOne($forum->getId());
+
+                //dd($lastRank);
+
+                $rank = new UserForumRanks();
+
+                $rank->setForum($forum);
+
+                $start = $request->request->get('start');
+                $finish = $request->request->get('finish');
+
+                if (! $start > $lastRank[1]){
+                    $this->addFlash('error', "Start has to be greater than previous ranks finish number.");
+                    $error = 1;
+                }
+
+                if ($start >=0 and $finish > $start){
+                    $rank->setStart($start);
+                    $rank->setFinish($finish);
+                }elseif ($start == "" and $finish == ""){
+                    $rank->setSpecial(1);
+                }else{
+                    $this->addFlash('error', "Start has to be bigger than zero, finish has to be bigger than start.");
+                    $error = 1;
+                }
+
+                /**
+                 * @var UploadedFile $uploadedFile
+                 */
+                $uploadedFile = $request->files->get('image');
+                $destination = $this->getParameter('kernel.project_dir') . "/public/upload/forum/ranks/" . $forum->getId();
+
+                if ($uploadedFile->getClientOriginalExtension() !== 'jpg' and $uploadedFile->getClientOriginalExtension() !== 'gif'
+                    and $uploadedFile->getClientOriginalExtension() !== 'png' and $uploadedFile->getClientOriginalExtension() !== 'jpeg'){
+                    Die('wrong format: .'.$uploadedFile->getClientOriginalExtension());
+                }
+
+                $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
+
+                if($uploadedFile->getSize() > 400000)
+                {
+                    $this->addFlash('error', "file size was to big");
+                    $error = 1;
+                }
+
+                if (getimagesize($uploadedFile)[0] > 200 or getimagesize($uploadedFile)[1] > 90){
+                    $this->addFlash('error', "file dimension was to big");
+                    $error = 1;
+                }
+
+                if ($error == 1)
+                {
+                    return $this->redirectToRoute("app_forum_settings", ['id'=>$forum->getId()]);
+                }
+
+                $uploadedFile->move($destination, $newFilename);
+
+                $rank->setImage($newFilename);
+                $rank->setName($request->request->get('title'));
+
+                $em->persist($rank);
+                $em->flush();
+            }else{
+                Die('Invalid Token');
+            }
+        }else{
+            Die('Not enough rights');
         }
 
         return new RedirectResponse($this->generateUrl("app_forum_settings", ['id' =>  $forum->getId()]));

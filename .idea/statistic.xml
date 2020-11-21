@@ -3,12 +3,14 @@
   <component name="Statistic">
     <option name="excludedDirectories">
       <list>
-        <option value="$PROJECT_DIR$/vendor" />
         <option value="$PROJECT_DIR$/.idea" />
         <option value="$PROJECT_DIR$/bin" />
         <option value="$PROJECT_DIR$/public" />
         <option value="$PROJECT_DIR$/src/Migrations" />
         <option value="$PROJECT_DIR$/var" />
+        <option value="$PROJECT_DIR$/vendor" />
+        <option value="$PROJECT_DIR$/src/Entity" />
+        <option value="$PROJECT_DIR$/src/Repository" />
       </list>
     </option>
   </component>

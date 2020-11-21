@@ -78,10 +78,16 @@ class UserForumTopic
      */
     private $views;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Favourites::class, mappedBy="UserForumTopic")
+     */
+    private $favourites;
+
     public function __construct()
     {
         $this->forumPosts = new ArrayCollection();
         $this->id = Uuid::uuid4();
+        $this->favourites = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -249,6 +255,37 @@ class UserForumTopic
     public function setViews(int $views): self
     {
         $this->views = $views;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Favourites[]
+     */
+    public function getFavourites(): Collection
+    {
+        return $this->favourites;
+    }
+
+    public function addFavourite(Favourites $favourite): self
+    {
+        if (!$this->favourites->contains($favourite)) {
+            $this->favourites[] = $favourite;
+            $favourite->setForumTopic($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavourite(Favourites $favourite): self
+    {
+        if ($this->favourites->contains($favourite)) {
+            $this->favourites->removeElement($favourite);
+            // set the owning side to null (unless already changed)
+            if ($favourite->getForumTopic() === $this) {
+                $favourite->setForumTopic(null);
+            }
+        }
 
         return $this;
     }

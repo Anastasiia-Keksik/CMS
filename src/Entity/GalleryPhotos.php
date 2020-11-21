@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\GalleryPhotosRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
@@ -57,10 +59,16 @@ class GalleryPhotos
      * @ORM\Column(type="string", length=255)
      */
     private $originalFilename;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Favourites::class, mappedBy="GalleryPhotos")
+     */
+    private $favourites;
     
     public function __construct()
     {
         $this->id = Uuid::uuid4();
+        $this->favourites = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -172,6 +180,37 @@ class GalleryPhotos
     public function setGalleryId(?Gallery $galleryId): self
     {
         $this->galleryId = $galleryId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Favourites[]
+     */
+    public function getFavourites(): Collection
+    {
+        return $this->favourites;
+    }
+
+    public function addFavourite(Favourites $favourite): self
+    {
+        if (!$this->favourites->contains($favourite)) {
+            $this->favourites[] = $favourite;
+            $favourite->setGalleryPhotos($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavourite(Favourites $favourite): self
+    {
+        if ($this->favourites->contains($favourite)) {
+            $this->favourites->removeElement($favourite);
+            // set the owning side to null (unless already changed)
+            if ($favourite->getGalleryPhotos() === $this) {
+                $favourite->setGalleryPhotos(null);
+            }
+        }
 
         return $this;
     }

@@ -272,6 +272,7 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
 {% block javascripts %}
     <script src="{{ asset('smartadmin/js/vendors.bundle.js') }}"></script>
     <script src="{{ asset('smartadmin/js/app.bundle.js') }}"></script>
+    <script src="{{ asset('smartadmin/js/time/jquery.timeago.js') }}"></script>
     <script>
          function usunModal()
         {
@@ -712,6 +713,192 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
                     console.log('error - msg not sent');
                 }
             });
+        }
+    </script>
+    <script>
+        function getAll(){
+            if (GotAll === false){
+                $.ajax('{{ path('favourites_getAll') }}', {
+                    method: "POST",
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function () {
+                        console.log('theme changing error');
+                    }
+                });
+                GotAll = true;
+            }
+        }
+
+        function getSM(){
+            if (GotSM === false){
+                $.ajax('{{ path('favourites_getAll') }}', {
+                    method: "POST",
+                    success: function (data) {
+                        data.forEach(function(elm){
+                            console.log(elm)
+                            console.log()
+                            if (elm.spId !== null) {
+                                let spData = new Date(elm.spCreatedAt['date']);
+                                $('#showSM').append('<div class="card mb-3">\n' +
+                                    '                                {# daj w style nizej                   {% if post.BGFilename is not null %}style="background-image: url(\'{{ asset(\'upload/social/BackGrounds/\'~post.AuthorUsername~\'/\'~post.BGFilename) }}\'); background-size: 100%;"{% endif %} #}\n' +
+                                    '                                <div class="card-body pb-0 px-0 pt-0 rounded-top shadow-5" >\n' +
+                                    '                                    <div id="black-transparent_ID" class="w-100" style="background-color: rgba(0,0,0, 0)">\n' +
+                                    '                                        <div id="white-transparent_ID" class="w-100" style="background-color: rgba(255,255,255, 0)">\n' +
+                                    '                                            <div id="postUserCreBg_ID" onmouseover="postupperbgColorChange(\'postUserCreBg_ID\')" onmouseleave="postupperbgColorChangeBack(\'postUserCreBg_ID\')" class="rounded-top px-4 text-black pt-3"\n' +
+                                    '                                                 style="background: rgb(255,255,255); background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 55%, rgba(255,255,255,.4) 100%);">\n' +
+                                    '                                                <div class="d-flex flex-row pb-2 mb-1 pt-2 pl-2 rounded-pill border-top-0 border-left-0 border-bottom-0 rounded-right-0 pr-2 border-right-0">\n' +
+                                    '                                                    <div class="d-inline-block align-middle rounded-circle status status-success mr-3" style="background: rgba(0,0,0, 0.9);">\n' +
+                                    '                                                        {# <span class="profile-image rounded-circle d-block" style="background-image:url(\'{{ asset(\'upload/avatars/\'~post.AuthorUsername~\'/\'~)|imagine_filter(\'my_thumb\') }}\'); background-size: cover;"></span> #}\n' +
+                                    '                                                    </div>\n' +
+                                    '                                                    <h5 class="mb-0 flex-1 text-black opacity-70 fw-400">{# background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.8419117988992471) 24%, rgba(0,0,0,0.7606793059020483) 40%, rgba(0,0,0,0.6738445720084909) 49%, rgba(0,0,0,0.6262255243894433) 52%, rgba(0,0,0,0) 100%); #}\n' +
+                                                                                                elm.spFirstName + " \"" + elm.spUsername + "\" " + elm.spLastName +
+                                        '                                                        <small class="m-0 l-h-n">\n' +
+                                                                                                    elm.spOccupation +
+                                    '                                                        </small>\n' +
+                                    '                                                    </h5>\n' +
+                                    '                                                    <span class="fs-xs color-fusion-900">\n' +
+                                                                                                jQuery.timeago(spData)+
+                                    '                                                    </span>\n' +
+                                    '                                                </div>\n' +
+                                    '                                            </div>\n' +
+                                    '                                            <div class="px-4">\n' +
+                                    '                                                <div class="pb-3 pt-2 border-top-0 border-left-0 border-right-0 text-muted">\n'+ elm.spContent +
+                                    '                                                </div>\n' +
+                                    '                                                <div class="d-flex py-3 justify-content-between">\n' +
+                                    '                                                    <div class="rounded p-1" style="background-color: rgba(255,255,255,0.5)">\n' +
+                                    '                                                        <a href="javascript:void(0);" class="d-inline-flex align-items-center">\n' +
+                                    '                                                            <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span class="color-primary-700">'+elm.spLikes+'</span>\n' +
+                                    '                                                        </a>\n' +
+                                    '                                                    </div>\n' +
+                                    '                                                    <div class="rounded p-1" style="background-color: rgba(255,255,255,0.5);">&nbsp;&nbsp;&nbsp;\n' +
+                                    '                                                        <span>\n' +
+                                    '                                                            <a class="" data-toggle="modal" data-target="#postModal" onclick="activatePostCarousel(\'#post_ID_carousel\');">\n' +
+                                    '                                                                <span class="color-primary-700">Read full</span>\n' +
+                                    '                                                            </a>\n' +
+                                    '                                                        </span>\n' +
+                                    '                                                    </div>\n' +
+                                    '                                                </div>\n' +
+                                    '                                            </div>\n' +
+                                    '                                        </div>\n' +
+                                    '                                    </div>\n' +
+                                    '                                </div>\n' +
+                                    '                            </div>\n')
+                            }else if(elm.spcId !== null){
+                                let spcData = new Date(elm.spcCreatedAt['date']);
+                                $('#showSM').append('            <div class="card shadow-5 mb-3">\n' +
+                                    '                                <div class="d-flex flex-row rounded d-inline-block pt-3 align-middle bg-light w-100 p-2" style="border-top: 0 black solid;">\n' +
+                                    '                                    <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
+                                    '                                        <span class="ml-1 mt-1 profile-image profile-image-md rounded d-block mt-1" {# style="background-image: url(\'{{ comment.AuthorAvatarFileUrl }}\'); background-size: cover;" #}></span>\n' +
+                                    '                                    </div>\n' +
+                                    '                                    <div class="mb-0 flex-1 text-dark mr-1 ">\n' +
+                                    '                                        <div class="d-flex">\n' +
+                                    '                                            <a href="javascript:void(0);" class="text-dark fw-500">\n' +
+                                            elm.spcFirstName + " \"" + elm.spcUsername + "\" " + elm.spcLastName +
+                                    '                                            </a>\n' +
+                                    '                                            <span class="text-muted fs-xs opacity-70 ml-auto">\n' +
+                                    '                                                '+ jQuery.timeago(spcData) +'\n' +
+                                    '                                            </span>\n' +
+                                    '                                        </div>\n' +
+                                    '                                        <p class="mb-0">\n' +
+                                                                                elm.spcContent +
+                                    '                                        </p>\n' +
+                                    '                                        <div>\n' +
+                                    '                                            <a href="javascript: addHeart(  ID  );" class="d-inline-flex align-items-center text-dark">\n' +
+                                    '                                                <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
+                                    '                                            </a>\n' +
+                                    '\n' +
+                                    '                                            <a href="#answer_ Comment.Id " data-toggle="collapse" aria-expanded="false" aria-controls="answer_Comment.Id "\n' +
+                                    '                                                    {# onclick="changeCommgentCss(#comment_{{ post.Id }}_{{ loop.index }}, #comment_{{ post.Id }}_{{ loop.index1 }})" #}\n' +
+                                    '                                               class="float-right">\n' +
+                                    '                                                <span>\n' +
+                                    '                                                    <a class="" data-toggle="modal" data-target="#postModal" onclick="activatePostCarousel(\'#post_ID_carousel\');">\n' +
+                                    '                                                        <span class="color-primary-700">Go to comment</span>\n' +
+                                    '                                                    </a>\n' +
+                                    '                                                </span>\n' +
+                                    '                                            </a>\n' +
+                                    '                                        </div>\n' +
+                                    '                                    </div>\n' +
+                                    '                                </div>\n' +
+                                    '                            </div>\n')
+                            }
+                        })
+                    },
+                    error: function () {
+                        console.log('theme changing error');
+                    }
+                });
+                GotSM = true;
+            }
+        }
+
+        function getGallery(){
+            if (GotGallery === false){
+                $.ajax('{{ path('favourites_getAll') }}', {
+                    method: "POST",
+                    success: function (data) {
+
+                    },
+                    error: function () {
+                        console.log('theme changing error');
+                    }
+                });
+                GotGallery = true;
+            }
+        }
+
+        function getForums(){
+            if (GotForums === false){
+                $.ajax('{{ path('favourites_getForums') }}', {
+                    method: "POST",
+                    success: function (data) {
+                        data.forEach(function(elm) {
+                            console.log(elm)
+                            if (elm.ftId !== null) {
+                                let ftData = new Date(elm.ftCreatedAt['date']);
+                                $('#showForums').append('<div class="card mb-3 bg-primary-100">\n' +
+                                    '                                <div class="card-body">\n' +
+                                    '                                    <label>\n' +
+                                    '                                        <img src="/upload/avatars/'+elm.ftUsername+'/'+elm.ftAvatarFileName+'" class="profile-image-sm rounded-circle" alt="'+elm.ftUsername+'"> \n'+ elm.ftFirstName + " " + elm.ftUsername + " " + elm.ftlastName +
+                                    '                                    </label><br>\n' +
+                                    '                                    Title: '+ elm.ftTitle +'\n' +
+                                    '                                </div>\n' +
+                                    '                            </div>')
+                            } else if (elm.fpId !== null) {
+                                let fpData = new Date(elm.fpCreatedAt['date']);
+                                $('#showForums').append('<div class="card mb-3">\n' +
+                                    '                                <div class="card-body">\n' +
+                                    '                                    <label>\n' +
+                                    '                                        <img src="/upload/avatars/'+elm.fpUsername+'/'+elm.fpAvatarFileName+'" class="profile-image-sm rounded-circle" alt="'+elm.fpUsername+'"> \n' + elm.fpFirstName + " " + elm.fpUsername + " " + elm.fplastName +
+                                    '                                    </label><br>\n' +
+                                    '                                    '+elm.fpContent+'\n' +
+                                    '                                </div>\n' +
+                                    '                            </div>')
+                            }
+                        })
+                    },
+                    error: function () {
+                        console.log('theme changing error');
+                    }
+                });
+                GotForums = true;
+            }
+        }
+
+        function getArt(){
+            if (GotArt === false){
+                $.ajax('{{ path('favourites_getAll') }}', {
+                    method: "POST",
+                    success: function (data) {
+                        console.log('theme changed');
+                    },
+                    error: function () {
+                        console.log('theme changing error');
+                    }
+                });
+                GotArt = true;
+            }
         }
     </script>
 {% endblock %}

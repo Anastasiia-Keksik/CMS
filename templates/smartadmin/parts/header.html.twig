@@ -2,7 +2,7 @@
     <!-- we need this logo when user switches to nav-function-top -->
     <div class="page-logo">
         <a href="#" class="page-logo-link press-scale-down d-flex align-items-center position-relative" data-toggle="modal" data-target="#modal-shortcut">
-            <img src="{{ asset('smartadmin/img/logo.png') }}" alt="SmartAdmin WebApp" aria-roledescription="logo">
+            <img src="{{ asset('default/ksiezyc.png') }}" alt="SmartAdmin WebApp" aria-roledescription="logo">
             <span class="page-logo-text mr-1">SmartAdmin WebApp</span>
             <span class="position-absolute text-white opacity-50 small pos-top pos-right mr-2 mt-n2"></span>
             <i class="fal fa-angle-down d-inline-block ml-1 fs-lg color-primary-300"></i>
@@ -70,7 +70,11 @@
                 <i class="ni ni-chevron-down hidden-xs-down"></i> -->
             </a>
             <div class="dropdown-menu dropdown-menu-animated dropdown-lg">
-            <a href="{{path('app_profile', {'profile':user.Username})}}">
+            {% if pageName == "Profile" and user.Username == profile.Username %}
+                <a href="#">
+            {% else %}
+                <a href="{{path('app_profile', {'profile':user.Username})}}">
+            {% endif %}
                 <div class="dropdown-header bg-trans-gradient d-flex flex-row py-4 rounded-top">
                     <div class="d-flex flex-row align-items-center mt-1 mb-1 color-white">
                                             <span class="mr-2">

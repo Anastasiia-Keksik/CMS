@@ -2,7 +2,7 @@
     <aside class="page-sidebar">
             <div class="page-logo">
                 <a href="#" class="page-logo-link press-scale-down d-flex align-items-center position-relative" data-toggle="modal" data-target="#modal-shortcut">
-                    <img src="{{ asset('smartadmin/img/logo.png') }}" alt="SmartAdmin WebApp" aria-roledescription="logo">
+                    <img src="{{ asset('default/ksiezyc.png') }}" alt="SmartAdmin WebApp" aria-roledescription="logo">
                     <span class="page-logo-text mr-1">{{ APP_NAME }}</span>
                     <span class="position-absolute text-white opacity-50 small pos-top pos-right mr-2 mt-n2"></span>
                     <i class="fal fa-angle-down d-inline-block ml-1 fs-lg color-primary-300"></i>
@@ -39,7 +39,7 @@
             <ul id="js-nav-menu" class="nav-menu">
                 {% if mod is defined and mod == "forum" and pageName != "Create forum" %}
 {#                    Jesli jestes tworca forum #}
-                    {% if member.role[0] == 'ADMINISTRATOR' %}
+                    {% if member.role[0] is defined and member.role[0] == 'ADMINISTRATOR' %}
                         <li class="text-center justify-content-center">
                             <span class="text-white">To forum należy do Ciebie</span>
                         </li>

@@ -1,6 +1,6 @@
 <div class="tab-pane fade{% if tab == 'profile' %} show active{% endif %}" id="profile" role="tab_panel">
 {#    <div class="col-lg-12 col-xl-6 order-lg-3 order-xl-2">#}
-        <div class="card composed-left NewSocialPostPanel mb-g" offonclick="openModal1();" style="background: none">
+        <div class="card composed-left NewSocialPostPanel mb-g" onclick="openModal1();" style="background: none">
             <div class="card-body pl-0 pt-0 pr-0 pb-0 bg-white rounded" id="wallpaper" style="{# background-image: url('{{ asset('upload/23751.jpg') }}'); background-size: 100%#}">
                 <div id="black-transparent" class="w-100 rounded black-transparent" style="background-color: rgba(0,0,0, 0)">
                     <div id="white-transparent" class="w-100 rounded" style="background-color: rgba(255,255,255, 0)">
@@ -164,8 +164,7 @@
                                 <div class="d-inline-block align-middle rounded-circle status status-success mr-3" style="background: rgba(0,0,0, 0.9);">
                                     <span class="profile-image rounded-circle d-block" style="background-image:url('{{ asset('upload/avatars/'~post.AuthorUsername~'/'~post.AuthorAvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
                                 </div>
-                                <h5 class="mb-0 flex-1 text-black opacity-70 fw-400">
-{#                                    background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.8419117988992471) 24%, rgba(0,0,0,0.7606793059020483) 40%, rgba(0,0,0,0.6738445720084909) 49%, rgba(0,0,0,0.6262255243894433) 52%, rgba(0,0,0,0) 100%);#}
+                                <h5 class="mb-0 flex-1 text-black opacity-70 fw-400">{#                                    background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.8419117988992471) 24%, rgba(0,0,0,0.7606793059020483) 40%, rgba(0,0,0,0.6738445720084909) 49%, rgba(0,0,0,0.6262255243894433) 52%, rgba(0,0,0,0) 100%);#}
                                     {{ post.AuthorFirstName }} "{{post.AuthorUsername}}" {{ post.AuthorLastName }}
                                     <small class="m-0 l-h-n">
                                         {{post.AuthorOccupation}}
@@ -221,7 +220,6 @@
                         <script>
                             document.addEventListener("DOMContentLoaded", function(event) {
                                 document.getElementById('ShowCommentsLengthNumber_{{ post.Id }}').innerHTML = comment_length['{{ post.Id }}'];
-                                console.log('dziala');
                             });
                         </script>
                     {% endif %}
@@ -234,10 +232,13 @@
                         </div>
                         <div class="mb-0 flex-1 text-dark">
                             <div class="d-flex">
-                                <a href="javascript:void(0);" class="text-dark fw-500">
-                        {{ comment.AuthorFirstName }} "{{comment.AuthorUsername}}" {{ comment.AuthorLastName }}
-                                </a><span class="text-muted fs-xs opacity-70 ml-auto">
-                                                            {{comment.createdAt|ago}} minutes
+                                <span href="#" class="text-dark fw-500">
+                                                <a type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ni ni-action-redo"></i></a> {{ comment.AuthorFirstName }} "{{comment.AuthorUsername}}" {{ comment.AuthorLastName }}
+                                                <div class="dropdown-menu" style="">
+                                                    <button class="dropdown-item" data-toggle="modal" data-target=".favourites">Add Conversation to favourites</button>
+                                                </div>
+                                </span><span class="text-muted fs-xs opacity-70 ml-auto">
+                                                            {{comment.createdAt|ago}}
                                                         </span>
                             </div>
                             <p class="mb-0">
@@ -245,35 +246,137 @@
                             </p>
 
                             <div>
-                                <a href="javascript: addHeart('{{ comment.Id }}');" class="d-inline-flex align-items-center text-dark">
+                                <a href="javascript: addHeart('{{ comment.Id }}');" class="d-inline-flex float-right align-items-center text-dark">
                                     <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>
                                 </a>
-                                <a href="#answer_{{ comment.Id }}" data-toggle="collapse" aria-expanded="false" aria-controls="answer_{{ comment.Id }}" {% if loop.last != true %}onclick="changeCommentCss('#comment_{{ post.Id }}_{{ loop.index }}', '#comment_{{ post.Id }}_{{ loop.index+1 }}')"{% endif %}> Answer</a>
+                                <a href="#answer_{{ comment.Id }}" data-toggle="collapse" aria-expanded="false" aria-controls="answer_{{ comment.Id }}" class="float-left"
+                                   {% if loop.last != true %}onclick="changeCommentCss('#comment_{{ post.Id }}_{{ loop.index }}', '#comment_{{ post.Id }}_{{ loop.index+1 }}')"{% endif %}>
+                                    <span data-toggle="tooltip" data-original-title="Create new conversation" data-placement="top">
+                                        <i class="far fa-caret-down"></i> Answer to {{comment.AuthorUsername}}
+                                    </span>
+                                </a>
                             </div>
 
-                            {% for Conversation in comment.CommentConversation %}
-                            <div class="pl-0 d-flex flex-row w-100 pb-0 pt-4">
-                                <div class="d-inline-block align-middle status status-sm status-success mr-3">
-                                    <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url('{{ asset('upload/avatars/'~Conversation.AuthorUsername~'/'~Conversation.AuthorAvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
-                                </div>
-                                <div class="mb-0 flex-1 text-dark">
-                                    <div class="d-flex">
-                                        <a href="javascript:void(0);" class="text-dark fw-500">
-                                            {{ Conversation.AuthorUsername }}
-                                        </a><span class="text-muted fs-xs opacity-70 ml-auto">
-                                                                    {{ Conversation.createdAt|ago }}
-                                                                </span>
+                            <!-- Conversation - 2 comment -->
+{#                            {% if post.Comments_length > 3 %}#}
+{#                                <script>#}
+{#                                    comment_length['{{ post.Id }}'] = {{ post.MainCommentsLength - 3 }};#}
+{#                                </script>#}
+{#                                <span class="pt-3" id="ShowCommentsLengthTag_{{ post.Id }}"><a href="javascript: getMoreComments('{{ post.Id }}');">Show more Comments (<span id="ShowCommentsLengthNumber_{{ post.Id }}"></span>)</a></span>#}
+{#                                <script>#}
+{#                                    document.addEventListener("DOMContentLoaded", function(event) {#}
+{#                                        document.getElementById('ShowCommentsLengthNumber_{{ post.Id }}').innerHTML = comment_length['{{ post.Id }}'];#}
+{#                                    });#}
+{#                                </script>#}
+{#                            {% endif %}#}
+                            <script>
+                                CommentPageNr['{{ comment.Id }}'] = 1;
+                            </script>
+                            <div id="loadCommentsTarget_{{ post.Id }}" class="d-flex flex-column w-100"></div>
+                            {% for ConversationComment in comment.CommentConversation %}
+{#                                {{ dump(ConversationComment) }}#}
+                                <script>
+                                    CommentPageNr['{{ ConversationComment.Id }}'] = 1;
+                                </script>
+                            <div class="position-relative" id="extended-conversation_target-{{ ConversationComment.Id }}">
+                                <div class="pl-0 d-flex flex-row w-100 pb-0 pt-4">
+                                    <div class="d-inline-block align-middle status status-sm status-success mr-3">
+                                        <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url('{{ asset('upload/avatars/'~ConversationComment.AuthorUsername~'/'~ConversationComment.AuthorAvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
                                     </div>
-                                    <p class="mb-0">
-                                        {{Conversation.Content}}
-                                    </p>
+                                    <div class="mb-0 flex-1 text-dark mr-1 ">
+                                        <div class="d-flex">
+                                            <span href="#" class="text-dark fw-500">
+                                                <a type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ni ni-action-redo"></i></a> {{ comment.AuthorFirstName }} "{{comment.AuthorUsername}}" {{ comment.AuthorLastName }}
+                                                <div class="dropdown-menu" style="">
+                                                    <button class="dropdown-item" data-toggle="modal" data-target=".favourites">Add Conversation to favourites</button>
+                                                </div>
+                                            </span><span class="text-muted fs-xs opacity-70 ml-auto">
+                                                                        {{ ConversationComment.createdAt|ago }}
+                                                                    </span>
+                                        </div>
+                                        <p class="mb-0">
+                                            {{ ConversationComment.Content }}
+                                        </p>
+                                        <div>
+                                            <a href="javascript: addHeart('{{ ConversationComment.Id }}');" class="d-inline-flex align-items-center text-dark">
+                                                <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>
+                                            </a>
+
+                                            <a href="#answer_{{ ConversationComment.Id }}" data-toggle="collapse" aria-expanded="false" aria-controls="answer_{{ ConversationComment.Id }}"
+                                                    {#  onclick="changeCommgentCss('#comment_{{ post.Id }}_{{ loop.index }}', '#comment_{{ post.Id }}_{{ loop.index+1 }}')"#}
+                                               class="float-right">
+                                                <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top">
+                                                    Answer to {{ ConversationComment.AuthorUsername }} <i class="far fa-caret-right"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!-- right click conversation -->
+                                    <script>
+                                        letMeShowMore2['{{ ConversationComment.Id }}'] = true
+                                    </script>
+                                    <div id="right-arrow-{{ ConversationComment.Id }}" class="rounded justify-content-center cursor-pointer d-flex align-items-center" style="width: 20px; height: 60px; background: rgba(255,255,255, 0.2); border: #505050;"
+                                    onclick="getMoreCommentsRight('{{ ConversationComment.Id }}')">
+                                        <i class="fal fa-angle-right fa-2x" style=""></i>
+                                    </div>
+                                    <!-- end right click conversation -->
                                 </div>
+
+{#                                <!-- Extended conversation comments -->#}
+{#                                    <div class="d-flex flex-row position-absolute rounded mt-2 pt-2 px-0 pb-0" style="border: 1px black solid; width: 400px; top: 0; left: calc(100% + 1.5rem + 1.5rem); z-index: 2000; background: #707070">#}
+{#                                        <div class="d-flex flex-row rounded d-inline-block pt-1 align-middle bg-light w-100 pb-2 px-2" style="border-top: 0 black solid;">#}
+{#                                            <div class="d-inline-block align-middle status status-sm status-success mr-3">#}
+{#                                                <span class="ml-1 mt-1 profile-image profile-image-md rounded d-block mt-1" style="background-image:url('{{ asset('upload/avatars/'~ConversationComment.AuthorUsername~'/'~ConversationComment.AuthorAvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>#}
+{#                                            </div>#}
+{#                                            <div class="mb-0 flex-1 text-dark mr-1 ">#}
+{#                                                <div class="d-flex">#}
+{#                                                    <a href="javascript:void(0);" class="text-dark fw-500">#}
+{#                                                        {{ ConversationComment.AuthorUsername }}#}
+{#                                                    </a><span class="text-muted fs-xs opacity-70 ml-auto">#}
+{#                                                                        {{ ConversationComment.createdAt|ago }}#}
+{#                                                                    </span>#}
+{#                                                </div>#}
+{#                                                <p class="mb-0">#}
+{#                                                    {{ConversationComment.Content}}#}
+{#                                                </p>#}
+{#                                                <div>#}
+{#                                                    <a href="javascript: addHeart('{{ ConversationComment.Id }}');" class="d-inline-flex align-items-center text-dark">#}
+{#                                                        <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>#}
+{#                                                    </a>#}
+
+{#                                                    <a href="#answer_{{ ConversationComment.Id }}" data-toggle="collapse" aria-expanded="false" aria-controls="answer_{{ ConversationComment.Id }}"#}
+{#                                                            #}{#  onclick="changeCommgentCss('#comment_{{ post.Id }}_{{ loop.index }}', '#comment_{{ post.Id }}_{{ loop.index+1 }}')"#}
+{#                                                       class="float-right">#}
+{#                                                <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top">#}
+{#                                                    Answer to {{ ConversationComment.AuthorUsername }} <i class="far fa-caret-down"></i>#}
+{#                                                </span>#}
+{#                                                    </a>#}
+{#                                                </div>#}
+{#                                            </div>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                    <div class="rounded mt-3 text-white-50 justify-content-center d-flex align-items-center bg-light position-absolute" style="width: 20px; top: 0; left: calc(100% + 400px + 3rem + 0.75rem); height: 68px; border: #505050;">#}
+{#                                        <i class="fal fa-angle-right fa-2x text-dark" style=""></i>#}
+{#                                    </div>#}
+{#                                <!-- end of Extended conversation comments -->#}
+                                <!-- add new Conversation comment -->
+                                <div class="pt-3 w-100 collapse" id="answer_{{ ConversationComment.Id }}"><form id="COMMENT_{{ ConversationComment.Id }}_POST" method="post">
+                                    <textarea id="new_comment_to_the_conversation_{{ ConversationComment.Id }}" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
+                                      rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment', '{{ ConversationComment.Id }}')"></textarea>
+                                        <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">
+                                        <input type="hidden" name="profile_name" value="{{ profile.Username }}">
+                                        <input type="submit"
+                                               style="position: absolute; left: -9999px; width: 1px; height: 1px;"
+                                               tabindex="-1" />
+                                    </form>
+                                </div>
+                                <!-- add comment end -->
                             </div>
                             {%endfor%}
                             <!-- add comment -->
                             <div class="pt-3 w-100 collapse" id="answer_{{ comment.Id }}"><form id="COMMENT_{{ post.Id }}_POST" method="post">
-                            <textarea id="new_comment_to_the_conversation_{{ post.Id }}" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
-                                      rows="2" style="background-color: unset" onkeypress="submitComment('comment', '{{ post.Id }}')"></textarea>
+                            <textarea id="new_comment_to_the_conversation_{{ comment.Id }}" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
+                                      rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment', '{{ comment.Id }}')"></textarea>
                                     <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">
                                     <input type="hidden" name="profile_name" value="{{ profile.Username }}">
                                     <input type="submit"
@@ -498,8 +601,8 @@
                                                             {%endfor%}
                                                             <!-- add comment -->
                                                             <div class="pt-3 w-100 collapse" id="answer_{{ comment.Id }}"><form id="Conversation_COMMENT2_{{ post.Id }}_POST" method="post">
-                                <textarea id="new_comment_to_the_conversation_{{ post.Id }}" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
-                                          rows="2" style="background-color: unset" onkeypress="submitComment('comment', '{{ post.Id }}')"></textarea>
+                                <textarea id="new_comment_to_the_conversation_2_{{ post.Id }}" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
+                                          rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment', '{{ post.Id }}')"></textarea>
                                                                     <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">
                                                                     <input type="hidden" name="profile_name" value="{{ profile.Username }}">
                                                                     <input type="submit"

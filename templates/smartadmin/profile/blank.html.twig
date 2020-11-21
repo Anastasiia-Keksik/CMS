@@ -1,6 +1,10 @@
 {% extends 'smartadmin/base.html.twig' %}
 
 {% block content %}
+    <script>
+        let CommentPageNr = new Array();
+        let letMeShowMore2 = new Array();
+    </script>
     <!-- the #js-page-content id is needed for some plugins to initialize -->
     <main id="js-page-content" role="main" class="page-content"
           style="background-image: url('{{ asset('upload/12554.jpg') }}');">
@@ -1134,6 +1138,7 @@
             </div>
         </div>
     {% endif %}
+    {% include 'smartadmin/parts/favouritesModal.twig' %}
     <!-- this overlay is activated only when mobile menu is triggered -->
     <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div>
 {% endblock %}
@@ -1359,103 +1364,15 @@ Variables:
 {% endblock %}
 
 {% block footer %}
-    {% if footer is defined and footer != false %}
-        <footer class="page-footer bg-fusion-900" role="contentinfo">
-            <div class="d-flex align-items-center flex-1 text-muted">
-                <span class="hidden-md-down fw-700">2020 © SmartAdmin by&nbsp;<a href='https://www.gotbootstrap.com'
-                                                                                 class='text-primary fw-500'
-                                                                                 title='gotbootstrap.com'
-                                                                                 target='_blank'>gotbootstrap.com</a></span>
-            </div>
-            <div>
-                <ul class="list-table m-0">
-                    <li><a href="intel_introduction.html" class="text-secondary fw-700">About</a></li>
-                    <li class="pl-3"><a href="info_app_licensing.html" class="text-secondary fw-700">License</a></li>
-                    <li class="pl-3"><a href="info_app_docs.html" class="text-secondary fw-700">Documentation</a></li>
-                    <li class="pl-3 fs-xl"><a href="https://wrapbootstrap.com/user/MyOrange" class="text-secondary"
-                                              target="_blank"><i class="fal fa-question-circle" aria-hidden="true"></i></a>
-                    </li>
-                </ul>
-            </div>
-        </footer>
-    {% endif %}
+    {% include 'smartadmin/parts/footer.twig' %}
 {% endblock %}
 
 {% block shortcuts %}
-    <div class="modal fade modal-backdrop-transparent" id="modal-shortcut" tabindex="-1" role="dialog"
-         aria-labelledby="modal-shortcut" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-top modal-transparent" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <ul class="app-list w-auto h-auto p-0 text-left">
-                        <li>
-                            <a href="intel_introduction.html" class="app-list-item text-white border-0 m-0">
-                                <div class="icon-stack">
-                                    <i class="base base-7 icon-stack-3x opacity-100 color-primary-500 "></i>
-                                    <i class="base base-7 icon-stack-2x opacity-100 color-primary-300 "></i>
-                                    <i class="fal fa-home icon-stack-1x opacity-100 color-white"></i>
-                                </div>
-                                <span class="app-list-name">
-                                                    Home
-                                                </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="page_inbox_general.html" class="app-list-item text-white border-0 m-0">
-                                <div class="icon-stack">
-                                    <i class="base base-7 icon-stack-3x opacity-100 color-success-500 "></i>
-                                    <i class="base base-7 icon-stack-2x opacity-100 color-success-300 "></i>
-                                    <i class="ni ni-envelope icon-stack-1x text-white"></i>
-                                </div>
-                                <span class="app-list-name">
-                                                    Inbox
-                                                </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="intel_introduction.html" class="app-list-item text-white border-0 m-0">
-                                <div class="icon-stack">
-                                    <i class="base base-7 icon-stack-2x opacity-100 color-primary-300 "></i>
-                                    <i class="fal fa-plus icon-stack-1x opacity-100 color-white"></i>
-                                </div>
-                                <span class="app-list-name">
-                                                    Add More
-                                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'smartadmin/parts/shortcuts.html.twig' %}
 {% endblock %}
 
 {% block quickmenu %}
-    <!-- to add more items, please make sure to change the variable '$menu-items: number;' in your _page-components-shortcut.scss -->
-    <nav class="shortcut-menu d-none d-sm-block">
-        <input type="checkbox" class="menu-open" name="menu-open" id="menu_open"/>
-        <label for="menu_open" class="menu-open-button ">
-            <span class="app-shortcut-icon d-block"></span>
-        </label>
-        <a href="#" class="menu-item btn" data-toggle="tooltip" data-placement="left" title="Scroll Top">
-            <i class="fal fa-arrow-up"></i>
-        </a>
-        <a href="page_login.html" class="menu-item btn" data-toggle="tooltip" data-placement="left" title="Logout">
-            <i class="fal fa-sign-out"></i>
-        </a>
-        <a href="#" class="menu-item btn" data-action="app-fullscreen" data-toggle="tooltip" data-placement="left"
-           title="Full Screen">
-            <i class="fal fa-expand"></i>
-        </a>
-        <a href="#" class="menu-item btn" data-action="app-print" data-toggle="tooltip" data-placement="left"
-           title="Print page">
-            <i class="fal fa-print"></i>
-        </a>
-        <a href="#" class="menu-item btn" data-action="app-voice" data-toggle="tooltip" data-placement="left"
-           title="Voice command">
-            <i class="fal fa-microphone"></i>
-        </a>
-    </nav>
+    {% include 'smartadmin/parts/quickmenu.twig' %}
 {% endblock %}
 
 {% block messenger %}
@@ -1918,7 +1835,7 @@ Variables:
     <script>
         initApp.pushSettings("navbar-fixed-top", true);
     </script>
-
+    <script src="{{ asset('smartadmin/js/miscellaneous/dragscroll-master/dragscroll.js') }}"></script>
     <script src="{{ asset('smartadmin/js/less.js') }}"></script>
     <script type="text/javascript">
         let height = 0;
@@ -1929,7 +1846,9 @@ Variables:
         {# TODO: if scroll to somecomment is empty scroll then #}
         {% if bgopen is not defined or bgopen != 'open' %}
         $(document).ready(function () {
-            $('html, body').animate({scrollTop: '180px'}, 500);
+            if ($(window).scrollTop() < 10) {
+                $('html, body').animate({scrollTop: '180px'}, 500);
+            }
         });
         {% endif %}
         $(window).scroll(function () {
@@ -2288,6 +2207,7 @@ Variables:
             if ((event.keyCode == 13 || event.which == '13') && !event.shiftKey) {
                 event.preventDefault();
                 //$('#COMMENT_'+id+'_POST').submit();
+                let doNotSend = false;
                 var username = '{{ user.Username }}';
                 var avatarUrl = '\'{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}\'';
                 var FirstName = '{{ user.FirstName }}';
@@ -2298,137 +2218,305 @@ Variables:
                 if ($('#new_comment_to_the_post_' + id).val() != '') {
                     dataContent = {
                         'Content': $('#new_comment_to_the_post_' + id).val(),
+                        //'profile_name': '{{ profile.Username }}',
                         '_token': token
                     }
-                } else {
+                } else if ($('#new_comment_to_the_post_2_' + id).val() != '') {
                     dataContent = {
                         'Content': $('#new_comment_to_the_post_2_' + id).val(),
+                        //'profile_name': '{{ profile.Username }}',
                         '_token': token
                     }
+                }else{
+                    doNotSend = true;
                 }
-                $.ajax({
-                    url: '/addCommentToPost/' + id, //SocialController
-                    data: dataContent,
-                    method: 'POST',
-                    // Expect a `mycustomtype` back from server
-                    dataType: 'json',
+                if (doNotSend === false) {
+                    $.ajax({
+                        url: '/api/addCommentToPost/' + id, //SocialController
+                        data: dataContent,
+                        method: 'POST',
+                        // Expect a `mycustomtype` back from server
+                        dataType: 'json',
 
-                    success: function (data) {
-                        console.log(data);
-                        if (data.status != "empty content") {
-                            $('.addCommentTarget_' + id).append('<div class="d-flex flex-row w-100 py-4">\n' +
-                                '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
-                                '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + avatarUrl + '); background-size: cover;"></span>\n' +
-                                '                        </div>\n' +
-                                '                        <div class="mb-0 flex-1 text-dark">\n' +
-                                '                            <div class="d-flex">\n' +
-                                '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
-                                '                        ' + FirstName + ' "' + username + '" ' + LastName +
-                                '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
-                                '                                                            ' + data.CreatedAt + ' minutes\n' +
-                                '                                                        </span>\n' +
-                                '                            </div>\n' +
-                                '                            <p class="mb-0">\n' +
-                                '                                ' + data.Content +
-                                '                            </p>\n' +
-                                '                            <div>\n' +
-                                '                                <a href="javascript: addHeart(\'' + data.commentId + '\');" class="d-inline-flex align-items-center text-dark">\n' +
-                                '                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
-                                '                                </a>\n' +
-                                '                                <a href="#answer_' + data.commentId + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + data.commentId + '"> Answer</a>\n' +
-                                '                            </div>\n' +
-                                '                            <div id=\"conversation_target\" \n' +
-                                '                        </div>\n' +
-                                '                    </div>');
+                        success: function (data) {
+                            console.log(data);
+                            if (data.status != "empty content") {
+                                $('.addCommentTarget_' + id).append('<div class="d-flex flex-row w-100 py-4">\n' +
+                                    '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
+                                    '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + avatarUrl + '); background-size: cover;"></span>\n' +
+                                    '                        </div>\n' +
+                                    '                        <div class="mb-0 flex-1 text-dark">\n' +
+                                    '                            <div class="d-flex">\n' +
+                                    '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
+                                    '                        ' + FirstName + ' "' + username + '" ' + LastName +
+                                    '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
+                                    '                                                            ' + data.CreatedAt + ' minutes\n' +
+                                    '                                                        </span>\n' +
+                                    '                            </div>\n' +
+                                    '                            <p class="mb-0">\n' +
+                                    '                                ' + data.Content +
+                                    '                            </p>\n' +
+                                    '                            <div>\n' +
+                                    '                                <a href="javascript: addHeart(\'' + data.commentId + '\');" class="d-inline-flex align-items-center text-dark">\n' +
+                                    '                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
+                                    '                                </a>\n' +
+                                    '                                <a href="#answer_' + data.commentId + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + data.commentId + '"> Answer</a>\n' +
+                                    '                            </div>\n' +
+                                    '                            <div id=\"conversation_target\" \n' +
+                                    '                        </div>\n' +
+                                    '                    </div>');
+                            }
                         }
-                    }
-                });
+                    });
+                }
                 $('#new_comment_to_the_post_' + id).val("");
                 $('#new_comment_to_the_post_2_' + id).val("");
-                console.log('enter');
+            }
+        }
+
+        //TODO: DODAC ELSE IF zamiast ELSE by nie wysylalo niepotrzebnie ajaxa gdy i ten pedzie pusty - to samo wyzej
+        //Conversation Comment CommentToComment Comment To Comment
+        function submitCommentToComment(entity, id, right=false) {
+            if ((event.keyCode === 13 || event.which === '13') && !event.shiftKey) {
+                event.preventDefault();
+                //$('#COMMENT_'+id+'_POST').submit();
+                let doNotSubmit = false;
+                var username = '{{ user.Username }}';
+                var avatarUrl = '\'{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}\'';
+                var FirstName = '{{ user.FirstName }}';
+                var LastName = '{{ user.LastName }}';
+                var token = '{{ csrf_token('comment') }}';
+                console.log('data: ' + $('#new_comment_to_the_conversation_' + id).val())
+                var dataContent = '';
+                if ($('#new_comment_to_the_conversation_' + id).val() != '') {
+                    dataContent = {
+                        'Content': $('#new_comment_to_the_conversation_' + id).val(),
+                        '_token': token
+                    }
+                } else if ($('#new_comment_to_the_conversation_2_' + id).val() != '') {
+                    dataContent = {
+                        'Content': $('#new_comment_to_the_conversation_2_' + id).val(),
+                        '_token': token
+                    }
+                }else {
+                    //do not submit if content is empty
+                    doNotSubmit = true;
+                }
+                if (doNotSubmit === false) {
+                    $.ajax({
+                        url: '/api/addCommentToComment/' + id, //SocialController
+                        data: dataContent,
+                        method: 'POST',
+                        // Expect a `mycustomtype` back from server
+                        dataType: 'json',
+
+                        success: function (data) {
+                        // old
+                        //     if (data.status != "empty content" && right === false) {
+                        //         $('.addCommentTarget_' + id).append('<div class="d-flex flex-row w-100 py-4">\n' +
+                        //             '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
+                        //             '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + avatarUrl + '); background-size: cover;"></span>\n' +
+                        //             '                        </div>\n' +
+                        //             '                        <div class="mb-0 flex-1 text-dark">\n' +
+                        //             '                            <div class="d-flex">\n' +
+                        //             '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
+                        //             '                        ' + FirstName + ' "' + username + '" ' + LastName +
+                        //             '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
+                        //             '                                                            ' + data.CreatedAt + ' minutes\n' +
+                        //             '                                                        </span>\n' +
+                        //             '                            </div>\n' +
+                        //             '                            <p class="mb-0">\n' +
+                        //             '                                ' + data.Content +
+                        //             '                            </p>\n' +
+                        //             '                            <div>\n' +
+                        //             '                                <a href="javascript: addHeart(\'' + data.commentId + '\');" class="d-inline-flex align-items-center text-dark">\n' +
+                        //             '                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
+                        //             '                                </a>\n' +
+                        //             '                                <a href="#answer_' + data.commentId + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + data.commentId + '"> Answer</a>\n' +
+                        //             '                            </div>\n' +
+                        //             '                            <div id=\"conversation_target\" \n' +
+                        //             '                        </div>\n' +
+                        //             '                    </div>');
+                        //     }
+                        // }
+                            if (data.status != "empty content" && right === false) {
+                                    $('.addCommentTarget_' + id).append('<div class="d-flex flex-row w-100 py-4">\n' +
+                                        '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
+                                        '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + avatarUrl + '); background-size: cover;"></span>\n' +
+                                        '                        </div>\n' +
+                                        '                        <div class="mb-0 flex-1 text-dark">\n' +
+                                        '                            <div class="d-flex">\n' +
+                                        '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
+                                        '                        ' + FirstName + ' "' + username + '" ' + LastName +
+                                        '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
+                                        '                                                            ' + data.CreatedAt + ' minutes\n' +
+                                        '                                                        </span>\n' +
+                                        '                            </div>\n' +
+                                        '                            <p class="mb-0">\n' +
+                                        '                                ' + data.Content +
+                                        '                            </p>\n' +
+                                        '                            <div>\n' +
+                                        '                                <a href="javascript: addHeart(\'' + data.commentId + '\');" class="d-inline-flex align-items-center text-dark">\n' +
+                                        '                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
+                                        '                                </a>\n' +
+                                        '                                <a href="#answer_' + data.commentId + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + data.commentId + '"> Answer</a>\n' +
+                                        '                            </div>\n' +
+                                        '                            <div id=\"conversation_target\" \n' +
+                                        '                        </div>\n' +
+                                        '                    </div>');
+                                }
+                            }
+                    });
+                }
+                $('#new_comment_to_the_conversation_' + id).val("");
+                $('#new_comment_to_the_conversation_2_' + id).val("");
             }
         }
     </script>
     <script>
         // TODO: moze zamiat i dac delay, pozniej
+        //security for spam clicking
+        let letMeShowMore = true;
+
         function getMoreComments(postid) {// check max 10
+            if (letMeShowMore === true) {
+                $.ajax({
+                    url: '/api/getMoreComments/' + postid,
+                    data: {
+                        'pagination': pagination[postid],
+                        '_token': '{{ csrf_token('getMoreComments') }}'
+                    },
+                    method: 'POST',
+                    // Expect a `mycustomtype` back from server
+                    dataType: 'json',
 
-            $.ajax({
-                url: '/getMoreComments/' + postid,
-                data: {
-                    'pagination': pagination[postid],
-                    '_token': '{{ csrf_token('getMoreComments') }}'
-                },
-                method: 'POST',
-                // Expect a `mycustomtype` back from server
-                dataType: 'json',
-
-                success: function (data) {
-                    console.log(pagination[postid]);
-                    console.log(data);
-                    if (data.status != "empty content") {
-                        data.comments.forEach((comment) => {
-                            var komentarz = '<div class="d-flex flex-row w-100 py-4">\n' +
-                                '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
-                                '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + comment.AuthorAvatarFileUrl + '); background-size: cover;"></span>\n' +
-                                '                        </div>\n' +
-                                '                        <div class="mb-0 flex-1 text-dark">\n' +
-                                '                            <div class="d-flex">\n' +
-                                '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
-                                '                        ' + comment.AuthorFirstName + ' "' + comment.AuthorUsername + '" ' + comment.AuthorLastName +
-                                '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
-                                '                                                            ' + comment.createdAt + ' minutes\n' +
-                                '                                                        </span>\n' +
-                                '                            </div>\n' +
-                                '                            <p class="mb-0">\n' +
-                                '                                ' + comment.Content +
-                                '                            </p>\n' +
+                    success: function (data) {
+                        console.log(pagination[postid]);
+                        console.log(data);
+                        if (data.status != "empty content") {
+                            data.comments.forEach((comment) => {
+                                var komentarz = '<div class="d-flex flex-row w-100 py-4">\n' +
+                                    '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
+                                    '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + comment.AuthorAvatarFileUrl + '); background-size: cover;"></span>\n' +
+                                    '                        </div>\n' +
+                                    '                        <div class="mb-0 flex-1 text-dark">\n' +
+                                    '                            <div class="d-flex">\n' +
+                                    '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
+                                    '                        ' + comment.AuthorFirstName + ' "' + comment.AuthorUsername + '" ' + comment.AuthorLastName +
+                                    '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
+                                    '                                                            ' + comment.createdAt + ' minutes\n' +
+                                    '                                                        </span>\n' +
+                                    '                            </div>\n' +
+                                    '                            <p class="mb-0">\n' +
+                                    '                                ' + comment.Content +
+                                    '                            </p>\n' +
+                                    '                                   <div>\n' +
+                                    '                                        <a href="javascript: addHeart(\'' + comment.Id + '\');" class="d-inline-flex align-items-center float-right text-dark">\n' +
+                                    '                                            <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
+                                    '                                        </a>\n' +
+                                    '                                        <a href="#answer_' + comment.Id + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + comment.Id + '"\n' +
+                                    '{# onclick="changeCommgentCss(\'#comment_{{ post.Id }}_{{ loop.index }}\', \'#comment_{{ post.Id }}_{{ loop.index+1 }}\')" #}\n' +
+                                    '                                           class="float-left">\n' +
+                                    '                                            <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top" onclick="scroolTo(\'answer_'+ comment.Id +'\')">\n' +
+                                    '                                                Answer to ' + comment.AuthorUsername + ' <i class="far fa-caret-down"></i>\n' +
+                                    '                                            </span>\n' +
+                                    '                                        </a>\n' +
+                                    '                                    </div>'
                                 '                            <div id=\"conversation_target_' + comment.Id + '_before\"> </div> \n';
-                            if (comment.CommentConversation.length > 0) {
-                                comment.CommentConversation.forEach((insideComment) => {
-                                    komentarz = komentarz +
-                                        '<div class=\"pl-0 d-flex flex-row w-100 pb-0 pt-4\"> \n' +
-                                        '   <div class=\"d-inline-block align-middle status status-sm status-success mr-3\"> \n' +
-                                        '   <span class=\"profile-image profile-image-md rounded-circle d-block mt-1\" style=\"background-image:url(' + insideComment.AuthorAvatarFileUrl + '); background-size: cover;\"></span> \n' +
-                                        '   </div> \n' +
-                                        '   <div class=\"mb-0 flex-1 text-dark\"> \n' +
-                                        '   <div class=\"d-flex\"> \n' +
-                                        '   <a href=\"javascript:void(0);\" class=\"text-dark fw-500\"> \n' +
-                                        insideComment.AuthorFirstName + " \"" + insideComment.AuthorUsername + "\" " + insideComment.AuthorLastName +
-                                        '   </a><span class=\"text-muted fs-xs opacity-70 ml-auto\"> \n' +
-                                        insideComment.createdAt +
-                                        '   </span> \n' +
-                                        '   </div> \n' +
-                                        '   <p class=\"mb-0\"> \n' +
-                                        insideComment.Content +
-                                        '   </p> \n' +
-                                        '   </div> \n' +
-                                        '   </div> \n';
-                                });
+                                if (comment.CommentConversation.length > 0) {
+                                    comment.CommentConversation.forEach((insideComment) => {
+                                        komentarz = komentarz +
+                                            '<div class=\"pl-0 d-flex flex-row w-100 pb-0 pt-4\"> \n' +
+                                            '   <div class=\"d-inline-block align-middle status status-sm status-success mr-3\"> \n' +
+                                            '   <span class=\"profile-image profile-image-md rounded-circle d-block mt-1\" style=\"background-image:url(' + insideComment.AuthorAvatarFileUrl + '); background-size: cover;\"></span> \n' +
+                                            '   </div> \n' +
+                                            '   <div class=\"mb-0 flex-1 text-dark\"> \n' +
+                                            '   <div class=\"d-flex\"> \n' +
+                                            '   <a href=\"javascript:void(0);\" class=\"text-dark fw-500\"> \n' +
+                                            insideComment.AuthorFirstName + " \"" + insideComment.AuthorUsername + "\" " + insideComment.AuthorLastName +
+                                            '   </a><span class=\"text-muted fs-xs opacity-70 ml-auto\"> \n' +
+                                            insideComment.createdAt +
+                                            '   </span> \n' +
+                                            '   </div> \n' +
+                                            '   <p class=\"mb-0\"> \n' +
+                                            insideComment.Content +
+                                            '   </p> \n' +
+
+                                            '                                   <div>\n' +
+                                            '                                        <a href="javascript: addHeart(\'' + insideComment.Id + '\');" class="d-inline-flex align-items-center text-dark">\n' +
+                                            '                                            <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
+                                            '                                        </a>\n' +
+                                            '                                        <a href="#answer_' + insideComment.Id + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + insideComment.Id + '"\n' +
+                                            '{# onclick="changeCommgentCss(\'#comment_{{ post.Id }}_{{ loop.index }}\', \'#comment_{{ post.Id }}_{{ loop.index+1 }}\')" #}\n' +
+                                            '                                           class="float-right">\n' +
+                                            '                                            <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top">\n' +
+                                            '                                                Answer to ' + insideComment.AuthorUsername + ' <i class="far fa-caret-right"></i>\n' +
+                                            '                                            </span>\n' +
+                                            '                                        </a>\n' +
+                                            '                                    </div>' +
+
+
+                                            '   </div> \n' +
+                                            '   </div> \n'+
+                                        '                   <!-- add comment -->\n' +
+                                            '                    <div class="py-3 w-100 collapse" id="answer_'+ insideComment.Id +'"><form id="COMMENTinconversation_'+ insideComment.Id +'" method="post">\n' +
+                                            '                            <textarea id="new_comment_to_the_conversation_'+ insideComment.Id +'" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."\n' +
+                                            '                                      rows="2" style="background-color: unset" onkeypress="submitCommentToComment(\'comment\', \''+ insideComment.Id +'\', true)"></textarea>\n' +
+                                            '                            <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">\n' +
+                                        '                            <input type="submit"\n' +
+                                        '                                   style="position: absolute; left: -9999px; width: 1px; height: 1px;"\n' +
+                                        '                                   tabindex="-1" />\n' +
+                                        '                        </form>\n' +
+                                        '                    </div>\n' +
+                                        '                    <!-- add comment end -->'
+                                        ;
+                                    });
+                                }
+
+                                komentarz = komentarz + '                            <div id=\"conversation_target_' + comment.Id + '_after\"> </div> \n' +
+                                    '                        </div>\n' +
+                                    '                    </div>'+
+                                    '                   <!-- add comment -->\n' +
+                                    '                    <div class="py-3 w-100 collapse" id="answer_'+ comment.Id +'"><form id="COMMENTinconversation_'+ comment.Id +'" method="post">\n' +
+                                    '                            <textarea id="new_comment_to_the_conversation_'+ comment.Id +'" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."\n' +
+                                    '                                      rows="2" style="background-color: unset" onkeypress="submitCommentToComment(\'comment\', \''+ comment.Id +'\', true)"></textarea>\n' +
+                                    '                            <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">\n' +
+                                    '                            <input type="submit"\n' +
+                                    '                                   style="position: absolute; left: -9999px; width: 1px; height: 1px;"\n' +
+                                    '                                   tabindex="-1" />\n' +
+                                    '                        </form>\n' +
+                                    '                    </div>\n' +
+                                    '                    <!-- add comment end -->'
+                                ;
+                                $('#loadCommentsTarget_' + postid).prepend(komentarz);
+                                $('#loadCommentsTarget2_' + postid).prepend(komentarz);
+                            });
+                            pagination[postid]++;
+                            comment_length[postid] = comment_length[postid] - 10;
+                            if (comment_length[postid] <= 0) {
+                                $('#ShowCommentsLengthTag_' + postid).html('');
                             }
+                            $('#ShowCommentsLengthNumber_' + postid).html(comment_length[postid]);
 
-                            komentarz = komentarz + '                            <div id=\"conversation_target_' + comment.Id + '_after\"> </div> \n' +
-                                '                        </div>\n' +
-                                '                    </div>';
-                            $('#loadCommentsTarget_' + postid).prepend(komentarz);
-                            $('#loadCommentsTarget2_' + postid).prepend(komentarz);
-                        });
-                        pagination[postid]++;
-                        comment_length[postid] = comment_length[postid] - 10;
-                        if (comment_length[postid] <= 0) {
-                            $('#ShowCommentsLengthTag_' + postid).html('');
+
+                            comment_length_full_[postid] = comment_length_full_[postid] - 10;
+                            if (comment_length_full_[postid] <= 0) {
+                                $('#ShowCommentsLengthTag_full_' + postid).html('');
+                            }
+                            $('#ShowCommentsLengthNumber_full_' + postid).html(comment_length_full_[postid]);
                         }
-                        $('#ShowCommentsLengthNumber_' + postid).html(comment_length[postid]);
+                        $('body').tooltip({selector: '[data-toggle="tooltip"]'})
 
-
-                        comment_length_full_[postid] = comment_length_full_[postid] - 10;
-                        if (comment_length_full_[postid] <= 0) {
-                            $('#ShowCommentsLengthTag_full_' + postid).html('');
-                        }
-                        $('#ShowCommentsLengthNumber_full_' + postid).html(comment_length_full_[postid]);
+                        letMeShowMore = true;
                     }
-                }
-            });
+                });
+            }
+            letMeShowMore = false;
+        }
+
+        function scroolTo(id){
+            console.log(document.querySelector('#'+id).getBoundingClientRect())
+            $('window').scrollTop(document.getElementById(id).scrollIntoView())
         }
     </script>
     <script>
@@ -2469,9 +2557,9 @@ Variables:
 
         function changeCommentCss(commentId, nextCommentId) {
             if (changedCommentCollection[commentId + nextCommentId] == undefined || changedCommentCollection[commentId + nextCommentId] !== true) {
-                // setTimeout(function(){
-                //     $(commentId).removeClass('pb-4');
-                // }, 200);
+                // setTimeout(function(){//TODO:te animacje jeszcze zrobic
+                //     $(commentId).animate({'padding-bottom': "0"}, 200);
+                // }, 800);
                 // setTimeout(function(){
                 //     $(nextCommentId).removeClass('pt-4');
                 // }, 200);
@@ -2483,7 +2571,7 @@ Variables:
                 $(nextCommentId).css('animation-duration', '0.2s');
 
                 changedCommentCollection[commentId + nextCommentId] = true;
-                console.log('czy przelacza');
+
             } else {
                 $(commentId).css('animation-name', 'fade-out_pb');
                 $(commentId).css('animation-duration', '0.2s');
@@ -3426,5 +3514,33 @@ Variables:
             $('#background-send').submit();
         }
     </script>
+        <script>
+            function getMoreCommentsRight(id) {// check max 10
+                if (letMeShowMore2[id] === true) {
+                    $('.conversation-iframe').each(function (index) {
+                        var oopid = $(this).attr('id')
+                        console.log(oopid)
+                        letMeShowMore2[oopid] = true
+                        $('#right-arrow-'+oopid).html('<i class="fal fa-angle-right fa-2x" style=""></i>')
+                    })
+                    $('.conversation-iframe').remove()
+                    $('#extended-conversation_target-' + id).append('' +
+                        '<iframe id="'+id+'" class="position-absolute conversation-iframe rounded" width="118%" height="600px" src="/api/getMoreConversationCommentsIframe/'+id+'" style="left:calc(100% + 3rem); top:0; background: transparent; border: 0; z-index:91998">' +
+                        '</iframe>')
+
+                    letMeShowMore2[id] = false;
+                    $('#right-arrow-'+id).html('<i class="fal fa-angle-left fa-2x" style=""></i>')
+                }else{
+                    $('#' + id).remove();
+                    letMeShowMore2[id] = true
+                    $('#right-arrow-'+id).html('<i class="fal fa-angle-right fa-2x" style=""></i>')
+                }
+
+                CommentPageNr[id]++;
+            CommentPageNr[id]++;
+            }
+        </script>
+        <script>
+        </script>
     {% endif %}
 {% endblock %}

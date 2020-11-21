@@ -61,11 +61,17 @@ class SocialPost
      */
     private $backgroundFilename;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Favourites::class, mappedBy="SocialPost")
+     */
+    private $yes;
+
     public function __construct()
     {
         $this->socialPostComments = new ArrayCollection();
 
         $this->id = Uuid::uuid4();
+        $this->yes = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -184,6 +190,37 @@ class SocialPost
     public function setBackgroundFilename(?string $backgroundFilename): self
     {
         $this->backgroundFilename = $backgroundFilename;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Favourites[]
+     */
+    public function getYes(): Collection
+    {
+        return $this->yes;
+    }
+
+    public function addYe(Favourites $ye): self
+    {
+        if (!$this->yes->contains($ye)) {
+            $this->yes[] = $ye;
+            $ye->setSocialPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeYe(Favourites $ye): self
+    {
+        if ($this->yes->contains($ye)) {
+            $this->yes->removeElement($ye);
+            // set the owning side to null (unless already changed)
+            if ($ye->getSocialPost() === $this) {
+                $ye->setSocialPost(null);
+            }
+        }
 
         return $this;
     }

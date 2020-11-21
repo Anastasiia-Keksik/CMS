@@ -114,7 +114,7 @@ class SocialController extends AbstractController
     }
 
     /**
-     * @Route("/addCommentToPost/{id}", name="api_app_addComment")
+     * @Route("/api/addCommentToPost/{id}", name="api_app_addComment")
      * @IsGranted("ROLE_USER")
      */
     public function addComment(Request $request, \App\Entity\SocialPost $id, EntityManagerInterface $em){
@@ -156,25 +156,80 @@ class SocialController extends AbstractController
     }
 
     /**
-     * @Route("/getMoreComments/{id}", name="api_app_getMoreComments")
+     * @Route("/api/addCommentToComment/{id}", name="api_app_addComment")
      * @IsGranted("ROLE_USER")
+     */
+    public function addCommentToConversation(Request $request, \App\Entity\SocialPostComment $id, EntityManagerInterface $em){
+        $token = $request->request->get('_token');
+
+        if ($request->request->get('Content') == ""){
+            return new JsonResponse([
+                'status'=>'empty content'
+            ]);
+        }
+
+        $data = new \DateTime('now');
+
+        if ($this->isCsrfTokenValid('comment', $token)){
+            $newComment = new SocialPostComment();
+            $newComment -> setAuthor($this->getUser());
+            $newComment -> setContent($request->request->get('Content'));
+            $newComment -> setCreatedAt($data);
+            $newComment -> setSoftDelete('0');
+            $newComment -> setLikes(0);
+
+            $id->addSocialPostComment($newComment);
+
+            $em->persist($newComment);
+            $em->persist($id);
+            $em->flush();
+        }else{
+            //TODO: bad csrf
+        }
+        return new JsonResponse([
+            'status'=>'ok',
+            'Author'=>$this->getUser()->getUsername(),
+            'Content'=>$request->request->get('Content'),
+            'CreatedAt'=> $data,
+            'ConversationId'=>null,
+            'commentId'=>$newComment->getId(),
+        ]);
+    }
+
+    /**
+     * @Route("/api/getMoreComments/{id}", name="api_app_getMoreComments")
+     * @IsGranted("ROLE_USER")
+     * @param Request $request
+     * @param $id
+     * @param SocialPostCommentRepository $socialPostCommentRepository
+     * @param CacheManager $cm
+     * @return JsonResponse
      */
     public function getMoreComments(Request $request, $id, SocialPostCommentRepository $socialPostCommentRepository,
                                     CacheManager $cm){
         $token = $request->request->get('_token');
         $pagination = $request->request->get('pagination');
 
+
         if ($this->isCsrfTokenValid('getMoreComments', $token)){
 
             $comments = $socialPostCommentRepository ->findCommentsBySomething('10', 'likes', 3, $pagination, $id);
 
+            //dd($comments);
+            $commentary = [];
+            if ($comments == [])
+            {
+                return new JsonResponse([
+                    'status'=>'empty content',
+                ]);
+            }
             $i=0;
             foreach($comments as $comment)
             {
 
                 $commentConversationComments = $socialPostCommentRepository->findNewestCommentConversation(3, $comment->getId());
 
-                $commentresult[$i]=[
+                $commentary[$i]=[
                     'Id'=>$comment -> getId(),
                     'Content'=>$comment-> getContent(),
                     'Author'=>$comment-> getAuthor()->getId(),
@@ -187,7 +242,7 @@ class SocialController extends AbstractController
                     'CommentConversation'=>[]
                 ];
                 foreach ($commentConversationComments as $conversationComment){
-                    array_push($commentresult[$i]['CommentConversation'], [
+                    array_push($commentary[$i]['CommentConversation'], [
                         'Id'=>$conversationComment -> getId(),
                         'Content'=>$conversationComment-> getContent(),
                         'Author'=>$conversationComment-> getAuthor()->getId(),
@@ -204,10 +259,86 @@ class SocialController extends AbstractController
 
             return new JsonResponse([
                 'status'=>'ok',
-                'comments'=>$commentresult
+                'comments'=>$commentary
             ]);
         }else{
             //TODO: bad csrf
+            return new JsonResponse([
+                'status'=>'empty content',
+            ]);
+        }
+    }
+
+    /**
+     * @Route("/api/getMoreConversationCommentsIframe/{id}", name="api_app_getMoreConversationComments-iframe")
+     * @IsGranted("ROLE_USER")
+     * @param Request $request
+     * @param $id
+     * @param SocialPostCommentRepository $socialPostCommentRepository
+     * @param CacheManager $cm
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function getMoreConversationCommentsIframe(Request $request, $id, SocialPostCommentRepository $socialPostCommentRepository,
+                                    CacheManager $cm){
+        $token = $request->request->get('_token');
+        $pagination = $request->request->get('pagination');
+        $pagination = 1;
+
+
+        if (true){
+
+            $comments = $socialPostCommentRepository ->findCommentConversationBySomething('10', 'likes', 0, $pagination, $id);
+
+            //dd($comments);
+            $commentary = [];
+            if ($comments == [])
+            {
+                return new JsonResponse([
+                    'status'=>'empty content1',
+                ]);
+            }
+            $i=0;
+            foreach($comments as $comment)
+            {
+
+                $commentConversationComments = $socialPostCommentRepository->findNewestCommentConversation(3, $comment->getId());
+
+                $commentary[$i]=[
+                    'Id'=>$comment -> getId(),
+                    'Content'=>$comment-> getContent(),
+                    'Author'=>$comment-> getAuthor()->getId(),
+                    'AuthorUsername'=>$comment->getAuthor()->getUsername(),
+                    'AuthorFirstName'=>$comment->getAuthor()->getFirstName(),
+                    'AuthorLastName'=>$comment->getAuthor()->getLastName(),
+                    'AuthorAvatarFileUrl'=>$cm->getBrowserPath('/upload/avatars/'.$comment->getAuthor()->getUsername().'/'.$comment->getAuthor()->getAvatarFileName(), 'my_thumb'),
+                    'createdAt'=>$comment->getCreatedAt() ? $comment->getCreatedAt()->format('Y-m-d H:i:s') : "",
+                    'modifiedAt'=>$comment->getModifiedAt() ? $comment->getModifiedAt()->format('Y-m-d H:i:s') : "",
+                    'CommentConversation'=>[]
+                ];
+                foreach ($commentConversationComments as $conversationComment){
+                    array_push($commentary[$i]['CommentConversation'], [
+                        'Id'=>$conversationComment -> getId(),
+                        'Content'=>$conversationComment-> getContent(),
+                        'Author'=>$conversationComment-> getAuthor()->getId(),
+                        'AuthorUsername'=>$conversationComment->getAuthor()->getUsername(),
+                        'AuthorFirstName'=>$conversationComment->getAuthor()->getFirstName(),
+                        'AuthorLastName'=>$conversationComment->getAuthor()->getLastName(),
+                        'AuthorAvatarFileUrl'=>$cm->getBrowserPath('/upload/avatars/'.$conversationComment->getAuthor()->getUsername().'/'.$conversationComment->getAuthor()->getAvatarFileName(), 'my_thumb'),
+                        'createdAt'=>$conversationComment->getCreatedAt() ? $conversationComment->getCreatedAt()->format('Y-m-d H:i:s') : "",
+                        'modifiedAt'=>$conversationComment->getModifiedAt() ? $conversationComment->getModifiedAt()->format('Y-m-d H:i:s') : "",
+                    ]);
+                }
+                $i++;
+            }
+
+            return $this->render($_SERVER['DEFAULT_TEMPLATE'] . "/conversation/ConversationRightExtended.twig",[
+                'commentary' => $commentary
+            ]);
+        }else{
+            //TODO: bad csrf
+            return new JsonResponse([
+                'status'=>'empty content2',
+            ]);
         }
     }
 }

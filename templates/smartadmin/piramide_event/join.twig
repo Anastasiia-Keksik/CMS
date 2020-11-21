@@ -5,7 +5,7 @@
         <ol class="breadcrumb page-breadcrumb">
             <li class="breadcrumb-item"><a href="/">{{ APP_NAME }}</a></li>
             <li class="breadcrumb-item"><a href="{{ path('app_profile', {'profile': profile.Username}) }}">{{ profile.Username }}</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('user_forum', {'profile': profile.Username}) }}">{{ forumCre.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('user_forum', {'id': forumCre.Id}) }}">{{ forumCre.name }}</a></li>
             <li class="breadcrumb-item"><a href="{{ path('app_forum_threads_list', {'forumtableid': forum.id}) }}">{{ forum.name }}</a></li>
             <li class="breadcrumb-item"><a href="{{ path('app_forum_thread_user', {'threadid': thread.id}) }}#">{{ thread.Title }}</a></li>
             <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>

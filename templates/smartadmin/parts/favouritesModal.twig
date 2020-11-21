@@ -1,0 +1,44 @@
+<div class="modal fade favourites" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-right">
+        <div class="modal-content">
+            <div class="modal-body">
+
+                <div class="panel-content">
+                    <ul class="nav nav-tabs nav-fill" role="tablist">
+                        <script>
+                            let GotAll = false;
+                            let GotSM = false;
+                            let GotGallery = false;
+                            let GotForums = false;
+                            let GotArt = false;
+                        </script>
+                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#showAll" role="tab" onclick="getAll()">All</a></li>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#showSM" role="tab" onclick="getSM()">Social Media</a></li>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#showGallery" role="tab" onclick="getGallery()">Gallery</a></li>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#showForums" role="tab" onclick="getForums()">Forums</a></li>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#showArt" role="tab" onclick="getArt()">Art</a></li>
+                    </ul>
+                    <div class="tab-content pt-3">
+                        <div class="tab-pane fade show active" id="showAll" role="tabpanel">
+
+                        </div>
+                        <div class="tab-pane fade" id="showSM" role="tabpanel">
+
+                        </div>
+                        <div class="tab-pane fade" id="showGallery" role="tabpanel">
+                            <label>Dzien</label>
+                            <div class="w-100">
+                                Galeria
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="showForums" role="tabpanel">
+                        </div>
+                        <div class="tab-pane fade" id="showArt" role="tabpanel">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

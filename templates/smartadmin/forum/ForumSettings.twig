@@ -23,19 +23,21 @@
         <div class="row">
             <div class="col-12">
                 <div class="row mb-g">
-                    <div class="col-12">
+                    <div class="col-12 mb-g">
                             Roles
                     </div>
                     <div class="col-12">
                         <div class="row">
                         {% for key, role in roles %}
-                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
+                            <div class="mb-g col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-3 justify-content-xs-center d-flex">
+                                <div>
                                 {{ key }}:
-                                <a href="#" class="color-danger-50 hover-red" data-toggle="modal" data-target="#remove-role-{{ key|replace({' ':''}) }}{{ loop.index }}">
-                                                 <i class="fw-300">(remove)</i>
+                                <a href="#" data-toggle="modal" data-target="#remove-role-{{ key|replace({' ':''}) }}{{ loop.index }}">
+                                                 <span class="fw-300 hover-red" style="color: indianred">Delete</span>
                                 </a>
-                                <a href="#" class="color-info-50 hover-blue" data-toggle="modal" data-target="#edit-role-{{ key|replace({' ':''}) }}{{ loop.index }}">
-                                    <i class="fw-300">(edit)</i>
+                                    -
+                                <a href="#" data-toggle="modal" data-target="#edit-role-{{ key|replace({' ':''}) }}{{ loop.index }}">
+                                    <span class="fw-300 hover-blue" style="color: steelblue">Edit</span>
                                 </a>
                                 <br>
                                 {% if role is iterable %}
@@ -45,14 +47,45 @@
                                 {% else %}
                                      - {{ role|join("<br> - ")|raw }}
                                 {% endif %}
+                                </div>
                             </div>
                         {% endfor %}
                         </div>
                         <br>
 
-                        <button class="btn btn-default w-xs-100" data-toggle="modal" data-target="#add-role">Add Role</button>
+                        <button class="btn btn-primary w-xs-100" data-toggle="modal" data-target="#add-role">Add Role</button>
 {#                        <button class="btn btn-default w-xs-100" data-toggle="modal" data-target="#edit-role">Edit Role</button>#}
 {#                        <button class="btn btn-default w-xs-100" data-toggle="modal" data-target="#edit-role">Remove</button>#}
+                    </div>
+                </div>
+                <div class="row mb-g">
+                    <div class="col-12 mb-g">
+                        Add Ranks
+                    </div>
+                    <div class="col-12">
+                        <div class="row">
+                            {% for rank in forum.UserForumRanks %}
+                                <div class="mb-g col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-3 justify-content-xs-center d-flex">
+                                    <div class="text-center">
+                                        <p class="mb-0">{{ rank.name }}</p>
+                                        <p><span style="color: red"> Delete </span> - <span style="color: green"> Edit </span></p>
+                                        <div>
+                                            <img class="rounded" style="max-width: 100%" src="{{ asset('upload/forum/ranks/'~forum.Id~'/'~rank.ImageLong) }}">
+                                        </div>
+                                        {% if rank.start is not null %}
+                                            From {{ rank.start }} to {{ rank.finish }}
+                                        {% else %}
+                                            Special
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <br>
+
+                        <button class="btn btn-primary w-xs-100" data-toggle="modal" data-target="#add-rank" onclick="audioPlayer('play')">Add Rank</button>
+                        {#                        <button class="btn btn-default w-xs-100" data-toggle="modal" data-target="#edit-role">Edit Role</button>#}
+                        {#                        <button class="btn btn-default w-xs-100" data-toggle="modal" data-target="#edit-role">Remove</button>#}
                     </div>
                 </div>
                 <div class="row">
@@ -66,7 +99,7 @@
             </div>
         </div>
 
-        {% for key,role in editroles %}
+        {% for key, role in editroles %}
             <div class="modal fade" id="edit-role-{{ key|replace({' ':''}) }}{{ loop.index }}" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -112,6 +145,7 @@
                                                         <div class="row">
                                                             <div class="col-3">
                                                                 <label>Full</label>
+                                                                {{ dump(role) }}
                                                                 <input type="checkbox" class="float-right" name="full_{{ forum.Id }}"
                                                                        {% if role.administrator is not defined and role[forum.Id]["edycja"] == "on" and role[forum.Id]["kasacja"] == "on" and role[forum.Id]["przenoszenie"] == "on"  %}
                                                                             checked="checked"
@@ -257,8 +291,67 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary waves-effect waves-themed" data-dismiss="modal">Close</button>
-                            <button class="btn btn-primary waves-effect waves-themed">Save changes</button>
+                            <button type="button" class="btn btn-secondary " data-dismiss="modal">Close</button>
+                            <button class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="add-rank" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+            <video id="videoBg" class="position-absolute opacity-70" style="top: 0; left: 0" poster="{{ asset('smartadmin/img/backgrounds/clouds.png') }}" id="bgvid" playsinline preload="metadata" muted loop data-dismiss="modal" onclick="audioPlayer('stop')">
+                <source src="{{ asset('upload/profile/Ostwind/Burn.mp4') }}" type="video/mp4">
+            </video>
+            <div class="modal-dialog" role="document" >
+                <div class="modal-content shadow-0"
+                     {# style="background: url('{{ asset('upload/profile/Ostwind/AnimationBGf1.png') }}') no-repeat"#}
+                >
+                    <div class="modal-header">
+                        <h4 class="modal-title">
+                            Add rank
+                        </h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="audioPlayer('stop')">
+                            <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                        </button>
+                    </div>
+                    <form action="{{ path('app_forum_save_new_rank', {'forum': forum.Id}) }}" method="post" enctype="multipart/form-data">
+                        <div class="modal-body">
+                            <input type="hidden" name="_token" value="{{ csrf_token('forumSettings') }}">
+                            <label class="form-label">Rank title: <i class="fw-300">(ex. "Baby Rabbit", "Storm Fighter", "Assasin")</i></label>
+                            <input type="text" required="required" aria-required="true" class="form-control mb-2" name="title">
+                            <div class="w-100 text-center mb-2">
+                                <img id="rankImage" src="" class="d-none" style="max-width: 100%">
+                            </div>
+                            <label>Left bar style forum image</label>
+                            <div class="custom-file mb-2">
+                                <input type="file" class="custom-file-input" id="imageFile" name="image">
+                                <label class="custom-file-label" for="customFile">Choose file</label>
+                                <small>Max 200 Kb, 400 px x 600 px</small>
+                            </div>
+                            <label>Upper Bar style forum image</label>
+                            <div class="w-100 text-center mb-2">
+                                <img id="rankImageUpperBar" src="" class="d-none" style="max-width: 100%">
+                            </div>
+                            <div class="custom-file mb-2">
+                                <input type="file" class="custom-file-input" id="imageFileUpperBar" name="imageUpperBar">
+                                <label class="custom-file-label" for="customFile">Choose file</label>
+                                <small>Max 200 Kb, 200 px x 90 px</small>
+                            </div>
+                            <div class="row">
+                                <div class="col-12"><label>Posts amount from start to finish. This rank will be placed under users with posts between that range.</label></div>
+                                <div class="col-6">
+                                    <input type="number" name="start" class="form-control" placeholder="from">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" name="finish" class="form-control" placeholder="finish">
+                                </div>
+                                <div class="col-12"><small>Leave blank if you want a special rank, given only to a certain users by yourself manually</small></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="audioPlayer('stop')">Close</button>
+                            <button class="btn btn-primary">Save changes</button>
                         </div>
                     </form>
                 </div>
@@ -341,5 +434,76 @@
         }
     }
     {% endfor %}
+
+    $('#imageFile').change(function () {
+        const file = this.files[0];
+
+
+        if (file) {
+            const reader = new FileReader();
+
+            console.log(this.height)
+
+            reader.addEventListener("load", function() {
+                let image = new Image();
+
+                image.src  = this.result;
+
+                image.onload = function(){
+
+                    console.log(image.width);
+
+                    $('#rankImage').attr('src', image.src);
+                    $('#rankImage').removeClass('d-none');
+                }
+            });
+
+            reader.readAsDataURL(file);
+        }
+    })
+
+    $('#imageFileUpperBar').change(function () {
+        const file = this.files[0];
+
+
+        if (file) {
+            const reader = new FileReader();
+
+            console.log(this.height)
+
+            reader.addEventListener("load", function() {
+                let image = new Image();
+
+                image.src  = this.result;
+
+                image.onload = function(){
+
+                    console.log(image.width);
+
+                    $('#rankImageUpperBar').attr('src', image.src);
+                    $('#rankImageUpperBar').removeClass('d-none');
+                }
+            });
+
+            reader.readAsDataURL(file);
+        }
+    })
+
+    let audio = new Audio('{{ asset('upload/profile/Ostwind/07059050.wav') }}')
+    let video = document.getElementById('videoBg')
+    function audioPlayer(state){
+        if (state == "play")
+        {
+            video.play()
+            audio.play()
+        }else if (state == "stop"){
+            audio.pause()
+        }
+    }
+    $(document).keydown(function(e) {
+        if (e.key === "Escape") { // escape key maps to keycode `27`
+            audio.pause()
+        }
+    });
     </script>
 {% endblock %}

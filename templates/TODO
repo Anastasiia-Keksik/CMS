@@ -71,3 +71,14 @@ bezpieczenstwo
     Zrobic aby galeria byla automatycznie zakladana przy rejestracji urzytkownika!
 
     spolecznosc dla tworcow, mozliwosc wynajecia tam moderatora
+    dodac do kazdego modala miejce ba dodatkowy background z minusowym marginem aby mozna bylo dodac do niego obrazek ktory bedzie wystawal poza jego granice jak np. liscie czy inne detale
+
+    Sprawdzic czy nie nalicza wyswietlen na forum przy przelaczaniu sie pomiedzy stronami, odswierzaniu, itp.
+
+    wyszukiwarka dram, sąd
+
+    przesuwaj strone na profilu tylko jesli jest scroll u gory, i jesli nie schodzi do posta czy komenta
+
+    UWAGA
+    Gdy bedziesz wymienial pliki css i js na nowsze, porownaj zmiany pomiedzy obecnymi i starymi wersjami obecnych aby wypisac wszelkie zmiany ktore zrobilem
+    i zaimplementowac je w nowych wersjach wychrze plikow

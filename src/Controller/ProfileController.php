@@ -329,10 +329,11 @@ class ProfileController extends AbstractController
         if ($this->isCsrfTokenValid('comment', $token)) {
             $newComment = new SocialPostComment();
             $newComment->setAuthor($this->getUser());
-            $newComment->setContent($request->request->get('Comment_content'));
+            $newComment->setContent($request->request->get('Content'));
             $newComment->setCreatedAt(new \DateTime('now'));
             $newComment->setSoftDelete('0');
             $newComment->setUnderAnotherComment(null);
+            $newComment->setLikes(0);
 
             $id->addSocialPostComment($newComment);
 
@@ -342,7 +343,8 @@ class ProfileController extends AbstractController
         } else {
             //TODO: bad csrf
         }
-        return $this->redirectToRoute('app_profile', ['profile' => $request->request->get('profile_name')]);
+//        return $this->redirectToRoute('app_profile', ['profile' => $request->request->get('profile_name')]);
+        return new JsonResponse(['success'=>'ok']);
     }
 
 

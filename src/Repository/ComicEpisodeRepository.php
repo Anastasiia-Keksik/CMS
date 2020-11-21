@@ -19,22 +19,37 @@ class ComicEpisodeRepository extends ServiceEntityRepository
         parent::__construct($registry, ComicEpisode::class);
     }
 
-    // /**
-    //  * @return ComicEpisode[] Returns an array of ComicEpisode objects
-    //  */
-    /*
-    public function findByExampleField($value)
+     /**
+      * @return ComicEpisode[] Returns an array of ComicEpisode objects
+      */
+
+    public function get10Episodes($comicid, $page)
     {
+        $offset = ($page-1)*10;
+
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
+            ->andWhere('c.comic = :id')
+            ->andWhere('c.published = 1')
+            ->setParameter('id', $comicid)
+            ->orderBy('c.createdAt', 'DESC')
             ->setMaxResults(10)
+            ->setFirstResult($offset)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+
+    public function getCountEpisodesPublished($comicid){
+
+        return $this->createQueryBuilder('c')
+            ->select('count(c.id)')
+            ->andWhere('c.comic = :id')
+            ->andWhere('c.published = 1')
+            ->setParameter('id', $comicid)
+            ->getQuery()
+            ->getScalarResult()
+            ;
+    }
 
     /*
     public function findOneBySomeField($value): ?ComicEpisode
