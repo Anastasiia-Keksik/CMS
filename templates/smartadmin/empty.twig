@@ -1,1 +1,28 @@
-empty
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="createOrder()">Create Order</button>
+
+<script>
+    function createOrder() {
+        return fetch('/testOrder', {
+            method: 'post',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(function(res) {
+            return res.json();
+        }).then(function(data) {
+            return data.orderID; // Use the same key name for order ID on the client and server
+        });
+    }
+</script>
+</body>
+</html>

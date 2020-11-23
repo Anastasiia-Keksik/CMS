@@ -1,3 +1,6 @@
 framework:
     router:
         strict_requirements: null
+
+payum_all:
+    resource: "@PayumBundle/Resources/config/routing/all.xml"

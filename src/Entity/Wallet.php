@@ -24,12 +24,12 @@ class Wallet
     private $User;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true, "default"=0})
      */
     private $money;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true, "default"=0})
      */
     private $eventMoney;
 

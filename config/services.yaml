@@ -6,6 +6,7 @@
 parameters:
     mercure_secret_key: '%env(MERCURE_SECRET_KEY)%'
     mercure_publish_url: '%env(MERCURE_PUBLISH_URL)%'
+    kernel.root_dir: '%kernel.project_dir%'
 services:
     # default configuration for services in *this* file
     _defaults:

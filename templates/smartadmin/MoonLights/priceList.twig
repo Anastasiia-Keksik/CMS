@@ -1,0 +1,121 @@
+{% extends 'smartadmin/base.html.twig' %}
+
+{% block content %}
+    <!-- BEGIN Page Content -->
+    <!-- the #js-page-content id is needed for some plugins to initialize -->
+    <main id="js-page-content" role="main" class="page-content">
+        <ol class="breadcrumb page-breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">{{ APP_NAME }}</a></li>
+            <li class="breadcrumb-item active">Catch the Moon Lights</li>
+            <li class="breadcrumb-item active"></li>
+            <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
+        </ol>
+        <div class="subheader">
+            <h1 class="subheader-title">
+                <i class='subheader-icon fal fa-plus-circle'></i> Price List: <span class='fw-300'> </span>
+                <small>
+                    opis
+                </small>
+            </h1>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="card ">
+                            <div class="card-header">
+                                Leave earth to find the light
+                            </div>
+                            <div class="card-body">
+                                10 moon lights 10 gr - <a href="javascript:addToBasket(10, 0.10)">catch the light </a><br>
+                                100 moon lights 1 zł - <a href="javascript:addToBasket(100, 1)">catch the light </a><br>
+                                500 moon lights 5 z - <a href="javascript:addToBasket(500, 5)">catch the light </a><br>
+                                1000 moon lights 10 zł - <a href="javascript:addToBasket(1000, 10)">catch the light </a><br>
+                                2000 moon lights 20 zł - <a href="javascript:addToBasket(2000, 20)">catch the light </a><br>
+                                3000 moon lights 30 zł - <a href="javascript:addToBasket(3000, 30)">catch the light </a><br>
+                                5000 moon lights 50 zł - <a href="javascript:addToBasket(5000, 50)">catch the light </a><br>
+                                10000 moon lights 100 zł - <a href="javascript:addToBasket(10000, 100)">catch the light </a><br>
+                                20000 moon lights 200 zł - catch the light <br>
+                                30000 moon lights 300 zł - catch the light <br>
+                                50000 moon lights 500 zł - catch the light <br>
+                                100000 moon lights 1000 zł - catch the light <br>
+                            </div>
+                            <div class="card-footer">
+                                Did you found it?
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card ">
+                            <div class="card-header">
+                                Photon Basket
+                            </div>
+                            <div class="card-body">
+                                <div id="target-basket">
+
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                Total: <span id="target-total"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="buttons" class="col-3 offset-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- this overlay is activated only when mobile menu is triggered -->
+    <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{%  block leftMenu %}
+    {% include 'smartadmin/parts/leftMenu.html.twig' %}
+{% endblock %}
+
+{% block header %}
+    {% include 'smartadmin/parts/header.html.twig' %}
+{% endblock %}
+
+{% block footer %}
+    {% include 'smartadmin/parts/footer.twig' %}
+{%  endblock %}
+
+{% block quickmenu %}
+    {% include 'smartadmin/parts/quickmenu.twig' %}
+{% endblock %}
+
+{% block messenger %}
+    {% include 'smartadmin/parts/chat.twig' %}
+{% endblock %}
+
+{% block pagesettings %}
+    {% include 'smartadmin/parts/pagesettings.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        let basketitems = 0;
+        let basketmoons = 0;
+        let total = 0;
+        function addToBasket(id, price){
+            basketitems = basketitems + 1;
+            total = total+price;
+            basketmoons = basketmoons + id;
+            $('#target-basket').append(id+" moon lights for "+price+" zł <br>")
+
+            $('#target-total').html(basketmoons + " Moon Lights for " + total + " zł")
+        }
+    </script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AbUp2Tmzd9KibaJBxnWfuSdrzEkbzkeROzDwHmjkd1BUB0IZhDb18txt07sVwn4eadMUF9IbP7vcm4dm&currency=PLN"></script>
+    <script>paypal.Buttons().render('#buttons');</script>
+{% endblock %}

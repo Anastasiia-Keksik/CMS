@@ -145,16 +145,20 @@
                                     </a>
                                 </li>
                                 {% for i in 1..(episodesCount/10)|round(0, 'ceil') %}
-                                    <li class="page-item {% if i == page %}active{% endif %}" aria-current="page">
-                                        <a style="background-color: transparent" href="{{ path('app_komiks', {'comicid':comic.Id, 'page':i}) }}">
-                                                            <span class="page-link" {% if i != page %}style="background-color: transparent"{% endif %}>
-                                                                {{ i }}
-                                                                {% if i == page %}
-                                                                <span class="sr-only">(current)</span>
-                                                                {% endif %}
-                                                            </span>
-                                        </a>
-                                    </li>
+                                    {% if (episodesCount/10)|round(0, 'ceil') > 6 and i < 4 or i > (episodesCount/10)|round(0, 'ceil')-4 %}
+                                        <li class="page-item {% if i == page %}active{% endif %}" aria-current="page">
+                                            <a style="background-color: transparent" href="{{ path('app_komiks', {'comicid':comic.Id, 'page':i}) }}">
+                                                                <span class="page-link" {% if i != page %}style="background-color: transparent"{% endif %}>
+                                                                    {{ i }}
+                                                                    {% if i == page %}
+                                                                    <span class="sr-only">(current)</span>
+                                                                    {% endif %}
+                                                                </span>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                    . . .
+                                    {% endif %}
                                 {% endfor %}
                                 <li class="page-item{% if page==(episodesCount/10)|round(0, 'ceil') %} disabled{% endif %}">
                                     <a class="page-link" href="{{ path('app_komiks', {'comicid':comic.Id, 'page':page+1}) }}" aria-label="Next">
