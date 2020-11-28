@@ -199,6 +199,12 @@
     "omnipay/common": {
         "version": "v3.0.5"
     },
+    "omnipay/paypal": {
+        "version": "v3.0.2"
+    },
+    "omnipay/stripe": {
+        "version": "v3.1.0"
+    },
     "paypal/paypal-checkout-sdk": {
         "version": "1.0.1"
     },
@@ -303,6 +309,9 @@
         "files": [
             "./config/packages/sensio_framework_extra.yaml"
         ]
+    },
+    "stripe/stripe-php": {
+        "version": "v7.65.0"
     },
     "symfony/asset": {
         "version": "v5.0.11"

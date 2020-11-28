@@ -12,91 +12,91 @@
         </ol>
         <div class="subheader">
             <h1 class="subheader-title">
-                <i class='subheader-icon fal fa-plus-circle'></i> Price List: <span class='fw-300'> </span>
+                <i class='subheader-icon fal fa-plus-circle'></i> Creator Financial Dashboard: <span class='fw-300'> </span>
                 <small>
                     opis
                 </small>
             </h1>
         </div>
 
-        <div class="row">
-            <div class="col-12">
-                {% for message in app.flashes('error') %}
-                    <div class="alert alert-danger alert-dismissible fade show">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-                <div class="row">
-                    <div class="col-3">
-                        <div class="card ">
-                            <div class="card-header">
-                                Leave earth to find the light
-                            </div>
-                            <div class="card-body">
-                                10 moon lights 10 gr - <a href="javascript:addToBasket(10, 0.10)">catch the light </a><br>
-                                100 moon lights 1 zł - <a href="javascript:addToBasket(100, 1)">catch the light </a><br>
-                                500 moon lights 5 z - <a href="javascript:addToBasket(500, 5)">catch the light </a><br>
-                                1000 moon lights 10 zł - <a href="javascript:addToBasket(1000, 10)">catch the light </a><br>
-                                2000 moon lights 20 zł - <a href="javascript:addToBasket(2000, 20)">catch the light </a><br>
-                                3000 moon lights 30 zł - <a href="javascript:addToBasket(3000, 30)">catch the light </a><br>
-                                5000 moon lights 50 zł - <a href="javascript:addToBasket(5000, 50)">catch the light </a><br>
-                                10000 moon lights 100 zł - <a href="javascript:addToBasket(10000, 100)">catch the light </a><br>
-                                20000 moon lights 200 zł - catch the light <br>
-                                30000 moon lights 300 zł - catch the light <br>
-                                50000 moon lights 500 zł - catch the light <br>
-                                100000 moon lights 1000 zł - catch the light <br>
-                            </div>
-                            <div class="card-footer">
-                                Did you found it?
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="card ">
-                            <div class="card-header">
-                                Photon Basket
-                            </div>
-                            <div class="card-body">
-                                <div id="target-basket">
-
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                                Total: <span id="target-total"></span>
-                            </div>
-                        </div>
+        {% if accountShow == false %}
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div>
+                        <button class="btn btn-info mb-2" data-toggle="modal" data-target="#upload-id" style="width: 400px">Register Your Stripe Account</button><br>
+                        <p class="">By registering your account, you agree to our Services Agreement and the <a target="_blank" href="https://stripe.com/en-pl/connect-account/legal/recipient">Stripe Recipient Agreement</a>.</p>
                     </div>
                 </div>
-                <div class="row">
-                    <div id="buttons" class="col-6 offset-3">
-                        <script src="https://js.stripe.com/v3/"></script>
+                <div style="margin-top: 100px">
+                    [platform name/we] use Stripe to make payouts to [account holder term, e.g., drivers or sellers]. The Stripe Recipient Agreement applies to your receipt of such Payouts. To receive payouts from [platform name/us], you must provide [platform name/us] accurate and complete information about you and your business, and you authorize [platform name/us] to share it and transaction information related to your payout with Stripe.
+                </div>
+            </div>
+            <div class="modal fade" id="upload-id" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">
+                                Upload verification documents
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                            </button>
+                        </div>
 
-                        <form action="{{ path('catch_card_token') }}" method="post" id="payment-form">
-                            <input id="target-total-val" type="hidden" value="0" name="lights">
-                            <div>
-                                <label for="card-element">
-                                    Credit or debit card
-                                </label>
-                                <div id="card-element" class="StripeElement mb-2">
-                                    <!-- A Stripe Element will be inserted here. -->
+                        <form action="{{ path('App_Create_Stripe_Account') }}" method="post" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                    <label class="form-label">ID card (front)</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="customFile1" name="file-front">
+                                        <label class="custom-file-label text-truncate" for="customFile1">Choose ID image</label>
+                                    </div>
+                                        <small>An identifying document, either a passport or local ID card.</small>
+                                    </div>
+                                    <div class="form-group">
+                                    <label class="form-label">ID card (back)</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="customFile2" name="file-back">
+                                        <label class="custom-file-label text-truncate" for="customFile2">Choose ID image</label>
+                                    </div>
+                                        <small>An identifying document, either a passport or local ID card.</small>
+                                    </div>
+                                    <div class="form-group">
+                                    <label class="form-label">Additional file (front)</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="customFile3" name="address-file-front">
+                                        <label class="custom-file-label text-truncate" for="customFile3">Choose ID image</label>
+                                    </div>
+                                    <small>A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.</small>
+                                    </div>
+                                    <div class="form-group">
+                                    <label class="form-label">Additional file (back - optional)</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="customFile4" name="address-file-back">
+                                        <label class="custom-file-label text-truncate" for="customFile4">Choose ID image</label>
+                                    </div>
+                                    <small>A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.</small>
+                                    </div>
                                 </div>
-
-                                <!-- Used to display form errors. -->
-                                <div id="card-errors" role="alert"></div>
                             </div>
-                            <div id="target-products">
-
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button class="btn btn-primary">Proceed</button>
                             </div>
-                            <div id="target-products-count">
-
-                            </div>
-
-                            <button id="target-total-pay" class="btn bg-info-600" style="width: 100%">Submit Payment</button>
                         </form>
                     </div>
                 </div>
             </div>
-        </div>
+        {% else %}
+            <div class="row">
+                <div class="col-12">
+                    Konto zalozone.
+                    <br>
+                    {{ dump(account) }}
+                </div>
+            </div>
+        {% endif %}
     </main>
     <!-- this overlay is activated only when mobile menu is triggered -->
     <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->

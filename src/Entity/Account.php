@@ -295,6 +295,61 @@ class Account implements UserInterface
      */
     private $yes;
 
+    /**
+     * @ORM\Column(type="string", unique=true, nullable=true)
+     */
+    private $stripeCustomerId;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $stripeAccountPending;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $StripeAccountId;
+
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private $bday;
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $bmonth;
+
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private $byear;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $line1;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $line2;
+
+    /**
+     * @ORM\Column(type="string", length=12, nullable=true)
+     */
+    private $postalCode;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $state;
+
+    /**
+     * @ORM\Column(type="string", length=32, nullable=true)
+     */
+    private $phone;
+
     public function __construct()
     {
         $this->mainMenuCategories = new ArrayCollection();
@@ -1374,6 +1429,138 @@ class Account implements UserInterface
                 $ye->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStripeCustomerId(): ?string
+    {
+        return $this->stripeCustomerId;
+    }
+
+    public function setStripeCustomerId(?string $stripeCustomerId): self
+    {
+        $this->stripeCustomerId = $stripeCustomerId;
+
+        return $this;
+    }
+
+    public function getStripeAccountPending(): ?bool
+    {
+        return $this->stripeAccountPending;
+    }
+
+    public function setStripeAccountPending(?bool $stripeAccountPending): self
+    {
+        $this->stripeAccountPending = $stripeAccountPending;
+
+        return $this;
+    }
+
+    public function getStripeAccountId(): ?string
+    {
+        return $this->StripeAccountId;
+    }
+
+    public function setStripeAccountId(?string $StripeAccountId): self
+    {
+        $this->StripeAccountId = $StripeAccountId;
+
+        return $this;
+    }
+
+    public function getBday(): ?int
+    {
+        return $this->bday;
+    }
+
+    public function setBday(?int $bday): self
+    {
+        $this->bday = $bday;
+
+        return $this;
+    }
+
+    public function getBmonth(): ?int
+    {
+        return $this->bmonth;
+    }
+
+    public function setBmonth(int $bmonth): self
+    {
+        $this->bmonth = $bmonth;
+
+        return $this;
+    }
+
+    public function getByear(): ?int
+    {
+        return $this->byear;
+    }
+
+    public function setByear(?int $byear): self
+    {
+        $this->byear = $byear;
+
+        return $this;
+    }
+
+    public function getLine1(): ?string
+    {
+        return $this->line1;
+    }
+
+    public function setLine1(?string $line1): self
+    {
+        $this->line1 = $line1;
+
+        return $this;
+    }
+
+    public function getLine2(): ?string
+    {
+        return $this->line2;
+    }
+
+    public function setLine2(?string $line2): self
+    {
+        $this->line2 = $line2;
+
+        return $this;
+    }
+
+    public function getPostalCode(): ?string
+    {
+        return $this->postalCode;
+    }
+
+    public function setPostalCode(?string $postalCode): self
+    {
+        $this->postalCode = $postalCode;
+
+        return $this;
+    }
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(?string $state): self
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
 
         return $this;
     }
