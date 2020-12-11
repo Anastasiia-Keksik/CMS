@@ -4,34 +4,16 @@ namespace App\Controller\Payment;
 
 use App\Entity\Account;
 use App\StripeClient;
-use App\Repository\AccountRepository;
 use App\Repository\ComicRepository;
-use App\Repository\ContactRepository;
-use App\Repository\GalleryPhotosRepository;
-use App\Repository\ProfileDesignSettingsRepository;
-use App\Repository\SocialPostCommentRepository;
-use App\Repository\SocialPostRepository;
-use App\Repository\UserPrivateForumRepository;
 use App\Services\GetContactsService;
 use App\Services\MainMenuService;
-use App\Services\Payment;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Payum\Core\Payum;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Stripe\Exception\OAuth\ExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Payum\Core\Request\GetHumanStatus;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Omnipay\Omnipay;
-use Omnipay\Common\GatewayFactory;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PayPalController extends AbstractController
@@ -72,19 +54,38 @@ class PayPalController extends AbstractController
 
         $account = $stripe->accounts->retrieve($user->getStripeAccountId());
 
+        $extAcc = $stripe->accounts->allExternalAccounts(
+            $account->id,
+            ['object' => 'card', 'limit' => 99]
+        );
+
         $accountShow = false;
-        if (true){
+        if ($request->get('mode')=='show'){
             $accountShow = true;
+
+            $link = $stripe->accountLinks->create([
+                'account' => $user->getStripeAccountId(),
+                'refresh_url' => 'https://127.0.0.1:8000/profile',
+                'return_url' => 'https://127.0.0.1:8000/profile',
+                'type' => 'account_onboarding',]);
+
+            return new RedirectResponse($link->url);
         }
 
+        dump($account);
+        dump($extAcc);
+
+
+
+
         return $this->render("smartadmin/dashboard/stripeDashboard.twig", [
-            'title' => 'title',
+            'title' => 'Stripe Account',
             'lang' => 'pl',
             'APP_NAME' => $_SERVER['APP_NAME'],
             'logoSite' => $_SERVER['SHOW_LOGO'],
             'navFooter' => $_SERVER['NAV_FOOTER'],
             'footer' => $_SERVER['FOOTER'],
-            'pageName' => "Profile",
+            'pageName' => "Stripe Account",
             'MainMenu' => $mainMenu,
             'user' => $this->getUser(),
             'profile' => $this->getUser(),
@@ -95,7 +96,47 @@ class PayPalController extends AbstractController
             'stripe_public_key' => $this->getParameter('stripe_public_key'),
             'accountShow' => $accountShow,
             'account' => $account,
+            'externalAccounts'=>$extAcc
         ]);
+    }
+
+    /**
+     * @Route("/createExternalAccount", name="App_Create_External_Account")
+     */
+    public function createStripeExternalAccount(Request $request, EntityManagerInterface $em)
+    {
+        $stripe = new \Stripe\StripeClient(
+            $_SERVER['stripe_secret_key']
+        );
+
+        /** @var Account $user */
+        $user = $this->getUser();
+
+        $post = $request->request->all();
+
+
+
+        //dd($post);
+        if ($post['routing_number']){
+
+        } else if ($post['sort_number']){
+
+        }else{
+
+        }
+
+        $stripe->accounts->createExternalAccount(
+            $user->getStripeAccountId(),
+            [
+                'external_account' => [
+                    'object' => 'bank_account',
+                    'country' => $post['country'],
+                    'currency' => $post['currency'],
+                    'account_holder_name' =>$post['account_holder_name'], // optional
+                    'account_number' => $post['acc_number']
+                ]
+            ]
+        );
     }
 
     /**
@@ -109,13 +150,13 @@ class PayPalController extends AbstractController
         /** @var Account $user */
         $user = $this->getUser();
 
-        $country = 'PL';
+        $country = $request->request->get('select-region');
 
         if (!$user->getStripeAccountPending()){
             $account = $stripe->accounts->create([
-                'type' => 'custom',
+                'type' => 'standard',
                 'country' => $country,
-                'email' => '1'.$user->getEmail(),
+                'email' => $user->getEmail(),
                 'capabilities' => [
                     'card_payments' => ['requested' => true],
                     'transfers' => ['requested' => true],
@@ -191,18 +232,17 @@ class PayPalController extends AbstractController
                             'state' => $user->getPostalCode()
                         ],
                         'phone' => $user->getPhone(),
-                        'verification' => [
-                            'document' => [
-                                'front' =>$fileFront->id,
-                                'back' =>$fileBack->id
-                                ]
-                        ],
-                        'verification' => [
-                            'additional_document' => [
-                                'front'=>$fileAdditionalFront->id,
-                                'back'=>$fileAdditionalBack->id
-                                ]
-                        ],
+//                        'verification' => [
+//                            'additional_document' => [
+//                                'front'=>$fileAdditionalFront->id,
+//                                'back'=>$fileAdditionalBack->id
+//                                ],
+//                            'document' => [
+//                                'front' =>$fileFront->id,
+//                                'back' =>$fileBack->id
+//                            ]
+//                        ],
+                        'email' => $user->getEmail(),
                         'first_name' => $user->getFirstName(),
                         'last_name' => $user->getLastName(),
                     ],
@@ -224,12 +264,12 @@ class PayPalController extends AbstractController
 
             $this->addFlash('success', "Account Created. Please wait couple minutes until Stripe will activate it.");
 
-            return new RedirectResponse($this->generateUrl('payment_dashboard'));
+            return new RedirectResponse($this->generateUrl('payment_dashboard', ['mode'=>'show']));
         }
 
         $this->addFlash('success', "You already created account, please wait until it will be accepted by Stripe.");
 
-        return new RedirectResponse($this->generateUrl('payment_dashboard'));
+        return new RedirectResponse($this->generateUrl('payment_dashboard', ['mode'=>'show']));
     }
 
     /**

@@ -12,7 +12,7 @@
         </ol>
         <div class="subheader">
             <h1 class="subheader-title">
-                <i class='subheader-icon fal fa-plus-circle'></i> Creator Financial Dashboard: <span class='fw-300'> </span>
+                <i class='subheader-icon fal fa-plus-circle'></i> Stripe dashboard: <span class='fw-300'> </span>
                 <small>
                     opis
                 </small>
@@ -47,36 +47,82 @@
                             <div class="modal-body">
                                 <div class="form-group">
                                     <div class="form-group">
-                                    <label class="form-label">ID card (front)</label>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="customFile1" name="file-front">
-                                        <label class="custom-file-label text-truncate" for="customFile1">Choose ID image</label>
-                                    </div>
+                                        <label class="form-label">ID card (front)</label>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="customFile1" name="file-front">
+                                            <label class="custom-file-label text-truncate" for="customFile1">Choose ID image</label>
+                                        </div>
                                         <small>An identifying document, either a passport or local ID card.</small>
                                     </div>
                                     <div class="form-group">
-                                    <label class="form-label">ID card (back)</label>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="customFile2" name="file-back">
-                                        <label class="custom-file-label text-truncate" for="customFile2">Choose ID image</label>
-                                    </div>
+                                        <label class="form-label">ID card (back)</label>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="customFile2" name="file-back">
+                                            <label class="custom-file-label text-truncate" for="customFile2">Choose ID image</label>
+                                        </div>
                                         <small>An identifying document, either a passport or local ID card.</small>
                                     </div>
                                     <div class="form-group">
-                                    <label class="form-label">Additional file (front)</label>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="customFile3" name="address-file-front">
-                                        <label class="custom-file-label text-truncate" for="customFile3">Choose ID image</label>
-                                    </div>
-                                    <small>A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.</small>
+                                        <label class="form-label">Additional file (front)</label>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="customFile3" name="address-file-front">
+                                            <label class="custom-file-label text-truncate" for="customFile3">Choose ID image</label>
+                                        </div>
+                                        <small>A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.</small>
                                     </div>
                                     <div class="form-group">
-                                    <label class="form-label">Additional file (back - optional)</label>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="customFile4" name="address-file-back">
-                                        <label class="custom-file-label text-truncate" for="customFile4">Choose ID image</label>
+                                        <label class="form-label">Additional file (back - optional)</label>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="customFile4" name="address-file-back">
+                                            <label class="custom-file-label text-truncate" for="customFile4">Choose ID image</label>
+                                        </div>
+                                        <small>A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.</small>
                                     </div>
-                                    <small>A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.</small>
+                                    <div class="form-group">
+                                        <label class="form-label">Residential Region (confirmed by document above)</label>
+                                        <select id="select-region" class="form-control">
+                                            <option {% if user.country == "Austria" %}selected{% endif %} value="AT">Austria</option>
+                                            <option {% if user.country == "Australia" %}selected{% endif %} value="AU">Australia</option>
+                                            <option {% if user.country == "Belgium" %}selected{% endif %} value="BE">Belgium</option>
+                                            <option {% if user.country == "Bulgaria" %}selected{% endif %} value="BG">Bulgaria</option>
+                                            <option {% if user.country == "Canada" %}selected{% endif %} value="CA">Canada</option>
+                                            <option {% if user.country == "Switzerland" %}selected{% endif %} value="CH">Switzerland</option>
+                                            <option {% if user.country == "Cyprus" %}selected{% endif %} value="CY">Cyprus</option>
+                                            <option {% if user.country == "Czech Republic" %}selected{% endif %} value="CZ">Czech Republic</option>
+                                            <option {% if user.country == "Germany" %}selected{% endif %} value="DE">Germany</option>
+                                            <option {% if user.country == "Denmark" %}selected{% endif %} value="DK">Denmark</option>
+                                            <option {% if user.country == "Estonia" %}selected{% endif %} value="EE">Estonia</option>
+                                            <option {% if user.country == "Spain" %}selected{% endif %} value="ES">Spain</option>
+                                            <option {% if user.country == "Finland" %}selected{% endif %} value="FI">Finland</option>
+                                            <option {% if user.country == "France" %}selected{% endif %} value="FR">France</option>
+                                            <option {% if user.country == "United Kingdom" %}selected{% endif %} value="GB">Great Britan</option>
+                                            <option {% if user.country == "Greece" %}selected{% endif %} value="GR">Greece</option>
+                                            <option {% if user.country == "Hong Kong" %}selected{% endif %} value="HK">Hong Kong</option>
+                                            <option {% if user.country == "Hungary" %}selected{% endif %} value="HU">Hungary</option>
+                                            <option {% if user.country == "Ireland" %}selected{% endif %} value="IE">Ireland</option>
+                                            <option {% if user.country == "India" %}selected{% endif %} value="IN">India</option>
+                                            <option {% if user.country == "Italy" %}selected{% endif %} value="IT">Italy</option>
+                                            <option {% if user.country == "Japan" %}selected{% endif %} value="JP">Japan</option>
+                                            <option {% if user.country == "Lithuania" %}selected{% endif %} value="LT">Lithuania</option>
+                                            <option {% if user.country == "Luxembourg" %}selected{% endif %} value="LU">Luxembourg</option>
+                                            <option {% if user.country == "Latvia" %}selected{% endif %} value="LV">Latvia</option>
+                                            <option {% if user.country == "Malta" %}selected{% endif %} value="MT">Malta</option>
+                                            <option {% if user.country == "Malaysia" %}selected{% endif %} value="MY">Malaysia</option>
+                                            <option {% if user.country == "Netherlands" %}selected{% endif %} value="NL">Netherlands</option>
+                                            <option {% if user.country == "Norway" %}selected{% endif %} value="NO">Norway</option>
+                                            <option {% if user.country == "New Zealand" %}selected{% endif %} value="NZ">New Zealand</option>
+                                            <option {% if user.country == "Poland" %}selected{% endif %} value="PL">Poland</option>
+                                            <option {% if user.country == "Portugal" %}selected{% endif %} value="PT">Portugal</option>
+                                            <option {% if user.country == "Romania" %}selected{% endif %} value="RO">Romania</option>
+                                            <option {% if user.country == "Sweden" %}selected{% endif %} value="SE">Sweden</option>
+                                            <option {% if user.country == "Singapore" %}selected{% endif %} value="SG">Singapore</option>
+                                            <option {% if user.country == "Slovenia" %}selected{% endif %} value="SI">Slovenia</option>
+                                            <option {% if user.country == "Slovakia" %}selected{% endif %} value="SK">Slovakia</option>
+                                            <option {% if user.country == "USA" %}selected{% endif%} value="USA">United States</option>
+                                        </select>
+                                    </div>
+                                    <div class="w-100 text-center">
+                                        <span class="cursor-pointer btn btn-warning btn-sm" data-toggle="modal" data-target="#upload-informations">More Information!</span>
                                     </div>
                                 </div>
                             </div>
@@ -88,12 +134,124 @@
                     </div>
                 </div>
             </div>
+            <div class="modal fade" id="upload-informations" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content" style="width: 510px">
+                        <div class="modal-header">
+                            <h4 class="modal-title">
+                                Upload information
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            {% include 'smartadmin/dashboard/CreateStripeAccountInformation.twig' %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="modalHide('#upload-informations')">Close</button>
+                            <button class="btn btn-primary">Proceed</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         {% else %}
             <div class="row">
                 <div class="col-12">
-                    Konto zalozone.
-                    <br>
-                    {{ dump(account) }}
+                    <h3><span class="text-black fw-900">Stripe account:</span> {{ account.id }} <sup>{{ account.individual.verification.status }}</sup></h3>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-4 col-xl-3">
+                            <h5>Owner - {{ account.individual.first_name }} {{ account.individual.last_name }}</h5>
+                            <h5>E-mail - {{ account.email }}</h5>
+                            <h5>Phone - {{ account.individual.phone }}</h5>
+                            <h6 class="mt-6">Country - {{ account.country }}</h6>
+                            <h6 class="">Default currency - {{ account.default_currency }}</h6>
+                            <h6 class="">Payouts enabled - <span style="{% if account.payouts_enabled == true %}color: limegreen;{% else %}color: red;{% endif %}">{{ account.payouts_enabled ? 'Yes' : 'No' }}</span></h6>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4 col-xl-3">
+                            <h5>Line 1: {{ account.individual.address.line1 }}</h5>
+                            <h5>Line 2: {{ account.individual.address.line2 }}</h5>
+                            <h5>Postal Code: {{ account.individual.address.postal_code }}</h5>
+                            <h5>City: {{ account.individual.address.city }}</h5>
+                            <h5>State: {{ account.individual.address.state }}</h5>
+
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4 col-xl-6">
+                            <div class="rounded p-2" style="border: 2px solid black">
+                                <p class="mt-1 w-100 text-center">Bank accounts and cards</p>
+                                <button class="btn btn-outline-dark w-100" data-toggle="modal" data-target="#add-ea">Add new one</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODALS -->
+            <div class="modal fade" id="add-ea" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">
+                                Add external account for payouts.
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                            </button>
+                        </div>
+
+                        <form action="{{ path('App_Create_External_Account') }}" method="post">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-6 mb-g">
+                                        <label class="form-label">Country</label>
+                                        <select id="select-country" class="form-control" onchange="selectForm(this.value)">
+                                            <option {% if user.country == "Poland" %}selected{% else %}disabled{% endif%} value="PL">Poland</option>
+                                            <option {% if user.country == "USA" %}selected{% else %}disabled{% endif%} value="USA">USA</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6 mb-g">
+                                        <label class="form-label">Currency</label>
+                                        <select id="select-country" class="form-control" onchange="selectForm(this.value)">
+                                            <option {% if user.country == "Poland" %}selected{% else %}disabled{% endif%} value="PL">Poland</option>
+                                            <option {% if user.country == "USA" %}selected{% else %}disabled{% endif%} value="USA">USA</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group {% if user.country != "Poland" %}hidden-xs-up{% endif %}" id="PL">
+                                    <label class="form-label">Account Holder Name</label><br>
+                                    <input type="text" class="pl-input input form-control mb-2" {% if user.country != "Poland" %}disabled{% endif %} value="{{ user.FirstName }} {{ user.LastName }}" name="account_holder_name">
+                                        <div class="row mb-2">
+                                            <div class="col-12">
+                                                <label class="form-label">Currency</label>
+                                                <input type="text" class="pl-input input form-control" {% if user.country != "Poland" %}disabled{% endif %} value="pln" name="currency">
+                                            </div>
+                                        </div>
+                                    <label class="form-label">Account Number</label>
+                                    <input type="text" class="pl-input input form-control" {% if user.country != "Poland" %}disabled{% endif %} placeholder="Account number" name="acc_number">
+                                </div>
+                                <div class="form-group {% if user.country != "USA" %}hidden-xs-up{% endif %}" id="USA">
+                                    <label class="form-label">Account Holder Name</label><br>
+                                    <input type="text" class="usa-input input form-control mb-2" {% if user.country != "USA" %}disabled{% endif %} value="{{ user.FirstName }} {{ user.LastName }}" name="account_holder_name">
+                                    <div class="row mb-2">
+                                        <div class="col-6">
+                                            <label class="form-label">Routing Number</label>
+                                            <input type="text" class="usa-input input form-control" {% if user.country != "USA" %}disabled{% endif %} name="country">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label">Currency</label>
+                                            <input type="text" class="usa-input input form-control" {% if user.country != "USA" %}disabled{% endif %} value="pln" name="currency">
+                                        </div>
+                                    </div>
+                                    <label class="form-label">Account Number</label>
+                                    <input type="text" class="usa-input input form-control" {% if user.country != "USA" %}disabled{% endif %} placeholder="Account number" name="acc_number">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button class="btn btn-primary">Proceed</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         {% endif %}
@@ -250,6 +408,33 @@
 
             // Submit the form
             form.submit();
+        }
+    </script>
+    <script>
+        {% if user.country == "Poland" %}
+            let selected = 'PL'
+        {% else %}
+            let selected = ''
+        {% endif %}
+        function selectForm(value){
+            $('#'+selected).addClass('hidden-xs-up')
+
+            $('#'+value).removeClass('hidden-xs-up')
+
+            $('.input').attr('disabled', true)
+            if (value === "USA"){
+                $('.usa-input').removeAttr('disabled')
+            } else if (value === "PL") {
+                $('.pl-input').removeAttr('disabled')
+            }
+
+            selected = value
+            console.log(value)
+        }
+    </script>
+    <script>
+        function modalHide(id){
+            $(id).modal('hide');
         }
     </script>
 {% endblock %}

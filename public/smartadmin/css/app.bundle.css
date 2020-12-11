@@ -1129,8 +1129,10 @@ html {
     transition: none !important; }
 
 @media (min-width: 992px) {
-  .header-function-fixed:not(.nav-function-top) .page-header {
-    margin-left: 16.875rem; }
+  .header-function-fixed:not(.nav-function-top) .page-header{
+    /*margin-left: 16.875rem; - original Szymon edit */
+    margin-left: 0;
+  }
   .header-function-fixed:not(.nav-function-top).nav-function-minify .page-sidebar .page-logo {
     width: 4.6875rem; }
   .header-function-fixed.nav-function-top {

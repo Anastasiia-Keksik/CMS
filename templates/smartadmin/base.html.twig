@@ -63,7 +63,7 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
 
     >>> more settings are described inside documentation page >>>
 -->
-<body class="mod-bg-1 {% if pageName=='Profile' %}  header-function-fixed{% endif %}">
+<body class="mod-bg-1{% if pageName=='Profile' %} header-function-fixed{% endif %} erase-menu">
 <!-- DOC: script to save and load page settings -->
 {% block scripts %}
     <script>

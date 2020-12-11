@@ -8,210 +8,9 @@
     <!-- the #js-page-content id is needed for some plugins to initialize -->
     <main id="js-page-content" role="main" class="page-content"
           style="background-image: url('{{ asset('upload/12554.jpg') }}');">
-        <div class="" style="margin-left: -32px; margin-top: -24px; margin-right: -32px;"> {# TODO: responsive margin #}
-            <div class="w-100 position-relative logo-relative-box" style="height: 400px">
-                <div class="position-absolute shadow-5 w-100"
-                     style="top: 0; height:350px; background-color: rgba(255,255,255, 0)">
-
-                </div>
-                {# Tło#}
-                <div id="profile-background" class="w-100 text-center shadow-5 position-absolute"
-                     style="
-                        height: 300px; top: 0;
-                             {% if profile.BackgroundFileName != '' and profile.BackgroundFileName is not null %}
-                        background: url('{{ asset('/upload/gallery/'~profile.Username~'/'~profile.BackgroundFileName) }}');
-                             {% endif %}
-                        background-size: cover;
-                        background-position: 0% {{ profile.bgPosition }}%;
-
-                        display: table; z-index: 4
-                             ">
-
-                    {% if user.Username == profile.Username %}
-                    <div id="background-position" class="position-absolute p-2 w-50 d-flex justify-content-center rounded-bottom {% if bgopen is not defined or bgopen != 'open' %}hidden-xs-up{% endif %}" style="background: rgba(0,0,0, 0.2); left: 25%">
-                        <div class="form-group">
-                            <lablel class="form-label text-white">Background position (0-100)</lablel>
-                                <div class="input-group">
-                                    <input type="number" min="0" max="100" class="form-control d-flex" style="color:black; width: 150px; background: rgba(255,255,255, 0.8)" onchange="changeBackgroundPosition(this.value)" value="{% if profile.bgPosition is null %}0{% else %}{{ profile.bgPosition }}{% endif %}">
-                                    <button class="btn btn-light btn-icon input-group-append rounded-left-0" onclick="sendBackGroundPosition()"><i class="fal fa-check"></i></button>
-                                </div>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    <div id="typed" style=""></div>
-                </div>
-
-                <span class="marquee" style="z-index: 4">test</span>
-                <div class="position-absolute" style="padding-left: 75px; right: 0; bottom: 100px; z-index:5; width:30%; height:300px;">
-                    <div class="row h-100 align-items-end">
-                        <div class="col-12 demo pl-4 pr-5 d-flex flex-wrap-reverse flex-row-reverse">
-                            {% if profile.facebook != '' or profile.twitter != '' or profile.linkedin != '' or profile.reddit != '' or profile.skype != '' or profile.flickr != '' or profile.instagram != '' or profile.youtube != '' %}
-                                {% if profile.facebook != '' %}
-                                    <a href="https://www.facebook.com/{{ profile.facebook }}/" class="align-bottom btn btn-icon rounded-circle btn-outline-default bg-white hover-highlight fs-xl" style="color:#3b5998"><i class="fab fa-facebook-square"></i></a>
-                                {% endif %}
-                                {% if profile.twitter  %}
-                                    <a href="https://twitter.com/{{ profile.twitter }}" class="btn btn-icon rounded-circle btn-outline-default bg-white hover-highlight  fs-xl" style="color:#38A1F3"><i class="fab fa-twitter-square"></i></a>
-                                {% endif %}
-                                {% if profile.linkedin != '' %}
-                                    <a href="https://www.linkedin.com/in/{{ profile.linkedin }}/" class="btn btn-icon rounded-circle btn-outline-default bg-white hover-highlight  fs-xl" style="color:#0077B5"><i class="fab fa-linkedin"></i></a>
-                                {% endif %}
-                                {% if profile.reddit != '' %}
-                                    <a href="https://www.reddit.com/user/{{ profile.reddit }}/;" class="btn btn-icon rounded-circle btn-outline-default bg-white hover-highlight  fs-xl" style="color:#000000"><i class="fab fa-reddit-alien"></i></a>
-                                {% endif %}
-                                {% if profile.skype != '' %}
-                                    <a href="skype:{{ profile.skype }}?chat" class="btn btn-icon rounded-circle btn-outline-default bg-white hover-highlight  fs-xl" style="color:#00AFF0"><i class="fab fa-skype"></i></a>
-                                {% endif %}
-                                {% if profile.flickr != '' %}
-                                    <a href="https://www.flickr.com/photos/{{ profile.flickr }}" class="btn btn-icon rounded-circle btn-outline-default bg-white hover-highlight  fs-xl" style="color:#0063DC"><i class="fab fa-flickr"></i></a>
-                                {% endif %}
-                                {% if profile.instagram != '' %}
-                                    <a href="https://www.instagram.com/{{ profile.instagram }}" class="btn btn-icon rounded-circle btn-outline-default bg-white hover-highlight  fs-xl" style="color: #833ab4"><i class="fab fa-instagram"></i></a>
-                                {% endif %}
-                                {% if profile.youtube != '' %}
-                                    <a href="https://www.youtube.com/channel/{{ profile.youtube }}" class="btn align-self-start btn-icon rounded-circle btn-outline-default bg-white hover-highlight  fs-xl" style="color: #c4302b"><i class="fab fa-youtube-square"></i></a>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="rounded position-absolute" style="border: 0 white dashed; right: 30%; left: 70%; margin-left: -75px; bottom: 40px; z-index:4; height: 150px; width: 150px; z-index: 6">
-                    <div class="position-relative">
-                        <button type="button" class="btn btn-icon position-absolute" style="color:white; mix-blend-mode: difference ;background: rgba(0,0,0, 0); right:-25px; top: -25px; z-index: 6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-2x fa-camera-alt"></i> {# background #}
-                        </button>
-                        <div id="bg-dropdown" class="dropdown-menu fadeinright" style="">
-                            <button class="dropdown-item" type="button" data-toggle="modal" data-target="#profile-background-upload" onclick="checkForActiveBackgroundTab()"><i class="fal fa-images"></i> Wybierz zdjęcie</button>
-                            <form action="{{ path('app_setSentProfileBackground', {'profile': profile.Id}) }}" id="background-send" method="post" enctype="multipart/form-data">
-                                <input type="file" id="selectedFile" name="file" oninput="sendBackground()" class="hidden-xs-up">
-                                <div class="dropdown-item" onclick="document.getElementById('selectedFile').click();"><i class="fal fa-arrow-alt-from-bottom"></i> Przeslij zdjęcie</div>
-                            </form>
-                            <button id="bg-1" class="dropdown-item" type="button" data-toggle="dropdown" data-target="#bg-dropdown" onclick="changePosition()"><i class="fal fa-arrows"></i> Zmień pozycję</button>
-                            <div id="bg-3" class="dropdown-divider m-0"></div>
-                            <button id="bg-2" class="dropdown-item" type="button" style="color: darkred" onclick="deleteBg()"><i class="fal fa-trash"></i> Usuń</button>
-                        </div>
-                        <a href="{{ path('app_profile', {'tab': 'settings', 'avatar':'true', 'profile':user.Username}) }}" class="btn position-absolute btn-icon" style="color:white; mix-blend-mode: difference; background: rgba(0,0,0, 0); left:-25px; top: -25px;">
-                            <i class="fas fa-user-circle fa-2x"></i>{# avatar #}
-                        </a>
-                        <img src="{{ asset('upload/avatars/'~profile.Username~'/'~profile.AvatarFileName)|imagine_filter('my_thumb_even_larger') }}"
-                             class="rounded-circle shadow-5 img-thumbnail mine-avatar" alt=""
-                             style="height: 150px; width: 150px;z-index:4">
-                    </div>
-                </div>
-            </div>
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-
-                    let options = {
-                        strings: ['first element', 'second element'],
-                        typeSpeed: 40,
-                        startDelay: 8000,
-                    };
-                });
-            </script>
-
-        </div>
-        <div class="position-sticky shadow-5 text-dark d-flex"
-             style="top: 66px; height: 50px; background-color: white;
-                 margin-left: -32px; margin-right: -32px; z-index: 3; margin-top: -100px; margin-bottom: 30px">
-            <div class="mt-3" style="width: 75%"><span class="ml-6"><b>Time line | Forum | Zdjęcia | Kontakty (2344) | komiksy dropdown | Poezja | Scenariusze | Opowiadania | Książki | Informacje | Kursy |Więcej </b></span></div>
-            <div class="mt-3 pl-6 text-center " style="width:25%;">TIP ME!</div>
-        </div>
-        {% if user.Username == profile.Username %}
-            <div class="subheader hidden-xs-up hidden-xs-down">
-                <ul class="nav nav-pills hidden" role="tablist">
-                    <li class="nav-item"><a class="nav-link{% if tab == 'profile' %} active{% endif %} rounded-0"
-                                            data-toggle="pill" href="#profile">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link{% if tab == 'settings' %} active{% endif %} rounded-0"
-                                            data-toggle="pill" href="#settings">Settings</a></li>
-
-                    <li class="nav-item"><a class="nav-link{% if tab == 'apperance' %} active{% endif %} rounded-0"
-                                            data-toggle="pill" href="#apperance">Apperance</a></li>
-                </ul>
-            </div>
-        {% endif %}
-        {% if user.Username == profile.Username %}
-        <div class="modal fade" id="profile-background-upload" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Chose your background</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"><i class="fal fa-times"></i></span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-6">
-                                <ul class="nav nav-pills" role="tablist">
-                                    <li class="nav-item"><a id="tabToCheck" class="nav-link active" data-toggle="tab" href="#background-all-images" onclick="imagesTab()">Ostatnio dodane</a></li>
-                                    <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#background-albums" onclick="albumsTab()">Albumy</a></li>
-                                </ul>
-                            </div>
-                            <div class="col-6">
-                                <div id="albumsBackButton" onclick="showAlbums()" class="pr-6 cursor-pointer" style="float: right; display: none"><- Go Back</div>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="tab-content py-0 backgroundChoseScroll">
-                            <div class="tab-pane fade show active" id="background-all-images" role="tabpanel">
-                                {% if profile.gallery %}
-                                    <div class="row pl-3">
-                                        <div id="galleryImagesPlacement" class="col-12">
-                                            {% for photo in gallery|slice(0,15) %}
-                                                {#                                            <div class="col-4 p-0">#}
-                                                {#                                                <div class="m-1" style="background: url('{{ asset('upload/gallery/'~profile.Username~'/'~photo.FileName)|imagine_filter('gallery_thumb') }}'); background-size: cover; height: 150px; background-position: center; border-radius: 5px;">#}
-
-                                                {#                                                </div>#}
-                                                {#                                            </div>#}
-                                                <a class="" href="javascript:setBackground('{{ photo.FileName }}')">
-                                                    <img class="img-responsive" style="border-radius: 5px" src="{{ asset('upload/gallery/'~profile.Username~'/'~photo.FileName)|imagine_filter('gallery_thumb') }}">
-                                                </a>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="tab-pane fade" id="background-albums" role="tabpanel">
-                                <div id="albums-wrapper" class="row" style="width: 200%; margin-left: 0">
-                                    <div class="col-6">
-                                {% if albums is not null %}
-                                    <div class="row pr-2">
-                                    {% for album in albums %}
-                                        {% if album.cover is null %}
-                                            {% set url = 'default/cover-'~random(1, 6)~'-lg.png' %}
-                                        {% else %}
-                                            {% set url = "upload/gallery/"~profile.Username~"/"~album.cover %}
-                                        {% endif %}
-                                        <div class="col-4 p-0 card border img-rounded" style="">
-                                            <div onclick="showImagesFromAlbum('{{ album.Id }}')" class="w-100 cursor-pointer d-flex p-0 align-items-end position-relative">
-                                                <div class="card-img-top" alt="{{ album.name }}" style="border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; display: block; height: 150px; background: url('{{ asset(url) }}') no-repeat center center/cover;"> </div>
-                                                <div class="align-bottom text-white d-flex px-3 position-absolute" style="border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; height: 26px; border: black 0px solid; background-color: rgba(0,0,0, 0.5); width: inherit"  data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{{ album.name }}"><span class="card-title my-auto text-truncate">{{ album.name }}</span></div>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                    </div>
-                                {% endif %}
-                                    </div>
-                                    <div id="albumImagesPlacement" class="col-6 pr-3"> <!-- placement --> </div>
-                                </div>
-                            </div><br>
-                        </div>
-                    </div>
-                    <div class="modal-footer justify-content-between">
-                        <div>
-                            <button id="loadMore" type="button" class="btn btn-info hidden-xs-up" onclick="loadPhotos()">Load more</button>
-                        </div>
-                        <div>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-            {% endif %}
-
-        <div class="row profile">
+            {% include 'smartadmin/profile/parts/header.twig' %}
+        <div class="profile-container" style="">
+            <div class="row profile">
 
             {#    <div class="col-lg-6 col-xl-3 order-lg-1 order-xl-1" style="width: 280px">#}
             {#    <div class="w1 hidden-xs-down">#}
@@ -327,7 +126,7 @@
             {#    </div>#}
             <!-- CENTER -->
             <!--PROFILE-->
-            <div class="col-6 order-1 tab-content">
+            <div class="col-6 order-2 tab-content">
 
                 {% include 'smartadmin/profile/social.html.twig' %}
 
@@ -343,9 +142,24 @@
             </div>
 
 
-            <div class="order-2 col-3">
+            <div class="order-1 col-3">
 
                 {% if profile.Username == user.Username %}
+                    <div class="card mb-2 hidden-md-down">
+                        <div class="card-body py-1" style="color: white">
+                            <div class="row">
+                                <div class="col-12 rounded-top py-1" style="background: rgba(255,0,0, 0.8);">
+                                    Wallet:
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 rounded-bottom py-1" style="background: rgba(8,30,255, 0.8);">
+                                    Extra money:
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card mb-2" id="window1profile-menu"
                          {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>
                         <div class="card-body" style="padding: 0.2vw">
@@ -524,7 +338,8 @@
                         {% for contact in Contacts %}
                             <div class="col-4">
                                 <a href="{{ path('app_profile', {'profile':contact.username}) }}"
-                                   class="text-center p-3 d-flex flex-column hover-highlight">
+                                   class="text-center p-3 d-flex flex-column hover-highlight"
+                                   data-toggle="tooltip" data-placement="top" title="{{ contact.firstName }} {{ contact.lastName }}">
                                     <span class="profile-image rounded-circle d-block m-auto"
                                           style="background-image:url('{{ asset('upload/avatars/'~contact.username~'/'~contact.avatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
                                     <span class="d-block text-truncate text-muted w-font-smaller-2 mt-1"> {{ contact.username }} </span>
@@ -767,6 +582,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </main>
     {% if user.Username == profile.Username %}
@@ -1368,7 +1184,7 @@ Variables:
 {% endblock %}
 
 {% block shortcuts %}
-    {% include 'smartadmin/parts/shortcuts.html.twig' %}
+{#    {% include 'smartadmin/parts/shortcuts.html.twig' %}#}
 {% endblock %}
 
 {% block quickmenu %}
@@ -1818,7 +1634,7 @@ Variables:
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset('smartadmin/js/formplugins/ion-rangeslider/ion-rangeslider.js') }}"></script>
-    <script src="{{ asset('smartadmin/js/miscellaneous/justifiedGallery/jquery.justifiedGallery.min.js') }}"></script>
+    {% include 'smartadmin/profile/parts/js/header.js.include.twig' %}
     <script>
         $(window).ready(function() {
             $('#profileMiniGallery').justifiedGallery({
@@ -1851,6 +1667,7 @@ Variables:
             }
         });
         {% endif %}
+        let stopAjaxGetPosts = false;
         $(window).scroll(function () {
             if (nav_page == true) {
                 if ($(window).scrollTop() > height) {
@@ -1858,7 +1675,7 @@ Variables:
 
                     console.log('height: ' + height);
                 }
-                if ($(window).scrollTop() + $(window).height() > $(document).height() - 1 && doWhileCheck == true) {
+                if ($(window).scrollTop() + $(window).height() > $(document).height() - 1 && doWhileCheck == true && stopAjaxGetPosts === false) {
                     doWhileCheck = false;
                     $.ajax({
                         url: '{{ path('api_app_getSocialPosts') }}',
@@ -1871,10 +1688,16 @@ Variables:
                         success: function (response) {
                             let data = response.split("<!----------- cut here ------------->");
                             console.log(data[0]);
-                            $('#target').append(data[0]);
+                            //Jesli raz odkryje dno timeline'u przestaje wysylac zapytanie do bazy
+                            if (data[0]==='empty'){
+                                stopAjaxGetPosts = true;
+                            }else{
+                                $('#target').append(data[0]);
+                                $('.carousel-post-target').append(data[1]);
+                            }
                             doWhileCheck = true;
                             offset = offset + offset;
-                            $('.carousel-post-target').append(data[1]);
+
                         }
 
                     });
@@ -3241,279 +3064,17 @@ Variables:
 {#            });#}
 {#        });#}
 {#    </script>#}
+
     <script>
         {% if avatar is not null and tab == 'settings' %}
-            $(document).ready(function(){
-                $('.collapse').collapse('toggle');
-            });
-        {% endif %}
-
-
-        {% if profile.BackgroundFileName == '' or profile.BackgroundFileName is null %}
-        let bg = false;
-        {% else %}
-        let bg = true;
-        {% endif %}
-
         $(document).ready(function(){
-            if (bg === false){
-                $('#bg-1').addClass('hidden-xs-up')
-                $('#bg-2').addClass('hidden-xs-up')
-                $('#bg-3').addClass('hidden-xs-up')
-            }
-        })
-
-        let albumLoaded = new Array();
-        let albumactive;
-        let albumOpen = false;
-        let offsetBG = new Array();
-        offsetBG['last'] = 15
-        function showImagesFromAlbum(albumid){
-            offsetBG[albumid] = 15;
-            if (albumLoaded[albumid]!=true){
-                $('.imagesForAlbum').addClass('hidden-xs-up')
-                $.ajax('/show15albumImages/'+albumid, {
-                    success: function (data) {
-                        $('#albums-wrapper').animate({ marginLeft: '-100%'}, 500);
-                        $('#albumsBackButton').css('display', 'block')
-                        $('#loadMore').removeClass('hidden-xs-up')
-
-                        data.forEach(function (data){
-                            console.log(data)
-                            $('#albumImagesPlacement').append('<div id="imagesFor_'+albumid+'" class="row imagesForAlbum">  </div>')
-                            $('#imagesFor_'+albumid).append('<a class="" href="javascript:setBackground(\''+data.fileName+'\')">'+
-                                '<img class="img-responsive" style="border-radius: 5px" src="'+data.fileUrl+'">'+
-                                '</a>')
-
-                        })
-                        albumLoaded[albumid] = true;
-                        albumactive = albumid;
-
-                        albumOpen =true;
-                        $('#imagesFor_'+albumactive).justifiedGallery({
-                            rowHeight: 180,
-                            margins: 5
-                        });
-                    },
-                    error: function () {
-                        console.log('failed to load album images');
-                    }
-                });
-            }else{
-                if (albumactive == albumid){
-                    $('#albums-wrapper').animate({ marginLeft: '-100%'}, 500);
-                    $('#albumsBackButton').css('display', 'block')
-                    $('#loadMore').removeClass('hidden-xs-up')
-                    albumOpen = true;
-                }else{
-                    $('.imagesForAlbum').addClass('hidden-xs-up')
-                    $('#imagesFor_'+albumid).removeClass('hidden-xs-up')
-                    $('#albums-wrapper').animate({ marginLeft: '-100%'}, 500);
-                    $('#albumsBackButton').css('display', 'block')
-                    $('#loadMore').removeClass('hidden-xs-up')
-                    albumOpen = true;
-                }
-            }
-        }
-
-        function showAlbums(){
-            $('#albums-wrapper').animate({ marginLeft: '0'}, 500);
-            $('#albumsBackButton').css('display', 'none')
-            $('#loadMore').addClass('hidden-xs-up')
-            albumOpen = false;
-        }
-
-        function imagesTab(){
-            $('#loadMore').removeClass('hidden-xs-up')
-            $('#albumsBackButton').css('display', 'none')
-        }
-
-        function albumsTab(){
-            if (albumOpen===true){
-                $('#albumsBackButton').css('display', 'block')
-            }else{
-                $('#loadMore').addClass('hidden-xs-up')
-            }
-        }
-
-        function checkForActiveBackgroundTab(){
-            if ($('#tabToCheck').hasClass('active')){
-                $('#loadMore').removeClass('hidden-xs-up')
-            }
-        }
-
-        function loadPhotos(){
-            if (albumOpen === true){
-
-                if($('#tabToCheck').hasClass('active') !== false){
-                    console.log('1' + $( +'#tabToCkeck').hasClass('active'))
-                    $.ajax('/showNext18galleryImages', {
-                        method: 'POST',
-                        data: {
-                            offset: offsetBG['last']
-                        },
-                        success: function (data) {
-                            data.forEach(function (data){
-                                console.log(data)
-                                $('#galleryImagesPlacement').append(
-                                    '<a class="" href="javascript:setBackground(\''+data.fileName+'\')">'+
-                                    '<img class="img-responsive" style="border-radius: 5px" src="'+data.fileUrl+'">'+
-                                    '</a>')
-
-                            })
-                            offsetBG['last'] = offsetBG['last'] + 18
-                            $('#galleryImagesPlacement').justifiedGallery('norewind');
-                        },
-                        error: function () {
-                            console.log('failed to load last images');
-                        }
-                    });
-                }else{
-                    console.log('2' + $('#tabToCkeck').hasClass('active'))
-                    console.log(offsetBG[albumactive])
-                    $.ajax('/showNext18albumImages/'+albumactive, {
-                        method: 'POST',
-                        data: {
-                            offset: offsetBG[albumactive]
-                        },
-                        success: function (data) {
-                            data.forEach(function (data){
-                                console.log(data)
-                                $('#imagesFor_'+albumactive).append('<a class="" href="javascript:setBackground(\''+data.fileName+'\')">'+
-                                    '<img class="img-responsive" style="border-radius: 5px" src="'+data.fileUrl+'">'+
-                                    '</a>')
-
-                            })
-                            offsetBG[albumactive] = offsetBG[albumactive] + 18
-                            $('#imagesFor_'+albumactive).justifiedGallery('norewind');
-                        },
-                        error: function () {
-                            console.log('failed to load album images');
-                        }
-                    });
-                }
-            }else{
-                console.log('3' + $('#tabToCkeck').hasClass('active'))
-                $.ajax('/showNext18galleryImages', {
-                    method: 'POST',
-                    data: {
-                        offset: offsetBG['last']
-                    },
-                    success: function (data) {
-                        data.forEach(function (data){
-                            console.log(data)
-                            $('#galleryImagesPlacement').append('<a class="" href="javascript:setBackground(\''+data.fileName+'\')">'+
-                                '<img class="img-responsive" style="border-radius: 5px" src="'+data.fileUrl+'">'+
-                            '</a>')
-
-                        })
-                        offsetBG['last'] = offsetBG['last'] + 18
-                        $('#galleryImagesPlacement').justifiedGallery('norewind');
-
-                    },
-                    error: function () {
-                        console.log('failed to load last images');
-                    }
-                });
-            }
-        }
-
-        function setBackground (file) {
-            $.ajax('/setProfileBackground/{{ profile.Id }}', {
-                method: 'POST',
-                data: {
-                    fileName: file
-                },
-                success: function () {
-                    $('#profile-background').css('background', 'url(\'/upload/gallery/{{ profile.Username }}/'+file+'\')');
-                    $('#profile-background').css('background-repeat', 'no-repeat');
-                    $('#profile-background').css('background-size', 'cover');
-                    $('#background-position').removeClass('hidden-xs-up');
-                    $('#profile-background-upload').modal('hide');
-
-                    $('#bg-1').removeClass('hidden-xs-up')
-                    $('#bg-2').removeClass('hidden-xs-up')
-                    $('#bg-3').removeClass('hidden-xs-up')
-                },
-                error: function () {
-                    console.log('failed to set background images');
-                }
-            });
-        }
-
-        function deleteBg () {
-            $.ajax('/deleteProfileBackground/{{ profile.Id }}', {
-                method: 'POST',
-                success: function () {
-                    $('#profile-background').css('background', 'none');
-
-                    $('#bg-1').addClass('hidden-xs-up')
-                    $('#bg-2').addClass('hidden-xs-up')
-                    $('#bg-3').addClass('hidden-xs-up')
-
-                    $('#background-position').addClass('hidden-xs-up')
-                },
-                error: function () {
-                    console.log('failed to delete background');
-                }
-            });
-        }
-    </script>
-    <script>
-        $(window).ready(function()
-        {
-            $('#galleryImagesPlacement').justifiedGallery({
-                rowHeight: 180,
-                margins: 5
-            });
+            $('.collapse').collapse('toggle');
         });
-
-        $(document).ready(function(){
-            $('.backgroundChoseScroll').slimScroll(
-                {
-                    position: 'right',
-                    height: '500',
-                    railVisible: true,
-                    alwaysVisible: true
-                });
-        });
-
+        {% endif %}
     </script>
+
+
     {% if user.Username == profile.Username %}
-    <script>
-        let BGposition = {% if profile.bgPosition is null %}0{% else %}{{ profile.bgPosition }}{% endif %};
-
-        function changeBackgroundPosition(value){
-            $('#profile-background').css('background-position', '0% '+value+'%');
-            BGposition = value;
-        }
-
-        function changePosition() {
-            $('#background-position').removeClass('hidden-xs-up');
-
-        }
-
-        function sendBackGroundPosition() {
-            $.ajax('/setProfileBackgroundPosition/{{ profile.Id }}', {
-                method: 'POST',
-                data: {
-                    position: BGposition
-                },
-                success: function () {
-                    $('#background-position').addClass('hidden-xs-up');
-                    console.log('success');
-                },
-                error: function () {
-                    console.log('failed to set background images');
-                    $('#background-position').addClass('hidden-xs-up');
-                }
-            });
-        }
-
-        function sendBackground() {
-            $('#background-send').submit();
-        }
-    </script>
         <script>
             function getMoreCommentsRight(id) {// check max 10
                 if (letMeShowMore2[id] === true) {

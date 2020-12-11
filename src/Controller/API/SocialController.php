@@ -16,6 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -104,7 +105,7 @@ class SocialController extends AbstractController
         //dd($posts);
         if ($posts==null)
         {
-            return new JsonResponse(['status'=>"empty"]);
+            return new Response('empty');
         }
         return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/api_loadPost.html.twig",[
             'posts'=>$posts,

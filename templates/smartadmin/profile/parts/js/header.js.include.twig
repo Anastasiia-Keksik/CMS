@@ -1,0 +1,266 @@
+<script src="{{ asset('smartadmin/js/miscellaneous/justifiedGallery/jquery.justifiedGallery.min.js') }}"></script>
+{% if user.Username == profile.Username %}
+<script>
+    let BGposition = {% if profile.bgPosition is null %}0{% else %}{{ profile.bgPosition }}{% endif %};
+
+    function changeBackgroundPosition(value){
+    $('#profile-background').css('background-position', '0% '+value+'%');
+    BGposition = value;
+}
+
+    function changePosition() {
+    $('#background-position').removeClass('hidden-xs-up');
+
+}
+
+    function sendBackGroundPosition() {
+    $.ajax('/setProfileBackgroundPosition/{{ profile.Id }}', {
+        method: 'POST',
+        data: {
+            position: BGposition
+        },
+        success: function () {
+            $('#background-position').addClass('hidden-xs-up');
+            console.log('success');
+        },
+        error: function () {
+            console.log('failed to set background images');
+            $('#background-position').addClass('hidden-xs-up');
+        }
+    });
+}
+
+    function sendBackground() {
+    $('#background-send').submit();
+}
+</script>
+{% endif %}
+<script>
+    {% if profile.BackgroundFileName == '' or profile.BackgroundFileName is null %}
+    let bg = false;
+    {% else %}
+    let bg = true;
+    {% endif %}
+
+    $(document).ready(function(){
+        if (bg === false){
+            $('#bg-1').addClass('hidden-xs-up')
+            $('#bg-2').addClass('hidden-xs-up')
+            $('#bg-3').addClass('hidden-xs-up')
+        }
+    })
+
+    let albumLoaded = new Array();
+    let albumactive;
+    let albumOpen = false;
+    let offsetBG = new Array();
+    offsetBG['last'] = 15
+    function showImagesFromAlbum(albumid){
+        offsetBG[albumid] = 15;
+        if (albumLoaded[albumid]!=true){
+            $('.imagesForAlbum').addClass('hidden-xs-up')
+            $.ajax('/show15albumImages/'+albumid, {
+                success: function (data) {
+                    $('#albums-wrapper').animate({ marginLeft: '-100%'}, 500);
+                    $('#albumsBackButton').css('display', 'block')
+                    $('#loadMore').removeClass('hidden-xs-up')
+
+                    data.forEach(function (data){
+                        console.log(data)
+                        $('#albumImagesPlacement').append('<div id="imagesFor_'+albumid+'" class="row imagesForAlbum">  </div>')
+                        $('#imagesFor_'+albumid).append('<a class="" href="javascript:setBackground(\''+data.fileName+'\')">'+
+                            '<img class="img-responsive" style="border-radius: 5px" src="'+data.fileUrl+'">'+
+                            '</a>')
+
+                    })
+                    albumLoaded[albumid] = true;
+                    albumactive = albumid;
+
+                    albumOpen =true;
+                    $('#imagesFor_'+albumactive).justifiedGallery({
+                        rowHeight: 180,
+                        margins: 5
+                    });
+                },
+                error: function () {
+                    console.log('failed to load album images');
+                }
+            });
+        }else{
+            if (albumactive == albumid){
+                $('#albums-wrapper').animate({ marginLeft: '-100%'}, 500);
+                $('#albumsBackButton').css('display', 'block')
+                $('#loadMore').removeClass('hidden-xs-up')
+                albumOpen = true;
+            }else{
+                $('.imagesForAlbum').addClass('hidden-xs-up')
+                $('#imagesFor_'+albumid).removeClass('hidden-xs-up')
+                $('#albums-wrapper').animate({ marginLeft: '-100%'}, 500);
+                $('#albumsBackButton').css('display', 'block')
+                $('#loadMore').removeClass('hidden-xs-up')
+                albumOpen = true;
+            }
+        }
+    }
+
+    function showAlbums(){
+        $('#albums-wrapper').animate({ marginLeft: '0'}, 500);
+        $('#albumsBackButton').css('display', 'none')
+        $('#loadMore').addClass('hidden-xs-up')
+        albumOpen = false;
+    }
+
+    function imagesTab(){
+        $('#loadMore').removeClass('hidden-xs-up')
+        $('#albumsBackButton').css('display', 'none')
+    }
+
+    function albumsTab(){
+        if (albumOpen===true){
+            $('#albumsBackButton').css('display', 'block')
+        }else{
+            $('#loadMore').addClass('hidden-xs-up')
+        }
+    }
+
+    function checkForActiveBackgroundTab(){
+        if ($('#tabToCheck').hasClass('active')){
+            $('#loadMore').removeClass('hidden-xs-up')
+        }
+    }
+
+    function loadPhotos(){
+        if (albumOpen === true){
+
+            if($('#tabToCheck').hasClass('active') !== false){
+                console.log('1' + $( +'#tabToCkeck').hasClass('active'))
+                $.ajax('/showNext18galleryImages', {
+                    method: 'POST',
+                    data: {
+                        offset: offsetBG['last']
+                    },
+                    success: function (data) {
+                        data.forEach(function (data){
+                            console.log(data)
+                            $('#galleryImagesPlacement').append(
+                                '<a class="" href="javascript:setBackground(\''+data.fileName+'\')">'+
+                                '<img class="img-responsive" style="border-radius: 5px" src="'+data.fileUrl+'">'+
+                                '</a>')
+
+                        })
+                        offsetBG['last'] = offsetBG['last'] + 18
+                        $('#galleryImagesPlacement').justifiedGallery('norewind');
+                    },
+                    error: function () {
+                        console.log('failed to load last images');
+                    }
+                });
+            }else{
+                console.log('2' + $('#tabToCkeck').hasClass('active'))
+                console.log(offsetBG[albumactive])
+                $.ajax('/showNext18albumImages/'+albumactive, {
+                    method: 'POST',
+                    data: {
+                        offset: offsetBG[albumactive]
+                    },
+                    success: function (data) {
+                        data.forEach(function (data){
+                            console.log(data)
+                            $('#imagesFor_'+albumactive).append('<a class="" href="javascript:setBackground(\''+data.fileName+'\')">'+
+                                '<img class="img-responsive" style="border-radius: 5px" src="'+data.fileUrl+'">'+
+                                '</a>')
+
+                        })
+                        offsetBG[albumactive] = offsetBG[albumactive] + 18
+                        $('#imagesFor_'+albumactive).justifiedGallery('norewind');
+                    },
+                    error: function () {
+                        console.log('failed to load album images');
+                    }
+                });
+            }
+        }else{
+            console.log('3' + $('#tabToCkeck').hasClass('active'))
+            $.ajax('/showNext18galleryImages', {
+                method: 'POST',
+                data: {
+                    offset: offsetBG['last']
+                },
+                success: function (data) {
+                    data.forEach(function (data){
+                        console.log(data)
+                        $('#galleryImagesPlacement').append('<a class="" href="javascript:setBackground(\''+data.fileName+'\')">'+
+                            '<img class="img-responsive" style="border-radius: 5px" src="'+data.fileUrl+'">'+
+                            '</a>')
+
+                    })
+                    offsetBG['last'] = offsetBG['last'] + 18
+                    $('#galleryImagesPlacement').justifiedGallery('norewind');
+
+                },
+                error: function () {
+                    console.log('failed to load last images');
+                }
+            });
+        }
+    }
+
+    function setBackground (file) {
+        $.ajax('/setProfileBackground/{{ profile.Id }}', {
+            method: 'POST',
+            data: {
+                fileName: file
+            },
+            success: function () {
+                $('#profile-background').css('background', 'url(\'/upload/gallery/{{ profile.Username }}/'+file+'\')');
+                $('#profile-background').css('background-repeat', 'no-repeat');
+                $('#profile-background').css('background-size', 'cover');
+                $('#background-position').removeClass('hidden-xs-up');
+                $('#profile-background-upload').modal('hide');
+
+                $('#bg-1').removeClass('hidden-xs-up')
+                $('#bg-2').removeClass('hidden-xs-up')
+                $('#bg-3').removeClass('hidden-xs-up')
+            },
+            error: function () {
+                console.log('failed to set background images');
+            }
+        });
+    }
+
+    function deleteBg () {
+        $.ajax('/deleteProfileBackground/{{ profile.Id }}', {
+            method: 'POST',
+            success: function () {
+                $('#profile-background').css('background', 'none');
+
+                $('#bg-1').addClass('hidden-xs-up')
+                $('#bg-2').addClass('hidden-xs-up')
+                $('#bg-3').addClass('hidden-xs-up')
+
+                $('#background-position').addClass('hidden-xs-up')
+            },
+            error: function () {
+                console.log('failed to delete background');
+            }
+        });
+    }
+
+    $(window).ready(function()
+    {
+        $('#galleryImagesPlacement').justifiedGallery({
+            rowHeight: 180,
+            margins: 5
+        });
+    });
+
+    $(document).ready(function(){
+        $('.backgroundChoseScroll').slimScroll(
+            {
+                position: 'right',
+                height: '500',
+                railVisible: true,
+                alwaysVisible: true
+            });
+    });
+</script>

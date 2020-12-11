@@ -70,7 +70,7 @@
                 <i class="ni ni-chevron-down hidden-xs-down"></i> -->
             </a>
             <div class="dropdown-menu dropdown-menu-animated dropdown-lg">
-            {% if pageName == "Profile" and user.Username == profile.Username %}
+            {% if pageName == "Profile" and user.Username == profile.Username and bgopen != 'open' %}
                 <a href="#">
             {% else %}
                 <a href="{{path('app_profile', {'profile':user.Username})}}">
@@ -94,6 +94,9 @@
                 <a href="#" class="dropdown-item" data-toggle="modal" data-target=".js-modal-settings">
                     <span data-i18n="drpdwn.settings">Settings</span>
                 </a>
+                    <a href="#" class="dropdown-item" >
+                        <span data-i18n="drpdwn.stripe_acc">Wallet</span>
+                    </a>
 
                 <div class="dropdown-divider m-0"></div>{# forums #}
                 <div class="dropdown-multilevel dropdown-multilevel-left">

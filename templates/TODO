@@ -82,3 +82,8 @@ bezpieczenstwo
     UWAGA
     Gdy bedziesz wymienial pliki css i js na nowsze, porownaj zmiany pomiedzy obecnymi i starymi wersjami obecnych aby wypisac wszelkie zmiany ktore zrobilem
     i zaimplementowac je w nowych wersjach wychrze plikow
+
+    konto bankowe
+    przed zrobieniem konta w stripe sprawdza w jakim kraju zameldowany jestes
+
+    nie banuj odrazu, najpierw pokazuj przyciski warning,i dopiero na koncu po 3 razach kick or ban

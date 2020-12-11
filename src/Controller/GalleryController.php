@@ -137,6 +137,18 @@ class GalleryController extends AbstractController
             100 /*limit per page*/
         );
 
+        $photos = [];
+        if ($zalogowanyUser->getGallery()) {
+            $photos = $galleryPhotosRepository->findLast15($zalogowanyUser->getGallery()->getId());
+        } else {
+            $photos = null;
+        }
+
+        if ($profile == $zalogowanyUser) {
+            $albums = $zalogowanyUser->getGallery()->getGalleryAlbums();
+        }else{
+            $albums = null;
+        }
 
         $comics = $getContacts->getComics($zalogowanyUser->getId());
         $contacts = $getContacts->getContacts($zalogowanyUser->getId());
@@ -157,6 +169,8 @@ class GalleryController extends AbstractController
             'theme'=>$this->theme,
             'comics'=>$comics,
             'Contacts'=>$contacts,
+            'gallery'=>$photos,
+            'albums'=>$albums
         ]);
     }
 

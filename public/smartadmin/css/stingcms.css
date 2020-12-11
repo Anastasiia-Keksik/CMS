@@ -1,4 +1,9 @@
 /*The magic:*/
+
+.profile-container {
+    margin: auto;
+}
+
 .absolute-right{
     -moz-transform: translateX(-100%);
     -ms-transform: translateX(-100%);
@@ -32,6 +37,10 @@
         max-width: 100%;
     }
 
+    .profile-container {
+        width: 100%;
+    }
+
     .avatar-size-50{
         width: 50px;
         height: 50px;
@@ -63,7 +72,6 @@
         height: 3.2552vw;
     }
 
-
     .NewSocialPostPanel{
         min-width: 496px;
     }
@@ -77,6 +85,14 @@
     .w1{
         width: 18vw;
         margin-left: 12px
+    }
+
+    .profile-container {
+        width: 100%;
+    }
+
+    .profile-container {
+        width: 100%;
     }
 
     .image-width{
@@ -131,6 +147,10 @@
     .w1{
         width: 18vw;
         margin-left: 12px
+    }
+
+    .profile-container {
+        width: 100%;
     }
 
     .w2{
@@ -230,7 +250,7 @@
 /*}*/
 
 /*     !*extra large*!*/
-/*@media (min-width: 1200px) {*/
+@media (min-width: 1200px) {
 /*    .w1{*/
 /*        -ms-flex: 0 0 304px;*/
 /*        flex: 0 0 304px;*/
@@ -243,9 +263,12 @@
 /*        -ms-flex: 0 0 604px;*/
 /*        flex: 0 0 604px;*/
 /*    }*/
-/*}*/
+    .profile-container {
+        width: 1116px;
+    }
+}
 /*!*large*!*/
-/*@media (min-width: 992px) and (max-width: 1199px) {*/
+@media (min-width: 992px) and (max-width: 1199px) {
 /*    .w1{*/
 /*        -ms-flex: 0 0 304px;*/
 /*        flex: 0 0 304px;*/
@@ -258,7 +281,10 @@
 /*        -ms-flex: 0 0 604px;*/
 /*        flex: 0 0 604px;*/
 /*    }*/
-/*}*/
+    .profile-container {
+        width: 1116px;
+    }
+}
 /*!*medium*!*/
 /*@media (min-width: 768px) and (max-width: 991px) {*/
 /*    .w1{*/

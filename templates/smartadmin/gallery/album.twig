@@ -3,18 +3,21 @@
 {% block content %}
     <!-- the #js-page-content id is needed for some plugins to initialize -->
     <main id="js-page-content" role="main" class="page-content">
-        <ol class="breadcrumb page-breadcrumb">
-            <li class="breadcrumb-item"><a href="/">{{ APP_NAME }}</a></li>
-            <li class="breadcrumb-item active"><a href="{{ path('app_gallery', {'profile':profile.Username }) }}">Gallery</a></li>
-            <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>
-        </ol>
-        <div class="subheader">
-            <h1 class="subheader-title">
-                <i class='subheader-icon fal fa-globe'></i>  {{ profile.Username }}'s gallery
-            </h1>
-        </div>
+{#        <ol class="breadcrumb page-breadcrumb">#}
+{#            <li class="breadcrumb-item"><a href="/">{{ APP_NAME }}</a></li>#}
+{#            <li class="breadcrumb-item active"><a href="{{ path('app_gallery', {'profile':profile.Username }) }}">Gallery</a></li>#}
+{#            <li class="position-absolute pos-top pos-right d-none d-sm-block"><span class="js-get-date"></span></li>#}
+{#        </ol>#}
+{#        <div class="subheader">#}
+{#            <h1 class="subheader-title">#}
+{#                <i class='subheader-icon fal fa-globe'></i>  {{ profile.Username }}'s gallery#}
+{#            </h1>#}
+{#        </div>#}
 
-        <div class="row">
+        {% include 'smartadmin/profile/parts/header.twig' %}
+
+        <div class="container">
+            <div class="row">
             <div class="col-xl-12">
                 <div id="panel-1" class="panel">
                     <div class="panel-hdr">
@@ -67,6 +70,7 @@
         </div>
         </div>
         </div>
+        </div>
     </main>
     <!-- this overlay is activated only when mobile menu is triggered -->
     <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div>
@@ -74,7 +78,8 @@
 
 {% block stylesheets %}
     {{ parent() }}
-
+    <link rel="stylesheet" href="{{ asset('smartadmin/css/miscellaneous/justifiedGallery/justifiedGallery.min.css') }}" />
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-solid.css') }}">
     <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/miscellaneous/lightgallery/lightgallery.bundle.css') }}">
     <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/formplugins/dropzone/dropzone.css') }}">
 {% endblock %}
@@ -146,7 +151,7 @@ Variables:
     </script>
 <script src="{{ asset('smartadmin/js/formplugins/dropzone/dropzone.js') }}"></script>
 <script type="text/javascript">
-    initApp.pushSettings("layout-composed", false);
+    //initApp.pushSettings("layout-composed", false);
 
     Dropzone.autoDiscover = false;
     $('.dropzone').dropzone({
