@@ -3078,30 +3078,49 @@ Variables:
         <script>
             function getMoreCommentsRight(id) {// check max 10
                 if (letMeShowMore2[id] === true) {
-                    $('.conversation-iframe').each(function (index) {
+                    $('.conversation-right').each(function (index) {
                         var oopid = $(this).attr('id')
                         console.log(oopid)
                         letMeShowMore2[oopid] = true
                         $('#right-arrow-'+oopid).html('<i class="fal fa-angle-right fa-2x" style=""></i>')
                     })
-                    $('.conversation-iframe').remove()
-                    $('#extended-conversation_target-' + id).append('' +
-                        '<iframe id="'+id+'" class="position-absolute conversation-iframe rounded" width="118%" height="600px" src="/api/getMoreConversationCommentsIframe/'+id+'" style="left:calc(100% + 3rem); top:0; background: transparent; border: 0; z-index:91998">' +
-                        '</iframe>')
+                    $('.conversation-right').remove()
+                    $('#extended-conversation_target-' + id).append(
+                        '<div id="'+id+'" class="position-absolute conversation-right rounded" width="118%" height="600px" src="/api/getMoreConversationCommentsIframe/'+id+'" style="left:calc(100% + 3rem); top:0; background: red; border: 0; z-index:91998">'+
+                        'dsgfs</div>'
+                    )
+                    $.ajax('/api/getMoreConversationComments/'+id, {
+                        method: "POST",
+                    processData: false,
+                        contentType: false,
+                        success: function (data) {
+                        data.commentary.forEach(function (elm) {
+                            console.log(elm)
 
-                    letMeShowMore2[id] = false;
-                    $('#right-arrow-'+id).html('<i class="fal fa-angle-left fa-2x" style=""></i>')
-                }else{
-                    $('#' + id).remove();
-                    letMeShowMore2[id] = true
-                    $('#right-arrow-'+id).html('<i class="fal fa-angle-right fa-2x" style=""></i>')
-                }
+                        })
+                            //console.log(data);
+                    },
+                    error: function () {
+                        console.log('error - connection failed');
+                    }
+                });
 
+
+                    // $('#extended-conversation_target-' + id).append('' +
+                    //     '<iframe id="'+id+'" class="position-absolute conversation-iframe rounded" width="118%" height="600px" src="/api/getMoreConversationCommentsIframe/'+id+'" style="left:calc(100% + 3rem); top:0; background: transparent; border: 0; z-index:91998">' +
+                    //     '</iframe>')
+
+                        letMeShowMore2[id] = false;
+                        $('#right-arrow-'+id).html('<i class="fal fa-angle-left fa-2x" style=""></i>')
+                    }else{
+                        $('#' + id).remove();
+                        letMeShowMore2[id] = true
+                        $('#right-arrow-'+id).html('<i class="fal fa-angle-right fa-2x" style=""></i>')
+                    }
+
+                    CommentPageNr[id]++;
                 CommentPageNr[id]++;
-            CommentPageNr[id]++;
-            }
-        </script>
-        <script>
-        </script>
-    {% endif %}
+                }
+            </script>
+        {% endif %}
 {% endblock %}
