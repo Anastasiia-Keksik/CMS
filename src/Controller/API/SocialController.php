@@ -42,13 +42,13 @@ class SocialController extends AbstractController
     public function showUsers(LoggerInterface $logger, Request $request, SocialPostRepository $socialPostRepository,
                               SocialPostCommentRepository $underCommentsRepo, AccountRepository $accountRepository)
     {
-       //TODO: check if user who sees it (pobiera to) have dostep do tego (not black listed, friend etc)
+        //TODO: check if user who sees it (pobiera to) have dostep do tego (not black listed, friend etc)
         $id = $request->request->get('profile');
         $profile = $accountRepository->find($id);
         //$id = $request->query->get('profile');
 
         $socialPosts = $socialPostRepository->loadNewPostsOffset($id, $request->request->get('offset'));
-        
+
         $posts = [];
         $postsIt=0;
 
@@ -78,7 +78,7 @@ class SocialController extends AbstractController
                 foreach($comments as $comment)
                 {
                     if($comment->getSoftDelete()==false and $comment->getUnderAnotherComment() == null){
-                    array_push($posts[$postsIt]['Comments'], [
+                        array_push($posts[$postsIt]['Comments'], [
                             'Id'=>$comment -> getId(),
                             'Content'=>$comment-> getContent(),
                             'Author'=>$comment-> getAuthor()->getId(),
@@ -91,24 +91,24 @@ class SocialController extends AbstractController
                             'CommentConversation'=>[]
                         ]);
 
-                    $underComments = $underCommentsRepo->findBy(['underAnotherComment'=>$comment->getId()]);
-                    foreach ($underComments as $underComment) {
-                        array_push($posts[$postsIt]['Comments'][$commentIt]['CommentConversation'], [
-                                        'Id'=>$underComment -> getId(),
-                                        'Content'=>$underComment-> getContent(),
-                                        'Author'=>$underComment-> getAuthor()->getId(),
-                                        'AuthorUsername'=>$underComment->getAuthor()->getUsername(),
-                                        'AuthorFirstName'=>$underComment->getAuthor()->getFirstName(),
-                                        'AuthorLastName'=>$underComment->getAuthor()->getLastName(),
-                                        'AuthorAvatarFileName'=>$underComment->getAuthor()->getAvatarFileName(),
-                                        'createdAt'=>$underComment->getCreatedAt(),
-                                        'modifiedAt'=>$underComment->getModifiedAt()
+                        $underComments = $underCommentsRepo->findBy(['underAnotherComment'=>$comment->getId()]);
+                        foreach ($underComments as $underComment) {
+                            array_push($posts[$postsIt]['Comments'][$commentIt]['CommentConversation'], [
+                                'Id'=>$underComment -> getId(),
+                                'Content'=>$underComment-> getContent(),
+                                'Author'=>$underComment-> getAuthor()->getId(),
+                                'AuthorUsername'=>$underComment->getAuthor()->getUsername(),
+                                'AuthorFirstName'=>$underComment->getAuthor()->getFirstName(),
+                                'AuthorLastName'=>$underComment->getAuthor()->getLastName(),
+                                'AuthorAvatarFileName'=>$underComment->getAuthor()->getAvatarFileName(),
+                                'createdAt'=>$underComment->getCreatedAt(),
+                                'modifiedAt'=>$underComment->getModifiedAt()
                             ]);
+                        }
                     }
+                    $commentIt++;
                 }
-                $commentIt++;
-                }
-            $postsIt++;
+                $postsIt++;
             }
         }
         //dd($posts);
@@ -362,7 +362,7 @@ class SocialController extends AbstractController
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function getMoreConversationComments(Request $request, $id, SocialPostCommentRepository $socialPostCommentRepository,
-                                                      CacheManager $cm){
+                                                CacheManager $cm){
         $token = $request->request->get('_token');
         $pagination = $request->request->get('pagination');
         $pagination = 1;

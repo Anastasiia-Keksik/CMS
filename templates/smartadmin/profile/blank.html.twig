@@ -8,573 +8,574 @@
     <!-- the #js-page-content id is needed for some plugins to initialize -->
     <main id="js-page-content" role="main" class="page-content"
           style="background-image: url('{{ asset('upload/12554.jpg') }}');">
-            {% include 'smartadmin/profile/parts/header.twig' %}
+        {% include 'smartadmin/profile/parts/header.twig' %}
         <div class="profile-container" style="">
             <div class="row profile">
 
-            {#    <div class="col-lg-6 col-xl-3 order-lg-1 order-xl-1" style="width: 280px">#}
-            {#    <div class="w1 hidden-xs-down">#}
-            {#        {% if profile.Username == user.Username %}#}
-            {#        <div class="card mb-2 composed-top" id="window1profile-menu" {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>#}
-            {#            <div class="card-body" style="padding: 0.2vw">#}
-            {#                <div class="hidden-xs-down">#}
-            {#                    <ul class="nav nav-pills text-center" role="tablist">#}
-            {#                        <li class="nav-item"><a class="nav-link{% if tab == 'profile' %} active{% endif %} rounded" data-toggle="pill" href="#profile" style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Profile</span></a></li>#}
-            {#                        <li class="nav-item"><a class="nav-link{% if tab == 'settings' %} active{% endif %} rounded" data-toggle="pill" href="#settings" style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Settings</span></a></li>#}
+                {#    <div class="col-lg-6 col-xl-3 order-lg-1 order-xl-1" style="width: 280px">#}
+                {#    <div class="w1 hidden-xs-down">#}
+                {#        {% if profile.Username == user.Username %}#}
+                {#        <div class="card mb-2 composed-top" id="window1profile-menu" {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>#}
+                {#            <div class="card-body" style="padding: 0.2vw">#}
+                {#                <div class="hidden-xs-down">#}
+                {#                    <ul class="nav nav-pills text-center" role="tablist">#}
+                {#                        <li class="nav-item"><a class="nav-link{% if tab == 'profile' %} active{% endif %} rounded" data-toggle="pill" href="#profile" style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Profile</span></a></li>#}
+                {#                        <li class="nav-item"><a class="nav-link{% if tab == 'settings' %} active{% endif %} rounded" data-toggle="pill" href="#settings" style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Settings</span></a></li>#}
 
-            {#                        <li class="nav-item"><a class="nav-link{% if tab == 'apperance' %} active{% endif %} rounded" data-toggle="pill" href="#apperance" style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Apperance</span></a></li>#}
-            {#                    </ul>#}
-            {#                </div>#}
-            {#            </div>#}
-            {#        </div>#}
-            {#        {% endif %}#}
-            {#        <!-- profile summary -->#}
-            {#        <!--- instead ofthis bottom one --->#}
-            {#        <div class="position-sticky" style="top: 30px">#}
-            {#        <div class="card mb-g {% if profile.Username != user.Username %}composed-top{% endif %}" id="window1profile" {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>#}
-            {#            <div class="row no-gutters row-grid">#}
-            {#                <div class="col-12">#}
-            {#                    <div class="d-flex flex-column align-items-center justify-content-center position-relative" style="padding: 1.7vw">#}
-            {#                        {% if profile.Username == user.Username %}#}
-            {#                        <div class="position-absolute m-0 p-0" style="right: 0px; top: 0px"><a class="btn btn-icon" data-toggle="modal" data-target="#profile1"><i class="fal fa-flower-tulip"></i></a></div>#}
-            {#                        {% endif %}#}
-            {#                        <img src="{{ asset('upload/avatars/'~profile.Username~'/'~profile.AvatarFileName)|imagine_filter('my_thumb_lg') }}" class="mine-avatar rounded-circle shadow-2 img-thumbnail image-width" alt="">#}
-            {#                        <h5 class="mb-0 fw-700 text-center mt-3 w-font" id="window1profileUsername" style="{% if design.settings.w1.s2 is defined and design.settings.w1.s2 is not null %}color: {{ design.settings.w1.s2 }};{% endif %} {% if design.settings.w1.c1 is defined and design.settings.w1.c1 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">#}
-            {#                            {{ profile.username }}#}
-            {#                        </h5>#}
-            {#                        <h5 class="mb-0 fw-100 text-center mt-0 w-font" id="window1profileName" style="{% if design.settings.w1.s3 is defined and design.settings.w1.s3 is not null%}color: {{ design.settings.w1.s3 }};{% endif %} {% if design.settings.w1.c2 is defined and design.settings.w1.c2 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">#}
-            {#                        #}{# TODO: zrobic wyswietlanie imienia i nazwiska zamiast username w opcjach strony #}
-            {#                            {{ profile.firstName }} {{ profile.lastName }}#}
-            {#                            </h5>#}
-            {#                        <h5 class="mb-0 fw-700 text-center mt-3"> #}
-            {#                            <small class="text-muted mb-0">#}{# zrobic wyszukiwanie miasta w panstwie na swiecie jakas wyszukiwarka czy cos z opcji i prawdziwych miast#}
-            {#                                {% if profile.city is defined %}#}
-            {#                                    {{ profile.city }}#}
-            {#                                {% endif %}#}
-
-
-            {#                                #}{##}
-            {#                                <?php#}
-
-            {#														if($row['miasto']!=="NULL"){echo $row['miasto'].", ";}#}
-            {#														if($panstwo!==NULL){echo $panstwo->get();}#}
-            {#                                if($row['miasto'] == NULL && $panstwo == NULL)#}
-            {#                                {#}
-            {#                                echo "World Citizen";#}
-            {#                                }#}
-            {#                                ?>#}
-
-            {#                                #}{#</small>#}
-            {#                        </h5>#}
-{#                                    {% if profile.facebook != '' or profile.twitter != '' or profile.linkedin != '' or profile.reddit != '' or profile.skype != '' or profile.flickr != '' or profile.instagram != '' or profile.youtube != '' %}#}
-{#                                    <div class="mt-4 text-center demo pl-2" style="background-color: white; border-radius: 10px;">#}
-{#                                        {% if profile.facebook != '' %}#}
-{#                                        <a href="https://www.facebook.com/{{ profile.facebook }}/" class="mr-1  fs-xl" style="color:#3b5998"><i class="fab fa-facebook-square"></i></a>#}
-{#                                        {% endif %}#}
-{#                                        {% if profile.twitter  %}#}
-{#                                        <a href="https://twitter.com/{{ profile.twitter }}" class="mr-1 fs-xl" style="color:#38A1F3"><i class="fab fa-twitter-square"></i></a>#}
-{#                                        {% endif %}#}
-{#                                        {% if profile.linkedin != '' %}#}
-{#                                        <a href="https://www.linkedin.com/in/{{ profile.linkedin }}/" class="mr-1 fs-xl" style="color:#0077B5"><i class="fab fa-linkedin"></i></a>#}
-{#                                        {% endif %}#}
-{#                                        {% if profile.reddit != '' %}#}
-{#                                        <a href="https://www.reddit.com/user/{{ profile.reddit }}/;" class="fs-xl" style="color:#000000"><i class="fab fa-reddit-alien"></i></a>#}
-{#                                        {% endif %}#}
-{#                                        {% if profile.skype != '' %}#}
-{#                                        <a href="skype:{{ profile.skype }}?chat" class="fs-xl" style="color:#00AFF0"><i class="fab fa-skype"></i></a>#}
-{#                                        {% endif %}#}
-{#                                        {% if profile.flickr != '' %}#}
-{#                                        <a href="https://www.flickr.com/photos/{{ profile.flickr }}" class="fs-xl" style="color:#0063DC"><i class="fab fa-flickr"></i></a>#}
-{#                                        {% endif %}#}
-{#                                        {% if profile.instagram != '' %}#}
-{#                                        <a href="https://www.instagram.com/{{ profile.instagram }}" class="fs-xl" style="color: #833ab4"><i class="fab fa-instagram"></i></a>#}
-{#                                        {% endif %}#}
-{#                                        {% if profile.youtube != '' %}#}
-{#                                        <a href="https://www.youtube.com/channel/{{ profile.youtube }}" class="fs-xl" style="color: #c4302b"><i class="fab fa-youtube-square"></i></a>#}
-{#                                        {% endif %}#}
-{#                                    </div>#}
-{#                                    {% endif %}#}
-            {#                    </div>#}
-            {#                </div>#}
-            {#                <div class="col-6">#}
-            {#                    <div class="text-center" id="window1profileConnections" style="padding-top: 1vw; padding-bottom: 1vw; {% if design.settings.w1.s4 is defined and design.settings.w1.s4 is not null %}background-color: {{ design.settings.w1.s4 }};{% endif %}{% if design.settings.w1.s6 is defined and design.settings.w1.s6 is not null %}color: {{ design.settings.w1.s6 }};{% endif %}#}
-            {#                            {% if design.settings.w1.c3 is defined and design.settings.w1.c3 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">#}
-            {#                        <h5 class="mb-0 fw-700 w-font-small-3">#}
-            {#                            {{ Contacts|length }}#}
-            {#                            <small class="mb-0 w-font-small-3">Connections</small>#}
-            {#                        </h5>#}
-            {#                    </div>#}
-            {#                </div>#}
-            {#                <div class="col-6">#}
-            {#                    <div class="text-center" id="window1profileFollowers" style="padding-top: 1vw; padding-bottom: 1vw; {% if design.settings.w1.s5 is defined and design.settings.w1.s5 is not null %}background-color: {{ design.settings.w1.s5 }};{% endif %} {% if design.settings.w1.s7 is defined and design.settings.w1.s7 is not null %}color: {{ design.settings.w1.s7 }};{% endif %} {% if design.settings.w1.c4 is defined and design.settings.w1.c4 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">#}
-            {#                        <h5 class="mb-0 fw-700 w-font-small-3">#}
-            {#                            1,673#}
-            {#                            <small class="mb-0 w-font-small-3">Followers</small>#}
-            {#                        </h5>#}
-            {#                    </div>#}
-            {#                </div>#}
-            {#                <div class="col-12">#}
-            {#                    <div class="text-center rounded-bottom w-font-smaller-2" id="window1profileSocialOptions" style="padding: 0.5vw; {% if design.settings.w1.s8 is defined and design.settings.w1.s8 is not null %}background-color: {{ design.settings.w1.s8 }}{% endif %}">#}
-            {#                        <a href="javascript:void(0);" class="{% if profile.Username == user.Username %}disabled {% endif %}btn-link font-weight-bold window1profileSocialOptionsFont" style="{% if design.settings.w1.s9 is defined and design.settings.w1.s9 is not null%}color: {{ design.settings.w1.s9 }};{% endif %} {% if design.settings.w1.c5 is defined and design.settings.w1.c5 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">Follow</a> <span class="d-inline-block window1profileSocialOptionsFont mx-2vw" {% if design.settings.w1.s9 is defined and design.settings.w1.s9 is not null%}style="color: {{ design.settings.w1.s9 }}"{% endif %}>&#9679;</span>#}
-            {#                        <a href="javascript:void(0);" class="{% if profile.Username == user.Username %}disabled {% endif %}btn-link font-weight-bold window1profileSocialOptionsFont" style="{% if design.settings.w1.s9 is defined and design.settings.w1.s9 is not null%}color: {{ design.settings.w1.s9 }};{% endif %} {% if design.settings.w1.c5 is defined and design.settings.w1.c5 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">Message</a> <span class="d-inline-block window1profileSocialOptionsFont mx-2vw" {% if design.settings.w1.s9 is defined and design.settings.w1.s9 is not null%}style="color: {{ design.settings.w1.s9 }}"{% endif %}>&#9679;</span>#}
-            {#                        <a href="javascript:void(0);" class="{% if profile.Username == user.Username %}disabled {% endif %}btn-link font-weight-bold window1profileSocialOptionsFont" style="{% if design.settings.w1.s9 is defined and design.settings.w1.s9 is not null%}color: {{ design.settings.w1.s9 }};{% endif %} {% if design.settings.w1.c5 is defined and design.settings.w1.c5 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">Connect</a>#}
-            {#                    </div>#}
-            {#                </div>#}
-            {#            </div>#}
-            {#        </div>#}
-
-            {#    </div>#}
-            <!-- CENTER -->
-            <!--PROFILE-->
-            <div class="col-6 order-2 tab-content">
-
-                {% include 'smartadmin/profile/social.html.twig' %}
-
-                <!-- SETTINGS --->
-
-                {% include 'smartadmin/profile/settings.html.twig' %}
+                {#                        <li class="nav-item"><a class="nav-link{% if tab == 'apperance' %} active{% endif %} rounded" data-toggle="pill" href="#apperance" style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Apperance</span></a></li>#}
+                {#                    </ul>#}
+                {#                </div>#}
+                {#            </div>#}
+                {#        </div>#}
+                {#        {% endif %}#}
+                {#        <!-- profile summary -->#}
+                {#        <!--- instead ofthis bottom one --->#}
+                {#        <div class="position-sticky" style="top: 30px">#}
+                {#        <div class="card mb-g {% if profile.Username != user.Username %}composed-top{% endif %}" id="window1profile" {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>#}
+                {#            <div class="row no-gutters row-grid">#}
+                {#                <div class="col-12">#}
+                {#                    <div class="d-flex flex-column align-items-center justify-content-center position-relative" style="padding: 1.7vw">#}
+                {#                        {% if profile.Username == user.Username %}#}
+                {#                        <div class="position-absolute m-0 p-0" style="right: 0px; top: 0px"><a class="btn btn-icon" data-toggle="modal" data-target="#profile1"><i class="fal fa-flower-tulip"></i></a></div>#}
+                {#                        {% endif %}#}
+                {#                        <img src="{{ asset('upload/avatars/'~profile.Username~'/'~profile.AvatarFileName)|imagine_filter('my_thumb_lg') }}" class="mine-avatar rounded-circle shadow-2 img-thumbnail image-width" alt="">#}
+                {#                        <h5 class="mb-0 fw-700 text-center mt-3 w-font" id="window1profileUsername" style="{% if design.settings.w1.s2 is defined and design.settings.w1.s2 is not null %}color: {{ design.settings.w1.s2 }};{% endif %} {% if design.settings.w1.c1 is defined and design.settings.w1.c1 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">#}
+                {#                            {{ profile.username }}#}
+                {#                        </h5>#}
+                {#                        <h5 class="mb-0 fw-100 text-center mt-0 w-font" id="window1profileName" style="{% if design.settings.w1.s3 is defined and design.settings.w1.s3 is not null%}color: {{ design.settings.w1.s3 }};{% endif %} {% if design.settings.w1.c2 is defined and design.settings.w1.c2 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">#}
+                {#                        #}{# TODO: zrobic wyswietlanie imienia i nazwiska zamiast username w opcjach strony #}
+                {#                            {{ profile.firstName }} {{ profile.lastName }}#}
+                {#                            </h5>#}
+                {#                        <h5 class="mb-0 fw-700 text-center mt-3"> #}
+                {#                            <small class="text-muted mb-0">#}{# zrobic wyszukiwanie miasta w panstwie na swiecie jakas wyszukiwarka czy cos z opcji i prawdziwych miast#}
+                {#                                {% if profile.city is defined %}#}
+                {#                                    {{ profile.city }}#}
+                {#                                {% endif %}#}
 
 
-                <!-- APPERANCE --->
+                {#                                #}{##}
+                {#                                <?php#}
 
-                {% include 'smartadmin/profile/apperance.html.twig' %}
+                {#    													if($row['miasto']!=="NULL"){echo $row['miasto'].", ";}#}
+                {#														if($panstwo!==NULL){echo $panstwo->get();}#}
+                {#                                if($row['miasto'] == NULL && $panstwo == NULL)#}
+                {#                                {#}
+                {#                                echo "World Citizen";#}
+                {#                                }#}
+                {#                                ?>#}
 
-            </div>
+                {#                                #}{#</small>#}
+                {#                        </h5>#}
+                {#                                    {% if profile.facebook != '' or profile.twitter != '' or profile.linkedin != '' or profile.reddit != '' or profile.skype != '' or profile.flickr != '' or profile.instagram != '' or profile.youtube != '' %}#}
+                {#                                    <div class="mt-4 text-center demo pl-2" style="background-color: white; border-radius: 10px;">#}
+                {#                                        {% if profile.facebook != '' %}#}
+                {#                                        <a href="https://www.facebook.com/{{ profile.facebook }}/" class="mr-1  fs-xl" style="color:#3b5998"><i class="fab fa-facebook-square"></i></a>#}
+                {#                                        {% endif %}#}
+                {#                                        {% if profile.twitter  %}#}
+                {#                                        <a href="https://twitter.com/{{ profile.twitter }}" class="mr-1 fs-xl" style="color:#38A1F3"><i class="fab fa-twitter-square"></i></a>#}
+                {#                                        {% endif %}#}
+                {#                                        {% if profile.linkedin != '' %}#}
+                {#                                        <a href="https://www.linkedin.com/in/{{ profile.linkedin }}/" class="mr-1 fs-xl" style="color:#0077B5"><i class="fab fa-linkedin"></i></a>#}
+                {#                                        {% endif %}#}
+                {#                                        {% if profile.reddit != '' %}#}
+                {#                                        <a href="https://www.reddit.com/user/{{ profile.reddit }}/;" class="fs-xl" style="color:#000000"><i class="fab fa-reddit-alien"></i></a>#}
+                {#                                        {% endif %}#}
+                {#                                        {% if profile.skype != '' %}#}
+                {#                                        <a href="skype:{{ profile.skype }}?chat" class="fs-xl" style="color:#00AFF0"><i class="fab fa-skype"></i></a>#}
+                {#                                        {% endif %}#}
+                {#                                        {% if profile.flickr != '' %}#}
+                {#                                        <a href="https://www.flickr.com/photos/{{ profile.flickr }}" class="fs-xl" style="color:#0063DC"><i class="fab fa-flickr"></i></a>#}
+                {#                                        {% endif %}#}
+                {#                                        {% if profile.instagram != '' %}#}
+                {#                                        <a href="https://www.instagram.com/{{ profile.instagram }}" class="fs-xl" style="color: #833ab4"><i class="fab fa-instagram"></i></a>#}
+                {#                                        {% endif %}#}
+                {#                                        {% if profile.youtube != '' %}#}
+                {#                                        <a href="https://www.youtube.com/channel/{{ profile.youtube }}" class="fs-xl" style="color: #c4302b"><i class="fab fa-youtube-square"></i></a>#}
+                {#                                        {% endif %}#}
+                {#                                    </div>#}
+                {#                                    {% endif %}#}
+                {#                    </div>#}
+                {#                </div>#}
+                {#                <div class="col-6">#}
+                {#                    <div class="text-center" id="window1profileConnections" style="padding-top: 1vw; padding-bottom: 1vw; {% if design.settings.w1.s4 is defined and design.settings.w1.s4 is not null %}background-color: {{ design.settings.w1.s4 }};{% endif %}{% if design.settings.w1.s6 is defined and design.settings.w1.s6 is not null %}color: {{ design.settings.w1.s6 }};{% endif %}#}
+                {#                            {% if design.settings.w1.c3 is defined and design.settings.w1.c3 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">#}
+                {#                        <h5 class="mb-0 fw-700 w-font-small-3">#}
+                {#                            {{ Contacts|length }}#}
+                {#                            <small class="mb-0 w-font-small-3">Connections</small>#}
+                {#                        </h5>#}
+                {#                    </div>#}
+                {#                </div>#}
+                {#                <div class="col-6">#}
+                {#                    <div class="text-center" id="window1profileFollowers" style="padding-top: 1vw; padding-bottom: 1vw; {% if design.settings.w1.s5 is defined and design.settings.w1.s5 is not null %}background-color: {{ design.settings.w1.s5 }};{% endif %} {% if design.settings.w1.s7 is defined and design.settings.w1.s7 is not null %}color: {{ design.settings.w1.s7 }};{% endif %} {% if design.settings.w1.c4 is defined and design.settings.w1.c4 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">#}
+                {#                        <h5 class="mb-0 fw-700 w-font-small-3">#}
+                {#                            1,673#}
+                {#                            <small class="mb-0 w-font-small-3">Followers</small>#}
+                {#                        </h5>#}
+                {#                    </div>#}
+                {#                </div>#}
+                {#                <div class="col-12">#}
+                {#                    <div class="text-center rounded-bottom w-font-smaller-2" id="window1profileSocialOptions" style="padding: 0.5vw; {% if design.settings.w1.s8 is defined and design.settings.w1.s8 is not null %}background-color: {{ design.settings.w1.s8 }}{% endif %}">#}
+                {#                        <a href="javascript:void(0);" class="{% if profile.Username == user.Username %}disabled {% endif %}btn-link font-weight-bold window1profileSocialOptionsFont" style="{% if design.settings.w1.s9 is defined and design.settings.w1.s9 is not null%}color: {{ design.settings.w1.s9 }};{% endif %} {% if design.settings.w1.c5 is defined and design.settings.w1.c5 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">Follow</a> <span class="d-inline-block window1profileSocialOptionsFont mx-2vw" {% if design.settings.w1.s9 is defined and design.settings.w1.s9 is not null%}style="color: {{ design.settings.w1.s9 }}"{% endif %}>&#9679;</span>#}
+                {#                        <a href="javascript:void(0);" class="{% if profile.Username == user.Username %}disabled {% endif %}btn-link font-weight-bold window1profileSocialOptionsFont" style="{% if design.settings.w1.s9 is defined and design.settings.w1.s9 is not null%}color: {{ design.settings.w1.s9 }};{% endif %} {% if design.settings.w1.c5 is defined and design.settings.w1.c5 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">Message</a> <span class="d-inline-block window1profileSocialOptionsFont mx-2vw" {% if design.settings.w1.s9 is defined and design.settings.w1.s9 is not null%}style="color: {{ design.settings.w1.s9 }}"{% endif %}>&#9679;</span>#}
+                {#                        <a href="javascript:void(0);" class="{% if profile.Username == user.Username %}disabled {% endif %}btn-link font-weight-bold window1profileSocialOptionsFont" style="{% if design.settings.w1.s9 is defined and design.settings.w1.s9 is not null%}color: {{ design.settings.w1.s9 }};{% endif %} {% if design.settings.w1.c5 is defined and design.settings.w1.c5 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">Connect</a>#}
+                {#                    </div>#}
+                {#                </div>#}
+                {#            </div>#}
+                {#        </div>#}
+
+                {#    </div>#}
+                <!-- CENTER -->
+                <!--PROFILE-->
+                <div class="col-6 order-2 tab-content">
+
+                    {% include 'smartadmin/profile/social.html.twig' %}
+
+                    <!-- SETTINGS --->
+
+                    {% include 'smartadmin/profile/settings.html.twig' %}
 
 
-            <div class="order-1 col-3">
+                    <!-- APPERANCE --->
 
-                {% if profile.Username == user.Username %}
-                    <div class="card mb-2 hidden-md-down">
-                        <div class="card-body py-1" style="color: white">
-                            <div class="row">
-                                <div class="col-12 rounded-top py-1" style="background: rgba(255,0,0, 0.8);">
-                                    Wallet:
+                    {% include 'smartadmin/profile/apperance.html.twig' %}
+
+                </div>
+
+
+                <div class="order-1 col-3">
+
+                    {% if profile.Username == user.Username %}
+                        <div class="card mb-2 hidden-md-down">
+                            <div class="card-body py-1" style="color: white">
+                                <div class="row">
+                                    <div class="col-12 rounded-top py-1" style="background: rgba(255,0,0, 0.8);">
+                                        Wallet:
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 rounded-bottom py-1" style="background: rgba(8,30,255, 0.8);">
-                                    Extra money:
+                                <div class="row">
+                                    <div class="col-12 rounded-bottom py-1" style="background: rgba(8,30,255, 0.8);">
+                                        Extra money:
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card mb-2" id="window1profile-menu"
-                         {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>
-                        <div class="card-body" style="padding: 0.2vw">
-                            <div class="hidden-xs-down">
-                                <ul class="nav nav-pills nav-justified" role="tablist">
-                                    <script>
-                                        let nav_page = true;
-                                    </script>
-                                    <li class="nav-item"><a
-                                                class="nav-link{% if tab == 'profile' %} active{% endif %} rounded"
-                                                data-toggle="pill" href="#profile" onclick="nav_page=true"
-                                                style="padding: 0.32vw 0.97vw"><span
-                                                    class="w-font-smaller-2">Profile</span></a></li>
-                                    <li class="nav-item"><a
-                                                class="nav-link{% if tab == 'settings' %} active{% endif %} rounded"
-                                                data-toggle="pill" href="#settings" onclick="nav_page=false"
-                                                style="padding: 0.32vw 0.97vw"><span
-                                                    class="w-font-smaller-2">Settings</span></a></li>
-                                    <li class="nav-item"><a
-                                                class="nav-link{% if tab == 'apperance' %} active{% endif %} rounded"
-                                                data-toggle="pill" href="#apperance" onclick="nav_page=false"
-                                                style="padding: 0.32vw 0.97vw"><span
-                                                    class="w-font-smaller-2">Apperance</span></a></li>
-                                </ul>
+                        <div class="card mb-2" id="window1profile-menu"
+                             {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>
+                            <div class="card-body" style="padding: 0.2vw">
+                                <div class="hidden-xs-down">
+                                    <ul class="nav nav-pills nav-justified" role="tablist">
+                                        <script>
+                                            let nav_page = true;
+                                        </script>
+                                        <li class="nav-item"><a
+                                                    class="nav-link{% if tab == 'profile' %} active{% endif %} rounded"
+                                                    data-toggle="pill" href="#profile" onclick="nav_page=true"
+                                                    style="padding: 0.32vw 0.97vw"><span
+                                                        class="w-font-smaller-2">Profile</span></a></li>
+                                        <li class="nav-item"><a
+                                                    class="nav-link{% if tab == 'settings' %} active{% endif %} rounded"
+                                                    data-toggle="pill" href="#settings" onclick="nav_page=false"
+                                                    style="padding: 0.32vw 0.97vw"><span
+                                                        class="w-font-smaller-2">Settings</span></a></li>
+                                        <li class="nav-item"><a
+                                                    class="nav-link{% if tab == 'apperance' %} active{% endif %} rounded"
+                                                    data-toggle="pill" href="#apperance" onclick="nav_page=false"
+                                                    style="padding: 0.32vw 0.97vw"><span
+                                                        class="w-font-smaller-2">Apperance</span></a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
+                    {% endif %}
+                    {#                {% if forum == true %}#}
+                    {#                    <div class="card mb-2" id="window1profile-menu"#}
+                    {#                         {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>#}
+                    {#                        <div class="card-body" style="padding: 0.2vw">#}
+                    {#                            <div class="hidden-xs-down justify-content-end">#}
+                    {#                                <a class="btn btn-outline-primary rounded w-100"#}
+                    {#                                   href="{{ path('user_forum', {'': profile.Username}) }}"#}
+                    {#                                   style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Forum</span></a>#}
+                    {#                            </div>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
+                    {#                {% elseif forum != true and profile.Username == user.Username %}#}
+                    {#                    <div class="card mb-2" id="window1profile-menu"#}
+                    {#                         {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>#}
+                    {#                        <div class="card-body" style="padding: 0.2vw">#}
+                    {#                            <div class="hidden-xs-down justify-content-end">#}
+                    {#                                <a class="btn btn-outline-primary rounded w-100"#}
+                    {#                                   href="{{ path('create_forum', {'user': user.Username}) }}"#}
+                    {#                                   style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Create Forum</span></a>#}
+                    {#                            </div>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
+                    {#                {% endif %}#}
+                    {#                {% if profile.gallery %}#}
+                    {#                    <div class="card mb-2" id="window1profile-menu"#}
+                    {#                         {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>#}
+                    {#                        <div class="card-body" style="padding: 0.2vw">#}
+                    {#                            <div class="hidden-xs-down justify-content-end">#}
+                    {#                                <a class="btn btn-outline-primary rounded w-100"#}
+                    {#                                   href="{{ path('app_gallery', {'profile': profile.Username}) }}"#}
+                    {#                                   style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Gallery</span></a>#}
+                    {#                            </div>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
+                    {#                {% endif %}#}
+
+                    <!-- photos -->
+
+                    {% if profile.gallery is not null %}
+                        <div class="card mb-g position-relative rounded-bottom-0" id="photos"
+                             style="{% if design.settings.w2.s1 is defined and design.settings.w2.s1 is not null%}background-color: {{ design.settings.w2.s1 }};{% endif %}">
+                            <div class="row row-grid no-gutters rounded-bottom-0" style="padding-bottom: 0px">
+                                {#                            <div class="col-12">#}
+
+                                {#                                <!--- color change --->#}
+                                {#                                {% if profile.Username == user.Username %}#}
+                                {#                                    <div class="position-absolute m-0 p-0" style="right: 0px; top: 0px">#}
+                                {#                                        <button class="btn btn-icon" data-toggle="modal" data-target="#photos2"><i#}
+                                {#                                                    class="fal fa-flower-tulip"></i></button>#}
+                                {#                                    </div>#}
+                                {#                                {% endif %}#}
+
+                                {#                                <!--- end of color change --->#}
+                                {#                                <div class="p-3"#}
+                                {#                                     style="{% if design.settings.w2.c1 is defined and design.settings.w2.c1 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">#}
+                                {#                                    <h2 class="mb-0 w-font" id="photosFont"#}
+                                {#                                        style="{% if design.settings.w2.s2 is defined and design.settings.w2.s2 is not null%}color: {{ design.settings.w2.s2 }};{% endif %}">#}
+                                {#                                        Photos#}
+                                {#                                    </h2>#}
+                                {#                                </div>#}
+                                {#                            </div>#}
+                                <div class="col-12">
+                                    <div class="p-1 text-center rounded-bottom" id="photosBottom"
+                                         style="{% if design.settings.w2.s3 is defined and design.settings.w2.s3 is not null%}background-color: {{ design.settings.w2.s3 }};{% endif %}">
+                                        {#                                    <a href="gallery/" id="photosBottomLinkColor"#}
+                                        {#                                       class="btn-link font-weight-bold w-font-small-2"#}
+                                        {#                                       style="{% if design.settings.w2.s4 is defined and design.settings.w2.s4 is not null%}color: {{ design.settings.w2.s4 }};{% endif %} {% if design.settings.w2.c2 is defined and design.settings.w2.c2 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">View#}
+                                        {#                                        all</a>#}
+                                        <a class="btn btn-outline-primary rounded w-100"
+                                           href="{{ path('app_gallery', {'profile': profile.Username}) }}"
+                                           style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Gallery</span></a>
+                                    </div>
+                                </div>
+                                <div id="profileMiniGallery" class="w-100" style="max-height: 600px">
+                                    {% for photo in gallery|slice(0,9) %}
+                                        <a class="" href="{{ asset('/'~profile.Username~'/gallery#lg=1&slide='~loop.index0) }}">
+                                            <img class="img-responsive" src="{{ asset('upload/gallery/'~profile.Username~'/'~photo.FileName)|imagine_filter('gallery_thumb') }}" style="border-radius: 5px">
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- add : -->
+                    <div class="card mb-2">
+                        <div class="card-body position-relative" style="padding: 1vw">
+                            <div class="position-absolute m-1 p-0" style="right: 0; top: 0"><i
+                                        class="fal fa-flower-tulip"></i></div>
+                            <a href="javascript:void(0);" class="d-flex flex-row align-items-center w-font-small-2">
+                                <div class='' style="vertical-align: middle">
+                                    <i class="fas fa-graduation-cap opacity-100 color-primary-500"
+                                       style="font-size: 2.5vw;"></i>
+                                </div>
+                                <div class="" style="padding-left: 1vw">
+                                    <strong>
+                                        Add Qualifications
+                                    </strong>
+                                    <br>
+                                    Adding qualifications will help gain more clients
+                                </div>
+                            </a>
+                        </div>
                     </div>
-                {% endif %}
-{#                {% if forum == true %}#}
-{#                    <div class="card mb-2" id="window1profile-menu"#}
-{#                         {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>#}
-{#                        <div class="card-body" style="padding: 0.2vw">#}
-{#                            <div class="hidden-xs-down justify-content-end">#}
-{#                                <a class="btn btn-outline-primary rounded w-100"#}
-{#                                   href="{{ path('user_forum', {'': profile.Username}) }}"#}
-{#                                   style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Forum</span></a>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                {% elseif forum != true and profile.Username == user.Username %}#}
-{#                    <div class="card mb-2" id="window1profile-menu"#}
-{#                         {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>#}
-{#                        <div class="card-body" style="padding: 0.2vw">#}
-{#                            <div class="hidden-xs-down justify-content-end">#}
-{#                                <a class="btn btn-outline-primary rounded w-100"#}
-{#                                   href="{{ path('create_forum', {'user': user.Username}) }}"#}
-{#                                   style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Create Forum</span></a>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                {% endif %}#}
-{#                {% if profile.gallery %}#}
-{#                    <div class="card mb-2" id="window1profile-menu"#}
-{#                         {% if design.settings.w1.s1 is defined and design.settings.w1.s1 is not null %}style="background-color: {{ design.settings.w1.s1 }}"{% endif %}>#}
-{#                        <div class="card-body" style="padding: 0.2vw">#}
-{#                            <div class="hidden-xs-down justify-content-end">#}
-{#                                <a class="btn btn-outline-primary rounded w-100"#}
-{#                                   href="{{ path('app_gallery', {'profile': profile.Username}) }}"#}
-{#                                   style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Gallery</span></a>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                {% endif %}#}
+                    <div class="card mb-g">
+                        <div class="card-body position-relative" style="padding: 1vw">
+                            <div class="position-absolute m-1 p-0" style="right: 0px; top: 0px"><i
+                                        class="fal fa-flower-tulip"></i></div>
+                            <a href="javascript:void(0);" class="d-flex flex-row align-items-center w-font-small-2">
+                                <div class='' style="vertical-align: middle">
+                                    <i class="fas fa-handshake opacity-100 color-warning-500" style="font-size: 2.5vw"></i>
+                                </div>
+                                <div class="" style="padding-left: 1vw">
+                                    <strong>
+                                        Add Skills
+                                    </strong>
+                                    <br>
+                                    Gain more potential clients by adding skills
+                                </div>
+                            </a>
+                        </div>
+                    </div>
 
-                <!-- photos -->
-
-                {% if profile.gallery is not null %}
-                    <div class="card mb-g position-relative rounded-bottom-0" id="photos"
-                         style="{% if design.settings.w2.s1 is defined and design.settings.w2.s1 is not null%}background-color: {{ design.settings.w2.s1 }};{% endif %}">
-                        <div class="row row-grid no-gutters rounded-bottom-0" style="padding-bottom: 0px">
-{#                            <div class="col-12">#}
-
-{#                                <!--- color change --->#}
-{#                                {% if profile.Username == user.Username %}#}
-{#                                    <div class="position-absolute m-0 p-0" style="right: 0px; top: 0px">#}
-{#                                        <button class="btn btn-icon" data-toggle="modal" data-target="#photos2"><i#}
-{#                                                    class="fal fa-flower-tulip"></i></button>#}
-{#                                    </div>#}
-{#                                {% endif %}#}
-
-{#                                <!--- end of color change --->#}
-{#                                <div class="p-3"#}
-{#                                     style="{% if design.settings.w2.c1 is defined and design.settings.w2.c1 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">#}
-{#                                    <h2 class="mb-0 w-font" id="photosFont"#}
-{#                                        style="{% if design.settings.w2.s2 is defined and design.settings.w2.s2 is not null%}color: {{ design.settings.w2.s2 }};{% endif %}">#}
-{#                                        Photos#}
-{#                                    </h2>#}
-{#                                </div>#}
-{#                            </div>#}
+                    <!-- contacts -->
+                    <div class="card mb-g" id="ContactWindow"
+                         style="{% if design.settings.w3.s1 is defined and design.settings.w3.s1 is not null%}background-color: {{ design.settings.w3.s1 }};{% endif %}">
+                        <div class="row row-grid no-gutters position-relative">
                             <div class="col-12">
-                                <div class="p-1 text-center rounded-bottom" id="photosBottom"
-                                     style="{% if design.settings.w2.s3 is defined and design.settings.w2.s3 is not null%}background-color: {{ design.settings.w2.s3 }};{% endif %}">
-                                    {#                                    <a href="gallery/" id="photosBottomLinkColor"#}
-                                    {#                                       class="btn-link font-weight-bold w-font-small-2"#}
-                                    {#                                       style="{% if design.settings.w2.s4 is defined and design.settings.w2.s4 is not null%}color: {{ design.settings.w2.s4 }};{% endif %} {% if design.settings.w2.c2 is defined and design.settings.w2.c2 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">View#}
-                                    {#                                        all</a>#}
-                                    <a class="btn btn-outline-primary rounded w-100"
-                                       href="{{ path('app_gallery', {'profile': profile.Username}) }}"
-                                       style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Gallery</span></a>
+                                <!--- color change --->
+                                {% if profile.Username == user.Username %}
+                                    <div class="position-absolute m-0 p-0" style="right: 0px; top: 0px">
+                                        <button class="btn btn-icon" data-toggle="modal" data-target="#ContactWindowModal">
+                                            <i class="fal fa-flower-tulip"></i></button>
+                                    </div>
+                                {% endif %}
+
+                                <!--- end of color change --->
+
+                                <div class="" id="ContactWindowFontColor"
+                                     style="padding: 1vw; {% if design.settings.w3.c1 is defined and design.settings.w3.c1 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">
+                                    <h2 class="mb-0 w-font"
+                                        style="{% if design.settings.w3.s2 is defined and design.settings.w3.s2 is not null%}color: {{ design.settings.w3.s2 }};{% endif %}">
+                                        Contacts
+                                    </h2>
                                 </div>
                             </div>
-                            <div id="profileMiniGallery" class="w-100" style="max-height: 600px">
-                            {% for photo in gallery|slice(0,9) %}
-                                <a class="" href="{{ asset('/'~profile.Username~'/gallery#lg=1&slide='~loop.index0) }}">
-                                    <img class="img-responsive" src="{{ asset('upload/gallery/'~profile.Username~'/'~photo.FileName)|imagine_filter('gallery_thumb') }}" style="border-radius: 5px">
-                                </a>
-                            {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-
-                <!-- add : -->
-                <div class="card mb-2">
-                    <div class="card-body position-relative" style="padding: 1vw">
-                        <div class="position-absolute m-1 p-0" style="right: 0; top: 0"><i
-                                    class="fal fa-flower-tulip"></i></div>
-                        <a href="javascript:void(0);" class="d-flex flex-row align-items-center w-font-small-2">
-                            <div class='' style="vertical-align: middle">
-                                <i class="fas fa-graduation-cap opacity-100 color-primary-500"
-                                   style="font-size: 2.5vw;"></i>
-                            </div>
-                            <div class="" style="padding-left: 1vw">
-                                <strong>
-                                    Add Qualifications
-                                </strong>
-                                <br>
-                                Adding qualifications will help gain more clients
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="card mb-g">
-                    <div class="card-body position-relative" style="padding: 1vw">
-                        <div class="position-absolute m-1 p-0" style="right: 0px; top: 0px"><i
-                                    class="fal fa-flower-tulip"></i></div>
-                        <a href="javascript:void(0);" class="d-flex flex-row align-items-center w-font-small-2">
-                            <div class='' style="vertical-align: middle">
-                                <i class="fas fa-handshake opacity-100 color-warning-500" style="font-size: 2.5vw"></i>
-                            </div>
-                            <div class="" style="padding-left: 1vw">
-                                <strong>
-                                    Add Skills
-                                </strong>
-                                <br>
-                                Gain more potential clients by adding skills
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- contacts -->
-                <div class="card mb-g" id="ContactWindow"
-                     style="{% if design.settings.w3.s1 is defined and design.settings.w3.s1 is not null%}background-color: {{ design.settings.w3.s1 }};{% endif %}">
-                    <div class="row row-grid no-gutters position-relative">
-                        <div class="col-12">
-                            <!--- color change --->
-                            {% if profile.Username == user.Username %}
-                                <div class="position-absolute m-0 p-0" style="right: 0px; top: 0px">
-                                    <button class="btn btn-icon" data-toggle="modal" data-target="#ContactWindowModal">
-                                        <i class="fal fa-flower-tulip"></i></button>
-                                </div>
-                            {% endif %}
-
-                            <!--- end of color change --->
-
-                            <div class="" id="ContactWindowFontColor"
-                                 style="padding: 1vw; {% if design.settings.w3.c1 is defined and design.settings.w3.c1 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">
-                                <h2 class="mb-0 w-font"
-                                    style="{% if design.settings.w3.s2 is defined and design.settings.w3.s2 is not null%}color: {{ design.settings.w3.s2 }};{% endif %}">
-                                    Contacts
-                                </h2>
-                            </div>
-                        </div>
-                        {% if Contacts is not null %}
-                        {% for contact in Contacts %}
-                            <div class="col-4">
-                                <a href="{{ path('app_profile', {'profile':contact.username}) }}"
-                                   class="text-center p-3 d-flex flex-column hover-highlight"
-                                   data-toggle="tooltip" data-placement="top" title="{{ contact.firstName }} {{ contact.lastName }}">
+                            {% if Contacts is not null %}
+                                {% for contact in Contacts %}
+                                    <div class="col-4">
+                                        <a href="{{ path('app_profile', {'profile':contact.username}) }}"
+                                           class="text-center p-3 d-flex flex-column hover-highlight"
+                                           data-toggle="tooltip" data-placement="top" title="{{ contact.firstName }} {{ contact.lastName }}">
                                     <span class="profile-image rounded-circle d-block m-auto"
                                           style="background-image:url('{{ asset('upload/avatars/'~contact.username~'/'~contact.avatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
-                                    <span class="d-block text-truncate text-muted w-font-smaller-2 mt-1"> {{ contact.username }} </span>
-                                </a>
-                            </div>
-                        {% endfor %}
-                        {% else %}
-                        <div class="col-12 text-center">
-                            <h1 class="text-black-50 fs-xxl fw-700">Empty</h1>
-                        </div>
-                        {% endif %}
-                        <div class="col-12">
-                            <div class="text-center rounded-bottom" id="ContactWindowLowBackGround"
-                                 style="padding: 1vw; {% if design.settings.w3.s3 is defined and design.settings.w3.s3 is not null%}background-color: {{ design.settings.w3.s3 }};{% endif %}">
-                                <a href="javascript:void(0);" id="ContactWindowLowFontColor"
-                                   class="w-font-small-2 btn-link font-weight-bold"
-                                   style="{% if design.settings.w3.s4 is defined and design.settings.w3.s4 is not null%}color: {{ design.settings.w3.s4 }};{% endif %} {% if design.settings.w3.c2 is defined and design.settings.w3.c2 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">View
-                                    all</a>
+                                            <span class="d-block text-truncate text-muted w-font-smaller-2 mt-1"> {{ contact.username }} </span>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="col-12 text-center">
+                                    <h1 class="text-black-50 fs-xxl fw-700">Empty</h1>
+                                </div>
+                            {% endif %}
+                            <div class="col-12">
+                                <div class="text-center rounded-bottom" id="ContactWindowLowBackGround"
+                                     style="padding: 1vw; {% if design.settings.w3.s3 is defined and design.settings.w3.s3 is not null%}background-color: {{ design.settings.w3.s3 }};{% endif %}">
+                                    <a href="javascript:void(0);" id="ContactWindowLowFontColor"
+                                       class="w-font-small-2 btn-link font-weight-bold"
+                                       style="{% if design.settings.w3.s4 is defined and design.settings.w3.s4 is not null%}color: {{ design.settings.w3.s4 }};{% endif %} {% if design.settings.w3.c2 is defined and design.settings.w3.c2 == "on" %}text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000000;{% endif %}">View
+                                        all</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            {#        3#}
-            <div class="col-3 order-3">
+                {#        3#}
+                <div class="col-3 order-3">
 
-                <!-- rating -->
-                <div class="card mb-g composed-right">
-                    <div class="row row-grid no-gutters position-relative">
-                        <div class="position-absolute m-1 p-0" style="right: 0px; top: 0px"><i
-                                    class="fal fa-flower-tulip"></i></div>
-                        <div class="col-12">
-                            <div class="" style="padding: 1.05vw">
-                                <h2 class="mb-0 w-font">
-                                    Dr. Codex Lantern's Rating
-                                </h2>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="d-flex text-primary align-items-center w-font" style="padding: 1vw">
-                                <i class="fas fa-star mr-1"></i>
-                                <i class="fas fa-star mr-1"></i>
-                                <i class="fas fa-star mr-1"></i>
-                                <i class="fas fa-star mr-1"></i>
-                                <i class="fal fa-star mr-1"></i>
-                                <span class="ml-auto">4/5 Stars</span>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="" style="padding: 1vw">
-                                <div class="fw-500 w-font-small">Staff</div>
-                                <div class="progress progress-xs mt-2">
-                                    <div class="progress-bar bg-primary-300 bg-primary-gradient" role="progressbar"
-                                         style="width: 80%" aria-valuenow="80" aria-valuemin="0"
-                                         aria-valuemax="100"></div>
+                    <!-- rating -->
+                    <div class="card mb-g composed-right">
+                        <div class="row row-grid no-gutters position-relative">
+                            <div class="position-absolute m-1 p-0" style="right: 0px; top: 0px"><i
+                                        class="fal fa-flower-tulip"></i></div>
+                            <div class="col-12">
+                                <div class="" style="padding: 1.05vw">
+                                    <h2 class="mb-0 w-font">
+                                        Dr. Codex Lantern's Rating
+                                    </h2>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12">
-                            <div class=" " style="padding: 1vw">
-                                <div class="fw-500 w-font-small">Punctuality</div>
-                                <div class="progress progress-xs mt-2">
-                                    <div class="progress-bar bg-primary-300 bg-primary-gradient" role="progressbar"
-                                         style="width: 100%" aria-valuenow="100" aria-valuemin="0"
-                                         aria-valuemax="100"></div>
+                            <div class="col-12">
+                                <div class="d-flex text-primary align-items-center w-font" style="padding: 1vw">
+                                    <i class="fas fa-star mr-1"></i>
+                                    <i class="fas fa-star mr-1"></i>
+                                    <i class="fas fa-star mr-1"></i>
+                                    <i class="fas fa-star mr-1"></i>
+                                    <i class="fal fa-star mr-1"></i>
+                                    <span class="ml-auto">4/5 Stars</span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="" style="padding: 1vw">
-                                <div class="fw-500 w-font-small">Helpfulness</div>
-                                <div class="progress progress-xs mt-2">
-                                    <div class="progress-bar bg-primary-300 bg-primary-gradient" role="progressbar"
-                                         style="width: 75%" aria-valuenow="75" aria-valuemin="0"
-                                         aria-valuemax="100"></div>
+                            <div class="col-12">
+                                <div class="" style="padding: 1vw">
+                                    <div class="fw-500 w-font-small">Staff</div>
+                                    <div class="progress progress-xs mt-2">
+                                        <div class="progress-bar bg-primary-300 bg-primary-gradient" role="progressbar"
+                                             style="width: 80%" aria-valuenow="80" aria-valuemin="0"
+                                             aria-valuemax="100"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="" style="padding: 1vw">
-                                <div class="fw-500 w-font-small">Knowledge</div>
-                                <div class="progress progress-xs mt-2">
-                                    <div class="progress-bar bg-primary-300 bg-primary-gradient" role="progressbar"
-                                         style="width: 95%" aria-valuenow="95" aria-valuemin="0"
-                                         aria-valuemax="100"></div>
+                            <div class="col-12">
+                                <div class=" " style="padding: 1vw">
+                                    <div class="fw-500 w-font-small">Punctuality</div>
+                                    <div class="progress progress-xs mt-2">
+                                        <div class="progress-bar bg-primary-300 bg-primary-gradient" role="progressbar"
+                                             style="width: 100%" aria-valuenow="100" aria-valuemin="0"
+                                             aria-valuemax="100"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="" style="padding: 1vw">
-                                <div class="fw-500 w-font-small">Bedside manners</div>
-                                <div class="progress progress-xs mt-2">
-                                    <div class="progress-bar bg-danger-300 bg-warning-gradient" role="progressbar"
-                                         style="width: 30%" aria-valuenow="30" aria-valuemin="0"
-                                         aria-valuemax="100"></div>
+                            <div class="col-12">
+                                <div class="" style="padding: 1vw">
+                                    <div class="fw-500 w-font-small">Helpfulness</div>
+                                    <div class="progress progress-xs mt-2">
+                                        <div class="progress-bar bg-primary-300 bg-primary-gradient" role="progressbar"
+                                             style="width: 75%" aria-valuenow="75" aria-valuemin="0"
+                                             aria-valuemax="100"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12">
-                            <div class=" text-center" style="padding: 1vw">
-                                <a href="javascript:void(0);" class="btn-link font-weight-bold w-font-small-2">View
-                                    all</a>
+                            <div class="col-12">
+                                <div class="" style="padding: 1vw">
+                                    <div class="fw-500 w-font-small">Knowledge</div>
+                                    <div class="progress progress-xs mt-2">
+                                        <div class="progress-bar bg-primary-300 bg-primary-gradient" role="progressbar"
+                                             style="width: 95%" aria-valuenow="95" aria-valuemin="0"
+                                             aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="" style="padding: 1vw">
+                                    <div class="fw-500 w-font-small">Bedside manners</div>
+                                    <div class="progress progress-xs mt-2">
+                                        <div class="progress-bar bg-danger-300 bg-warning-gradient" role="progressbar"
+                                             style="width: 30%" aria-valuenow="30" aria-valuemin="0"
+                                             aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class=" text-center" style="padding: 1vw">
+                                    <a href="javascript:void(0);" class="btn-link font-weight-bold w-font-small-2">View
+                                        all</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- skills -->
-                <div class="card mb-g composed-right">
-                    <div class="row row-grid no-gutters position-relative">
-                        <div class="position-absolute m-1 p-0" style="right: 0px; top: 0px"><i
-                                    class="fal fa-flower-tulip"></i></div>
-                        <div class="col-12">
-                            <div class=" " style="padding: 1vw">
-                                <h2 class="mb-0 w-font">
-                                    Current Project
-                                </h2>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class=" " style="padding: 1.05vw">
-                                <h5 class="text-danger w-font-small-3">
-                                    Xray improvement algorythm
-                                    <small class="mt-0 w-font-small-2 text-muted" style="margin-bottom: 1vw">
-                                        Migration of new API to local servers
-                                    </small>
-                                    <span class="badge badge-danger w-font position-absolute pos-top pos-right"
-                                          style="margin-top: 1vw; margin-right: 1vw;">Delayed</span>
-                                </h5>
-                                <div class="row w-font-small fw-300">
-                                    <div class="col text-left">
-                                        Progress
-                                    </div>
-                                    <div class="col text-right">
-                                        26%
-                                    </div>
+                    <!-- skills -->
+                    <div class="card mb-g composed-right">
+                        <div class="row row-grid no-gutters position-relative">
+                            <div class="position-absolute m-1 p-0" style="right: 0px; top: 0px"><i
+                                        class="fal fa-flower-tulip"></i></div>
+                            <div class="col-12">
+                                <div class=" " style="padding: 1vw">
+                                    <h2 class="mb-0 w-font">
+                                        Current Project
+                                    </h2>
                                 </div>
-                                <div class="progress progress-xs d-flex"
-                                     style="margin-top: 0.26vw; margin-bottom: 0.52vw">
+                            </div>
+                            <div class="col-12">
+                                <div class=" " style="padding: 1.05vw">
+                                    <h5 class="text-danger w-font-small-3">
+                                        Xray improvement algorythm
+                                        <small class="mt-0 w-font-small-2 text-muted" style="margin-bottom: 1vw">
+                                            Migration of new API to local servers
+                                        </small>
+                                        <span class="badge badge-danger w-font position-absolute pos-top pos-right"
+                                              style="margin-top: 1vw; margin-right: 1vw;">Delayed</span>
+                                    </h5>
+                                    <div class="row w-font-small fw-300">
+                                        <div class="col text-left">
+                                            Progress
+                                        </div>
+                                        <div class="col text-right">
+                                            26%
+                                        </div>
+                                    </div>
+                                    <div class="progress progress-xs d-flex"
+                                         style="margin-top: 0.26vw; margin-bottom: 0.52vw">
                                     <span class="progress-bar bg-danger-500 progress-bar-striped" role="progressbar"
                                           style="width: 26%" aria-valuenow="26" aria-valuemin="0"
                                           aria-valuemax="100"></span>
-                                </div>
-                                <div class="fw-300 w-font-small" style="margin-bottom: 1vw">
-                                    <div class="row">
-                                        <div class="col">
-                                            Budget
-                                        </div>
-                                        <div class="col text-right text-danger">
-                                            -$155,473.70
+                                    </div>
+                                    <div class="fw-300 w-font-small" style="margin-bottom: 1vw">
+                                        <div class="row">
+                                            <div class="col">
+                                                Budget
+                                            </div>
+                                            <div class="col text-right text-danger">
+                                                -$155,473.70
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="" style="padding: 1.05vw">
-                                <h5 class="w-font-small-3">
-                                    Radioactive Isotope Research
-                                    <small class="mt-0 w-font text-muted w-font-small-2" style="margin-bottom: 1.05vw">
-                                        Accelerator based methods of Technetium99m production – target preparation and
-                                        processing and beam monitoring technologies
-                                    </small>
-                                    <span class="badge badge-primary fw-n position-absolute pos-top pos-right"
-                                          style="margin-top: 1.04vw; margin-right: 1.04vw;">A</span>
-                                </h5>
-                                <div class="row w-font-small fw-300">
-                                    <div class="col text-left">
-                                        Progress
+                            <div class="col-12">
+                                <div class="" style="padding: 1.05vw">
+                                    <h5 class="w-font-small-3">
+                                        Radioactive Isotope Research
+                                        <small class="mt-0 w-font text-muted w-font-small-2" style="margin-bottom: 1.05vw">
+                                            Accelerator based methods of Technetium99m production – target preparation and
+                                            processing and beam monitoring technologies
+                                        </small>
+                                        <span class="badge badge-primary fw-n position-absolute pos-top pos-right"
+                                              style="margin-top: 1.04vw; margin-right: 1.04vw;">A</span>
+                                    </h5>
+                                    <div class="row w-font-small fw-300">
+                                        <div class="col text-left">
+                                            Progress
+                                        </div>
+                                        <div class="col text-right">
+                                            90%
+                                        </div>
                                     </div>
-                                    <div class="col text-right">
-                                        90%
-                                    </div>
-                                </div>
-                                <div class="progress progress-xs d-flex"
-                                     style="margin-top: 0.26vw; margin-bottom: 0.52vw">
+                                    <div class="progress progress-xs d-flex"
+                                         style="margin-top: 0.26vw; margin-bottom: 0.52vw">
                                     <span class="progress-bar bg-primary-500 progress-bar-striped" role="progressbar"
                                           style="width: 90%" aria-valuenow="90" aria-valuemin="0"
                                           aria-valuemax="100"></span>
-                                </div>
-                                <div class="fw-300 w-font-small mb-0">
-                                    <div class="row">
-                                        <div class="col">
-                                            Budget
-                                        </div>
-                                        <div class="col text-right">
-                                            $1,325,987.30
+                                    </div>
+                                    <div class="fw-300 w-font-small mb-0">
+                                        <div class="row">
+                                            <div class="col">
+                                                Budget
+                                            </div>
+                                            <div class="col text-right">
+                                                $1,325,987.30
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12">
-                            <div class=" text-center" style="padding: 1.05vw">
-                                <div class="text-left fw-400 ">
-                                    <div class="text-secondary w-font-small-2" style="margin-bottom: 0.26vw">Project
-                                        Owners
-                                    </div>
-                                    <div class="fs-sm d-flex align-items-center">
-                                        <a href="#" class="btn-m-s">
-                                            <img src="{{ asset('smartadmin/img/demo/avatars/avatar-a.png') }}"
-                                                 class="profile-image-sm rounded-circle"
-                                                 style="width: 1.6276vw; height: 1.6276vw;" alt="aa">
-                                        </a>
-                                        <a href="#" class="btn-m-s">
-                                            <img src="{{ asset('smartadmin/img/demo/avatars/avatar-a.png') }}"
-                                                 class="profile-image-sm rounded-circle"
-                                                 style="width: 1.6276vw; height: 1.6276vw;" alt="aa">
-                                        </a>
-                                        <a href="#" class="btn-m-s">
-                                            <img src="{{ asset('smartadmin/img/demo/avatars/avatar-a.png') }}"
-                                                 class="profile-image-sm rounded-circle"
-                                                 style="width: 1.6276vw; height: 1.6276vw;" alt="aa">
-                                        </a>
-                                        <a href="#" class="btn-m-s">
-                                            <img src="{{ asset('smartadmin/img/demo/avatars/avatar-a.png') }}"
-                                                 class="profile-image-sm rounded-circle"
-                                                 style="width: 1.6276vw; height: 1.6276vw;" alt="aa">
-                                        </a>
-                                        <a href="#" class="btn-m-s">
-                                            <img src="{{ asset('smartadmin/img/demo/avatars/avatar-a.png') }}"
-                                                 class="profile-image-sm rounded-circle"
-                                                 style="width: 1.6276vw; height: 1.6276vw;" alt="aa">
-                                        </a>
-                                        <a href="#" class="btn-m-s">
-                                            <img src="{{ asset('smartadmin/img/demo/avatars/avatar-a.png') }}"
-                                                 class="profile-image-sm rounded-circle"
-                                                 style="width: 1.6276vw; height: 1.6276vw;" alt="aa">
-                                        </a>
-                                        <a href="#" class="btn-m-s fs-xs">
+                            <div class="col-12">
+                                <div class=" text-center" style="padding: 1.05vw">
+                                    <div class="text-left fw-400 ">
+                                        <div class="text-secondary w-font-small-2" style="margin-bottom: 0.26vw">Project
+                                            Owners
+                                        </div>
+                                        <div class="fs-sm d-flex align-items-center">
+                                            <a href="#" class="btn-m-s">
+                                                <img src="{{ asset('smartadmin/img/demo/avatars/avatar-a.png') }}"
+                                                     class="profile-image-sm rounded-circle"
+                                                     style="width: 1.6276vw; height: 1.6276vw;" alt="aa">
+                                            </a>
+                                            <a href="#" class="btn-m-s">
+                                                <img src="{{ asset('smartadmin/img/demo/avatars/avatar-a.png') }}"
+                                                     class="profile-image-sm rounded-circle"
+                                                     style="width: 1.6276vw; height: 1.6276vw;" alt="aa">
+                                            </a>
+                                            <a href="#" class="btn-m-s">
+                                                <img src="{{ asset('smartadmin/img/demo/avatars/avatar-a.png') }}"
+                                                     class="profile-image-sm rounded-circle"
+                                                     style="width: 1.6276vw; height: 1.6276vw;" alt="aa">
+                                            </a>
+                                            <a href="#" class="btn-m-s">
+                                                <img src="{{ asset('smartadmin/img/demo/avatars/avatar-a.png') }}"
+                                                     class="profile-image-sm rounded-circle"
+                                                     style="width: 1.6276vw; height: 1.6276vw;" alt="aa">
+                                            </a>
+                                            <a href="#" class="btn-m-s">
+                                                <img src="{{ asset('smartadmin/img/demo/avatars/avatar-a.png') }}"
+                                                     class="profile-image-sm rounded-circle"
+                                                     style="width: 1.6276vw; height: 1.6276vw;" alt="aa">
+                                            </a>
+                                            <a href="#" class="btn-m-s">
+                                                <img src="{{ asset('smartadmin/img/demo/avatars/avatar-a.png') }}"
+                                                     class="profile-image-sm rounded-circle"
+                                                     style="width: 1.6276vw; height: 1.6276vw;" alt="aa">
+                                            </a>
+                                            <a href="#" class="btn-m-s fs-xs">
                                 <span data-hasmore="+7" class="rounded-circle profile-image-sm">
                                     <img src="{{ asset('smartadmin/img/demo/avatars/avatar-a.png') }}"
                                          class="profile-image-sm rounded-circle"
                                          style="width: 1.6276vw; height: 1.6276vw;" alt="aa">
                                 </span>
-                                        </a>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -582,7 +583,6 @@
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     </main>
     {% if user.Username == profile.Username %}
@@ -1184,7 +1184,7 @@ Variables:
 {% endblock %}
 
 {% block shortcuts %}
-{#    {% include 'smartadmin/parts/shortcuts.html.twig' %}#}
+    {#    {% include 'smartadmin/parts/shortcuts.html.twig' %}#}
 {% endblock %}
 
 {% block quickmenu %}
@@ -1975,43 +1975,43 @@ Variables:
                     wallpaper = true;
                     $('#wallpaper_delete_hidden').removeClass('hidden-xs-up');
 
-                        let white_opacity = 0;
-                        let black_opacity = 0;
-                        var ionskin = "sharp";
+                    let white_opacity = 0;
+                    let black_opacity = 0;
+                    var ionskin = "sharp";
 
-                            $("#newSocialPostSlider").ionRangeSlider(
-                                {
-                                    skin: ionskin,
-                                    type: 'single',
-                                    grid: false,
-                                    hide_min_max: true,
-                                    hide_from_to: true,
-                                    from: 0,
-                                    min: -0.9,
-                                    max: 0.9,
-                                    step: 0.1
-                                });
+                    $("#newSocialPostSlider").ionRangeSlider(
+                        {
+                            skin: ionskin,
+                            type: 'single',
+                            grid: false,
+                            hide_min_max: true,
+                            hide_from_to: true,
+                            from: 0,
+                            min: -0.9,
+                            max: 0.9,
+                            step: 0.1
+                        });
 
-                            $("#newSocialPostSlider").on("change", function () {
-                                var $inp = $(this);
-                                var value = $inp.prop("value"); // reading input value
+                    $("#newSocialPostSlider").on("change", function () {
+                        var $inp = $(this);
+                        var value = $inp.prop("value"); // reading input value
 
-                                if (value >= 0 && value <= 0.9)
-                                    {
-                                            white_opacity = value;
-                                            black_opacity = 0;
-                                    }
-                                if (value >= -0.9 && value <= 0)
-                                    {
-                                            black_opacity =  +value - +value - +value;
-                                            white_opacity = 0;
-                                            console.log(black_opacity);
-                                    }
-                                $('#black-transparent').css('background-color', 'rgba(000,000,000, '+black_opacity+')');
-                                $('.black-transparent').css('background-color', 'rgba(000,000,000, '+black_opacity+')');
-                                $('#white-transparent').css('background-color', 'rgba(255,255,255, '+white_opacity+')');
+                        if (value >= 0 && value <= 0.9)
+                        {
+                            white_opacity = value;
+                            black_opacity = 0;
+                        }
+                        if (value >= -0.9 && value <= 0)
+                        {
+                            black_opacity =  +value - +value - +value;
+                            white_opacity = 0;
+                            console.log(black_opacity);
+                        }
+                        $('#black-transparent').css('background-color', 'rgba(000,000,000, '+black_opacity+')');
+                        $('.black-transparent').css('background-color', 'rgba(000,000,000, '+black_opacity+')');
+                        $('#white-transparent').css('background-color', 'rgba(255,255,255, '+white_opacity+')');
 
-                            });
+                    });
                 }
 
             };
@@ -2134,61 +2134,61 @@ Variables:
                         dataType: 'json',
 
                         success: function (data) {
-                        // old
-                        //     if (data.status != "empty content" && right === false) {
-                        //         $('.addCommentTarget_' + id).append('<div class="d-flex flex-row w-100 py-4">\n' +
-                        //             '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
-                        //             '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + avatarUrl + '); background-size: cover;"></span>\n' +
-                        //             '                        </div>\n' +
-                        //             '                        <div class="mb-0 flex-1 text-dark">\n' +
-                        //             '                            <div class="d-flex">\n' +
-                        //             '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
-                        //             '                        ' + FirstName + ' "' + username + '" ' + LastName +
-                        //             '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
-                        //             '                                                            ' + data.CreatedAt + ' minutes\n' +
-                        //             '                                                        </span>\n' +
-                        //             '                            </div>\n' +
-                        //             '                            <p class="mb-0">\n' +
-                        //             '                                ' + data.Content +
-                        //             '                            </p>\n' +
-                        //             '                            <div>\n' +
-                        //             '                                <a href="javascript: addHeart(\'' + data.commentId + '\');" class="d-inline-flex align-items-center text-dark">\n' +
-                        //             '                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
-                        //             '                                </a>\n' +
-                        //             '                                <a href="#answer_' + data.commentId + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + data.commentId + '"> Answer</a>\n' +
-                        //             '                            </div>\n' +
-                        //             '                            <div id=\"conversation_target\" \n' +
-                        //             '                        </div>\n' +
-                        //             '                    </div>');
-                        //     }
-                        // }
+                            // old
+                            //     if (data.status != "empty content" && right === false) {
+                            //         $('.addCommentTarget_' + id).append('<div class="d-flex flex-row w-100 py-4">\n' +
+                            //             '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
+                            //             '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + avatarUrl + '); background-size: cover;"></span>\n' +
+                            //             '                        </div>\n' +
+                            //             '                        <div class="mb-0 flex-1 text-dark">\n' +
+                            //             '                            <div class="d-flex">\n' +
+                            //             '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
+                            //             '                        ' + FirstName + ' "' + username + '" ' + LastName +
+                            //             '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
+                            //             '                                                            ' + data.CreatedAt + ' minutes\n' +
+                            //             '                                                        </span>\n' +
+                            //             '                            </div>\n' +
+                            //             '                            <p class="mb-0">\n' +
+                            //             '                                ' + data.Content +
+                            //             '                            </p>\n' +
+                            //             '                            <div>\n' +
+                            //             '                                <a href="javascript: addHeart(\'' + data.commentId + '\');" class="d-inline-flex align-items-center text-dark">\n' +
+                            //             '                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
+                            //             '                                </a>\n' +
+                            //             '                                <a href="#answer_' + data.commentId + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + data.commentId + '"> Answer</a>\n' +
+                            //             '                            </div>\n' +
+                            //             '                            <div id=\"conversation_target\" \n' +
+                            //             '                        </div>\n' +
+                            //             '                    </div>');
+                            //     }
+                            // }
                             if (data.status != "empty content" && right === false) {
-                                    $('.addCommentTarget_' + id).append('<div class="d-flex flex-row w-100 py-4">\n' +
-                                        '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
-                                        '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + avatarUrl + '); background-size: cover;"></span>\n' +
-                                        '                        </div>\n' +
-                                        '                        <div class="mb-0 flex-1 text-dark">\n' +
-                                        '                            <div class="d-flex">\n' +
-                                        '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
-                                        '                        ' + FirstName + ' "' + username + '" ' + LastName +
-                                        '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
-                                        '                                                            ' + data.CreatedAt + ' minutes\n' +
-                                        '                                                        </span>\n' +
-                                        '                            </div>\n' +
-                                        '                            <p class="mb-0">\n' +
-                                        '                                ' + data.Content +
-                                        '                            </p>\n' +
-                                        '                            <div>\n' +
-                                        '                                <a href="javascript: addHeart(\'' + data.commentId + '\');" class="d-inline-flex align-items-center text-dark">\n' +
-                                        '                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
-                                        '                                </a>\n' +
-                                        '                                <a href="#answer_' + data.commentId + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + data.commentId + '"> Answer</a>\n' +
-                                        '                            </div>\n' +
-                                        '                            <div id=\"conversation_target\" \n' +
-                                        '                        </div>\n' +
-                                        '                    </div>');
-                                }
+                                $('.addCommentTarget_' + id).append('<div class="d-flex flex-row w-100 py-4">\n' +
+                                    '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
+                                    '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + avatarUrl + '); background-size: cover;"></span>\n' +
+                                    '                        </div>\n' +
+                                    '                        <div class="mb-0 flex-1 text-dark">\n' +
+                                    '                            <div class="d-flex">\n' +
+                                    '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
+                                    '                        ' + FirstName + ' "' + username + '" ' + LastName +
+                                    '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
+                                    '                                                            ' + data.CreatedAt + ' minutes\n' +
+                                    '                                                        </span>\n' +
+                                    '                            </div>\n' +
+                                    '                            <p class="mb-0">\n' +
+                                    '                                ' + data.Content +
+                                    '                            </p>\n' +
+                                    '                            <div>\n' +
+                                    '                                <a href="javascript: addHeart(\'' + data.commentId + '\');" class="d-inline-flex align-items-center text-dark">\n' +
+                                    '                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
+                                    '                                </a>\n' +
+                                    '                                <a href="#answer_' + data.commentId + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + data.commentId + '"> Answer</a>\n' +
+                                    '                            </div>\n' +
+                                    '                            <div id=\"conversation_target\" \n' +
+                                    '                        </div>\n' +
+                                    '                    </div>');
                             }
+                        }
                     });
                 }
                 $('#new_comment_to_the_conversation_' + id).val("");
@@ -2281,17 +2281,17 @@ Variables:
 
                                             '   </div> \n' +
                                             '   </div> \n'+
-                                        '                   <!-- add comment -->\n' +
+                                            '                   <!-- add comment -->\n' +
                                             '                    <div class="py-3 w-100 collapse" id="answer_'+ insideComment.Id +'"><form id="COMMENTinconversation_'+ insideComment.Id +'" method="post">\n' +
                                             '                            <textarea id="new_comment_to_the_conversation_'+ insideComment.Id +'" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."\n' +
                                             '                                      rows="2" style="background-color: unset" onkeypress="submitCommentToComment(\'comment\', \''+ insideComment.Id +'\', true)"></textarea>\n' +
                                             '                            <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">\n' +
-                                        '                            <input type="submit"\n' +
-                                        '                                   style="position: absolute; left: -9999px; width: 1px; height: 1px;"\n' +
-                                        '                                   tabindex="-1" />\n' +
-                                        '                        </form>\n' +
-                                        '                    </div>\n' +
-                                        '                    <!-- add comment end -->'
+                                            '                            <input type="submit"\n' +
+                                            '                                   style="position: absolute; left: -9999px; width: 1px; height: 1px;"\n' +
+                                            '                                   tabindex="-1" />\n' +
+                                            '                        </form>\n' +
+                                            '                    </div>\n' +
+                                            '                    <!-- add comment end -->'
                                         ;
                                     });
                                 }
@@ -2603,54 +2603,54 @@ Variables:
             });
         });
     </script>
-{#    <script>#}
-{#        $(document).ready(function(){#}
-{#                        $image_crop = $('#image_demo').croppie({#}
-{#                enableExif: true,#}
-{#                viewport: {#}
-{#                    width:130,#}
-{#                    height:130,#}
-{#                    type:'square' //circle#}
-{#                },#}
-{#                boundary:{#}
-{#                    width:300,#}
-{#                    height:300#}
-{#                }#}
-{#            });#}
+    {#    <script>#}
+    {#        $(document).ready(function(){#}
+    {#                        $image_crop = $('#image_demo').croppie({#}
+    {#                enableExif: true,#}
+    {#                viewport: {#}
+    {#                    width:130,#}
+    {#                    height:130,#}
+    {#                    type:'square' //circle#}
+    {#                },#}
+    {#                boundary:{#}
+    {#                    width:300,#}
+    {#                    height:300#}
+    {#                }#}
+    {#            });#}
 
-{#            $('#AvatarFile').on('change', function(){#}
-{#                var reader = new FileReader();#}
-{#                reader.onload = function (event) {#}
-{#                    $image_crop.croppie('bind', {#}
-{#                        url: event.target.result#}
-{#                    }).then(function(){#}
-{#                        console.log('jQuery bind complete');#}
-{#                    });#}
-{#                }#}
-{#                reader.readAsDataURL(this.files[0]);#}
-{#                $('#uploadAvatarModal').modal('show');#}
-{#            });#}
+    {#            $('#AvatarFile').on('change', function(){#}
+    {#                var reader = new FileReader();#}
+    {#                reader.onload = function (event) {#}
+    {#                    $image_crop.croppie('bind', {#}
+    {#                        url: event.target.result#}
+    {#                    }).then(function(){#}
+    {#                        console.log('jQuery bind complete');#}
+    {#                    });#}
+    {#                }#}
+    {#                reader.readAsDataURL(this.files[0]);#}
+    {#                $('#uploadAvatarModal').modal('show');#}
+    {#            });#}
 
-{#            $('.crop_image').click(function(event){#}
-{#                $image_crop.croppie('result', {#}
-{#                    type: 'canvas',#}
-{#                    size: 'viewport'#}
-{#                }).then(function(response){#}
-{#                    $.ajax({#}
-{#                        url:"upload.php",#}
-{#                        type: "POST",#}
-{#                        data:{"image": response},#}
-{#                        success:function(data)#}
-{#                        {#}
-{#                            $('#uploadAvatarModal').modal('hide');#}
-{#                            $('.mine-avatar').html(data);#}
-{#                        }#}
-{#                    });#}
-{#                })#}
-{#            });#}
+    {#            $('.crop_image').click(function(event){#}
+    {#                $image_crop.croppie('result', {#}
+    {#                    type: 'canvas',#}
+    {#                    size: 'viewport'#}
+    {#                }).then(function(response){#}
+    {#                    $.ajax({#}
+    {#                        url:"upload.php",#}
+    {#                        type: "POST",#}
+    {#                        data:{"image": response},#}
+    {#                        success:function(data)#}
+    {#                        {#}
+    {#                            $('#uploadAvatarModal').modal('hide');#}
+    {#                            $('.mine-avatar').html(data);#}
+    {#                        }#}
+    {#                    });#}
+    {#                })#}
+    {#            });#}
 
-{#        });#}
-{#    </script>#}
+    {#        });#}
+    {#    </script>#}
     <script src="{{ asset('smartadmin/js/formplugins/cropperjs/cropper.js') }}"></script>
     <script>
 
@@ -2876,7 +2876,7 @@ Variables:
                             $(this).data('option', -data.option);
                             break;
 
-                                                case 'destroy':
+                        case 'destroy':
                             if (uploadedImageURL)
                             {
                                 URL.revokeObjectURL(uploadedImageURL);
@@ -3023,47 +3023,47 @@ Variables:
             }
         });
     </script>
-{#    <script>#}
-{#        let white_opacity = 0;#}
-{#        let black_opacity = 0;#}
-{#        $(document).ready(function() {#}
-{#            var ionskin = "sharp";#}
+    {#    <script>#}
+    {#        let white_opacity = 0;#}
+    {#        let black_opacity = 0;#}
+    {#        $(document).ready(function() {#}
+    {#            var ionskin = "sharp";#}
 
-{#            $("#newSocialPostSlider").ionRangeSlider(#}
-{#                {#}
-{#                    skin: ionskin,#}
-{#                    type: 'single',#}
-{#                    grid: false,#}
-{#                    hide_min_max: true,#}
-{#                    hide_from_to: true,#}
-{#                    from: 0,#}
-{#                    min: -0.9,#}
-{#                    max: 0.9,#}
-{#                    step: 0.1#}
-{#                });#}
+    {#            $("#newSocialPostSlider").ionRangeSlider(#}
+    {#                {#}
+    {#                    skin: ionskin,#}
+    {#                    type: 'single',#}
+    {#                    grid: false,#}
+    {#                    hide_min_max: true,#}
+    {#                    hide_from_to: true,#}
+    {#                    from: 0,#}
+    {#                    min: -0.9,#}
+    {#                    max: 0.9,#}
+    {#                    step: 0.1#}
+    {#                });#}
 
-{#            $("#newSocialPostSlider").on("change", function () {#}
-{#                var $inp = $(this);#}
-{#                var value = $inp.prop("value"); // reading input value#}
+    {#            $("#newSocialPostSlider").on("change", function () {#}
+    {#                var $inp = $(this);#}
+    {#                var value = $inp.prop("value"); // reading input value#}
 
-{#                if (value >= 0 && value <= 0.9)#}
-{#                    {#}
-{#                            white_opacity = value;#}
-{#                            black_opacity = 0;#}
-{#                    }#}
-{#                if (value >= -0.9 && value <= 0)#}
-{#                    {#}
-{#                            black_opacity =  +value - +value - +value;#}
-{#                            white_opacity = 0;#}
-{#                            console.log(black_opacity);#}
-{#                    }#}
-{#                $('#black-transparent').css('background-color', 'rgba(000,000,000, '+black_opacity+')');#}
-{#                $('.black-transparent').css('background-color', 'rgba(000,000,000, '+black_opacity+')');#}
-{#                $('#white-transparent').css('background-color', 'rgba(255,255,255, '+white_opacity+')');#}
+    {#                if (value >= 0 && value <= 0.9)#}
+    {#                    {#}
+    {#                            white_opacity = value;#}
+    {#                            black_opacity = 0;#}
+    {#                    }#}
+    {#                if (value >= -0.9 && value <= 0)#}
+    {#                    {#}
+    {#                            black_opacity =  +value - +value - +value;#}
+    {#                            white_opacity = 0;#}
+    {#                            console.log(black_opacity);#}
+    {#                    }#}
+    {#                $('#black-transparent').css('background-color', 'rgba(000,000,000, '+black_opacity+')');#}
+    {#                $('.black-transparent').css('background-color', 'rgba(000,000,000, '+black_opacity+')');#}
+    {#                $('#white-transparent').css('background-color', 'rgba(255,255,255, '+white_opacity+')');#}
 
-{#            });#}
-{#        });#}
-{#    </script>#}
+    {#            });#}
+    {#        });#}
+    {#    </script>#}
 
     <script>
         {% if avatar is not null and tab == 'settings' %}
@@ -3074,53 +3074,122 @@ Variables:
     </script>
 
 
-    {% if user.Username == profile.Username %}
+{#  {% if user.Username == profile.Username %} #}
         <script>
             function getMoreCommentsRight(id) {// check max 10
                 if (letMeShowMore2[id] === true) {
                     $('.conversation-right').each(function (index) {
-                        var oopid = $(this).attr('id')
+                        var oopid = $(this).attr('id')//
                         console.log(oopid)
                         letMeShowMore2[oopid] = true
                         $('#right-arrow-'+oopid).html('<i class="fal fa-angle-right fa-2x" style=""></i>')
                     })
                     $('.conversation-right').remove()
                     $('#extended-conversation_target-' + id).append(
-                        '<div id="'+id+'" class="position-absolute conversation-right rounded" width="118%" height="600px" src="/api/getMoreConversationCommentsIframe/'+id+'" style="left:calc(100% + 3rem); top:0; background: red; border: 0; z-index:91998">'+
-                        'dsgfs</div>'
+                        //'<div id="con-move-target" class="position-fixed" style="left:0; top:116px; height:calc(100%-116px); z-index: 5000; background-color: red">jhgfh'+//przenoszony div myszka
+                        '   <div id="con_'+id+'" class="conversation-right rounded" width="118%" height="600px" src="/api/getMoreConversationCommentsIframe/'+id+'" style="position: absolute; left:calc(100% + 3rem); top:0; background: transparent; border: 0; z-index:91998">'+
+                        '   </div>'
+                        //'</div>'
                     )
                     $.ajax('/api/getMoreConversationComments/'+id, {
                         method: "POST",
-                    processData: false,
+                        processData: false,
                         contentType: false,
                         success: function (data) {
-                        data.commentary.forEach(function (elm) {
-                            console.log(elm)
+                            let it0=0;
+                            let it1=1;
+                            data.commentary.forEach(function (elm) {
+                                console.log(elm)
+                                $('#con_'+id).append('\n' +
+                                    '<!-- Extended conversation comments -->\n' +
+                                    '<div style="margin-right: 0.75rem" class="">\n' +
+                                    '    <div class="d-flex position-absolutee flex-row rounded mt-2 pt-2 px-0 pb-0" style="border: 1px black solid; width: 400px; top: 0; left: calc(400px*'+it1+' + 1.5rem*'+it0+'); z-index: 2000; background: #707070">\n' +
+                                    '        <div class="d-flex flex-row rounded d-inline-block pt-1 align-middle bg-light w-100 pb-2 px-2" style="border-top: 0 black solid;">\n' +
+                                    '            <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
+                                    '                <span class="ml-1 mt-1 profile-image profile-image-md rounded d-block mt-1" style="background-image: url(\''+ elm.AuthorAvatarFileUrl +'\'); background-size: cover;"></span>\n' +
+                                    '            </div>\n' +
+                                    '            <div class="mb-0 flex-1 text-dark mr-1 ">\n' +
+                                    '                <div class="d-flex">\n' +
+                                    '                    <a href="javascript:void(0);" class="text-dark fw-500">\n' +
+                                    +elm.AuthorUsername +
+                                    '                    </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
+                                    elm.createdAt +
+                                    '                    </span>\n' +
+                                    '                </div>\n' +
+                                    '                <p class="mb-0">\n' +
+                                    elm.Content  +
+                                    '                </p>\n' +
+                                    '                <div>\n' +
+                                    '                    <a href="javascript: addHeart(  '+ elm.Id +'  );" class="d-inline-flex align-items-center text-dark">\n' +
+                                    '                        <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
+                                    '                    </a>\n' +
+                                    '\n' +
+                                    '                    <a href="#answer_ Comment.Id " data-toggle="collapse" aria-expanded="false" aria-controls="answer_Comment.Id "\n' +
+                                    '                            {# onclick="changeCommgentCss(#comment_{{ post.Id }}_{{ loop.index }}, #comment_{{ post.Id }}_{{ loop.index1 }})" #}\n' +
+                                    '                       class="float-right">\n' +
+                                    '                                                                    <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top">\n' +
+                                    '                                                                                        Answer to '+ elm.AuthorUsername +'  <i class="far fa-caret-down"></i>\n' +
+                                    '                                                                                    </span>\n' +
+                                    '                    </a>\n' +
+                                    '                </div>\n' +
+                                    '            </div>\n' +
+                                    '        </div>\n' +
+                                    '    </div>\n' +
+                                    '</div>')
 
-                        })
+                            })
                             //console.log(data);
-                    },
-                    error: function () {
-                        console.log('error - connection failed');
-                    }
-                });
-
-
+                        },
+                        error: function () {
+                            console.log('error - connection failed');
+                        }
+                    });
                     // $('#extended-conversation_target-' + id).append('' +
                     //     '<iframe id="'+id+'" class="position-absolute conversation-iframe rounded" width="118%" height="600px" src="/api/getMoreConversationCommentsIframe/'+id+'" style="left:calc(100% + 3rem); top:0; background: transparent; border: 0; z-index:91998">' +
                     //     '</iframe>')
+                    letMeShowMore2[id] = false;
+                    let div = document.getElementById("con_"+id);
+                    $('#right-arrow-'+id).html('<i class="fal fa-angle-left fa-2x" style=""></i>')
 
-                        letMeShowMore2[id] = false;
-                        $('#right-arrow-'+id).html('<i class="fal fa-angle-left fa-2x" style=""></i>')
-                    }else{
-                        $('#' + id).remove();
-                        letMeShowMore2[id] = true
-                        $('#right-arrow-'+id).html('<i class="fal fa-angle-right fa-2x" style=""></i>')
-                    }
+                    var mousePosition;
+                    var offset = [0,0];
+                    var isDown = false;
 
-                    CommentPageNr[id]++;
-                CommentPageNr[id]++;
+                    div.addEventListener('mousedown', function(e) {
+                        isDown = true;
+                        offset = [
+                            div.offsetLeft - e.clientX,
+                            div.offsetTop - e.clientY
+                        ];
+                    }, true);
+
+                    document.addEventListener('mouseup', function() {
+                        isDown = false;
+                    }, true);
+
+                    document.addEventListener('mousemove', function(event) {
+                        event.preventDefault();
+                        if (isDown) {
+                            mousePosition = {
+
+                                x : event.clientX,
+                                y : event.clientY
+
+                            };
+                            div.style.left = (mousePosition.x + offset[0]) + 'px';
+                            div.style.top  = (mousePosition.y + offset[1]) + 'px';
+                        }
+                    }, true);
+                }else{
+                    let div = null;
+                    $('#con_' + id).remove();
+                    letMeShowMore2[id] = true
+                    $('#right-arrow-'+id).html('<i class="fal fa-angle-right fa-2x" style=""></i>')
                 }
-            </script>
-        {% endif %}
+                CommentPageNr[id]++;
+                CommentPageNr[id]++;
+
+            }
+        </script>
+{#  {% endif %} #}
 {% endblock %}
