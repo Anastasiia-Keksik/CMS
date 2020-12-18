@@ -3080,9 +3080,9 @@ Variables:
                 if (letMeShowMore2[id] === true) {
                     $('.conversation-right').each(function (index) {
                         var oopid = $(this).attr('id')//
-                        console.log(oopid)
-                        letMeShowMore2[oopid] = true
-                        $('#right-arrow-'+oopid).html('<i class="fal fa-angle-right fa-2x" style=""></i>')
+                        console.log(oopid.slice(4))
+                        letMeShowMore2[oopid.slice(4)] = true;
+                        $('#right-arrow-'+oopid.slice(4)).html('<i class="fal fa-angle-right fa-2x" style=""></i>')
                     })
                     $('.conversation-right').remove()
                     $('#extended-conversation_target-' + id).append(
@@ -3151,35 +3151,50 @@ Variables:
                     let div = document.getElementById("con_"+id);
                     $('#right-arrow-'+id).html('<i class="fal fa-angle-left fa-2x" style=""></i>')
 
-                    var mousePosition;
-                    var offset = [0,0];
-                    var isDown = false;
+                        var mousePosition;
+                        var offset = [0,0];
+                        var isDown = false;
 
-                    div.addEventListener('mousedown', function(e) {
-                        isDown = true;
-                        offset = [
-                            div.offsetLeft - e.clientX,
-                            div.offsetTop - e.clientY
-                        ];
-                    }, true);
+                        div.addEventListener('mousedown', function(e) {
+                            isDown = true;
+                            offset = [
+                                div.offsetLeft - e.clientX,
+                                div.offsetTop - e.clientY
+                            ];
+                        }, true);
 
-                    document.addEventListener('mouseup', function() {
-                        isDown = false;
-                    }, true);
+                        document.addEventListener('mouseup', function() {
+                            isDown = false;
+                        }, true);
 
-                    document.addEventListener('mousemove', function(event) {
-                        event.preventDefault();
-                        if (isDown) {
-                            mousePosition = {
+                        document.addEventListener('mousemove', function(event) {
+                            event.preventDefault();
+                            if (isDown) {
+                                mousePosition = {
 
-                                x : event.clientX,
-                                y : event.clientY
+                                    x : event.clientX,
+                                    y : event.clientY
 
-                            };
-                            div.style.left = (mousePosition.x + offset[0]) + 'px';
-                            div.style.top  = (mousePosition.y + offset[1]) + 'px';
-                        }
-                    }, true);
+                                };
+                                div.style.left = (mousePosition.x + offset[0]) + 'px';
+                                div.style.top  = (mousePosition.y + offset[1]) + 'px';
+                            }
+                        }, true);
+
+                    // div.addEventListener('touchmove', function(e) {
+                    //     // grab the location of touch
+                    //     var touchLocation = e.targetTouches[0];
+                    //
+                    //     // assign box new coordinates based on the touch.
+                    //     div.style.left = touchLocation.pageX + 'px';
+                    //     div.style.top = touchLocation.pageY + 'px';
+                    // })
+                    //
+                    // div.addEventListener('touchend', function(e) {
+                    //     // current box position.
+                    //     var x = parseInt(div.style.left);
+                    //     var y = parseInt(div.style.top);
+                    // })
                 }else{
                     let div = null;
                     $('#con_' + id).remove();
