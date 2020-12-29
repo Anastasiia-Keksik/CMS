@@ -105,6 +105,9 @@
     "egulias/email-validator": {
         "version": "2.1.18"
     },
+    "friendsofphp/proxy-manager-lts": {
+        "version": "v1.0.1"
+    },
     "fzaninotto/faker": {
         "version": "v1.9.1"
     },
@@ -575,6 +578,9 @@
         "version": "v5.0.11"
     },
     "symfony/property-info": {
+        "version": "v5.0.11"
+    },
+    "symfony/proxy-manager-bridge": {
         "version": "v5.0.11"
     },
     "symfony/routing": {
