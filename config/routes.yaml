@@ -1,5 +1,3 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
-payum_all:
-  resource: "@PayumBundle/Resources/config/routing/all.xml"
