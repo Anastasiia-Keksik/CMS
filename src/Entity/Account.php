@@ -147,7 +147,7 @@ class Account implements UserInterface
     private $template;
 
     /**
-     * @ORM\Column(type="datetime",  options={"default":0})
+     * @ORM\Column(type="datetime")
      */
     private $agreedTermsAt;
 
@@ -276,9 +276,9 @@ class Account implements UserInterface
     private $BackgroundFileName;
 
     /**
-     * @ORM\Column(type="smallint", options={"default":0})
+     * @ORM\Column(type="smallint")
      */
-    private $bgPosition;
+    private $bgPosition = 0;
 
     /**
      * @ORM\OneToMany(targetEntity=ForumMembers::class, mappedBy="Member", orphanRemoval=true)
@@ -316,7 +316,7 @@ class Account implements UserInterface
     private $bday;
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="smallint", nullable=true)
      */
     private $bmonth;
 
