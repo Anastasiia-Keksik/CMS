@@ -1,0 +1,268 @@
+{% extends 'smartadmin/base.html.twig' %}
+
+{% block content %}
+    <!-- BEGIN Page Content -->
+    <!-- the #js-page-content id is needed for some plugins to initialize -->
+    <div class="container" style="min-height: calc(100% - 45px)">
+        <main id="js-page-content" role="main" class="page-content">
+        <div class="row">
+        <div class="col-12">
+            <div id="panel-1" class="panel">
+                <div>
+                    <ul class="nav nav-tabs nav-tabs-clean" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab-Active" role="tab">All</a></li>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab-Overall" role="tab">Your</a></li>
+                    </ul>
+                </div>
+                <div class="panel-container">
+                    <div class="panel-content">
+                        <div class="tab-content p-3">
+                            <div class="tab-pane fade show active" id="tab-Active" role="tabpanel">
+                                <!-- datatable start -->
+                                <table id="dt-basic-example" class="table table-bordered table-hover w-100">
+                                    <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>EST</th>
+                                        <th class="text-right">Authors team</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for project in projects %}
+                                            <tr>
+                                                <td>{{ project.status }}</td>
+                                                <td>
+                                                    <a href="{{ path('app_project', {'id':project.Id}) }}" class="fs-lg text-dark">
+                                                        {% if project.type == 1 %}
+                                                            {{ project.Comic.Title }}
+                                                        {% elseif project.type == 2 %}
+                                                            {{ project.ComicEpisode.Title }}
+                                                        {% endif %}
+                                                    </a>
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        {% if project.type == 1 %}
+                                                            Created {{ project.Comic.CreatedAt|ago }}
+                                                        {% elseif project.type == 2 %}
+                                                            Created {{ project.ComicEpisode.CreatedAt|ago }}
+                                                        {% endif %}
+                                                        </small>
+                                                </td>
+                                                <td>
+                                                    {% if project.type == 1 %}Comic{% elseif project.type == 2 %}
+                                                        Episode
+                                                    {% endif %}</td>
+                                                <td>56</td>
+                                                <td>
+                                                    <div class="fs-sm d-flex align-items-center flex-row-reverse">
+                                                        {% for author in project.Account %}
+                                                            <a class="btn-m-s" data-toggle="modal" data-target="#user-credentials-{{ author.User.Id }}">
+                                                                <img src="{{ asset('upload/avatars/'~author.User.Username~'/'~author.User.AvatarFileName)|imagine_filter('my_thumb') }}" class="profile-image-sm rounded" alt='
+                                                                    {% if author.User.VisibleName == 1 %}{{ author.User.Username }}
+                                                                    {% elseif author.User.VisibleName == 2 %}{{ author.User.FirstName }} {{ author.User.LastName }}
+                                                                    {% elseif author.User.VisibleName == 3 %}{{ author.User.FirstName }} '{{ author.User.Username }}" {{ author.User.LastName }}{% endif %}
+                                                                ' data-toggle="tooltip" data-placement="top" title='{% if user.VisibleName == 1 %}{{ author.User.Username }}
+                                                            {% elseif author.User.VisibleName == 2 %}{{ author.User.FirstName }} {{ author.User.LastName }}
+                                                            {% elseif author.User.VisibleName == 3 %}{{ author.User.FirstName }} "{{ author.User.Username }}" {{ author.User.LastName }}{% endif %}'>
+                                                            </a>
+                                                        {% endfor %}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Projects</th>
+                                        <th>Type</th>
+                                        <th>EST</th>
+                                        <th class="text-right">Contacts</th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                                <!-- datatable end -->
+                            </div>
+                            <div class="tab-pane fade" id="tab-Overall" role="tabpanel">
+
+                            </div>
+                            <div class="tab-pane fade" id="tab-Chapters" role="tabpanel">
+
+                            </div>
+                            {% for user in presentUsers %}
+                                <div class="modal fade" id="user-credentials-{{ user.Id }}" tabindex="-1" role="dialog" style="display: none" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <img src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb_even_larger') }}"
+                                                     class="shadow-5 img-thumbnail mine-avatar" alt=""
+                                                     style="height: 120px; width: 120px; border-radius: 15px">
+                                                <h4 class="modal-title ml-4">
+                                                    {% if user.VisibleName == 1 %}{{ user.Username }}
+                                                    {% elseif user.VisibleName == 2 %}{{ user.FirstName }} {{ user.LastName }}
+                                                    {% elseif user.VisibleName == 3 %}{{ user.FirstName }} "{{ user.Username }}" {{ user.LastName }}{% endif %}
+                                                    <small class="text-muted">{{ user.Occupation }}</small>
+                                                </h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body ">
+                                                <div class="d-flex justify-content-between mb-g">
+                                                    <span class="btn btn-primary fweight-900 invitation" style="width: calc(100% - 41px)" data-toggle="collapse" data-target="#circle-{{ user.Id }}"><i class="fal fa-user-friends"></i> Dodaj</span>
+                                                    <span class="btn btn-primary btn-icon"><i class="fal fa-comment"></i></span>
+                                                </div>
+                                                <div class="collapse" id="circle-{{ user.Id }}" style="">
+                                                    <div class="card card-body">
+                                                        onclick="InvitePerson('{{ user.Id }}')"
+                                                        <div class="row">
+                                                            <div class="col-4 text-center" onclick="InvitePerson('{{ user.Id }}', 'circle_name')">
+                                                                <img width="100px" height="100px" style="border: 1px black solid; border-radius: 15px;">
+                                                                <p>Name of circle</p>
+                                                            </div>
+                                                            <div class="col-4 text-center" onclick="InvitePerson('{{ user.Id }}')">
+                                                                <img width="100px" height="100px" style="border: 1px black solid; border-radius: 15px;">
+                                                                <p>Name of circle</p>
+                                                            </div>
+                                                            <div class="col-4 text-center" onclick="InvitePerson('{{ user.Id }}')">
+                                                                <img width="100px" height="100px" style="border: 1px black solid; border-radius: 15px;">
+                                                                <p>Name of circle</p>
+                                                            </div>
+                                                            <div class="col-4 text-center" onclick="InvitePerson('{{ user.Id }}')">
+                                                                <img width="100px" height="100px" style="border: 1px black solid; border-radius: 15px;">
+                                                                <p>Name of circle</p>
+                                                            </div>
+                                                            <div class="col-4 text-center" onclick="InvitePerson('{{ user.Id }}')">
+                                                                <img width="100px" height="100px" style="border: 1px black solid; border-radius: 15px;">
+                                                                <p>Name of circle</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+    </div>
+    <!-- this overlay is activated only when mobile menu is triggered -->
+    <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/datagrid/datatables/datatables.bundle.css') }}">
+{% endblock %}
+
+{%  block leftMenu %}
+    {% include 'smartadmin/parts/leftMenu.html.twig' %}
+{% endblock %}
+
+{% block header %}
+    {% include 'smartadmin/parts/header.html.twig' %}
+{% endblock %}
+
+{% block footer %}
+    {% include 'smartadmin/parts/footer.twig' %}
+{%  endblock %}
+
+{% block quickmenu %}
+    {% include 'smartadmin/parts/quickmenu.twig' %}
+{% endblock %}
+
+{% block messenger %}
+    {% include 'smartadmin/parts/chat.twig' %}
+{% endblock %}
+
+{% block pagesettings %}
+    {% include 'smartadmin/parts/pagesettings.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('smartadmin/js/datagrid/datatables/datatables.bundle.js') }}"></script>
+    <script>
+        $(document).ready(function()
+        {
+            // initialize datatable
+            $('#dt-basic-example').dataTable(
+                {
+                    responsive: true,
+                    columnDefs: [
+                        {
+                            targets: 3,
+                            render: function(data, type, full, meta)
+                            {
+                                return '<small class="mb-1 d-block">Completion with: ' + data + '%</small> <div class="progress progress-sm"><div class="progress-bar" role="progressbar" style="width:' + data + '%;" aria-valuenow="' + data + '" aria-valuemin="0" aria-valuemax="100"></div></div>';
+                            },
+                        },
+                        {
+                            targets: 0,
+                            /*	The `data` parameter refers to the data for the cell (defined by the
+                                `data` option, which defaults to the column being worked with, in this case `data: 16`.*/
+                            render: function(data, type, full, meta)
+                            {
+                                var badge = {
+                                    0:
+                                        {
+                                            'title': 'Pending',
+                                            'class': 'badge-warning'
+                                        },
+                                    1:
+                                        {
+                                            'title': 'Delivered',
+                                            'class': 'badge-success'
+                                        },
+                                    2:
+                                        {
+                                            'title': 'Canceled',
+                                            'class': 'badge-secondary'
+                                        },
+                                    3:
+                                        {
+                                            'title': 'Attempt #1',
+                                            'class': 'bg-danger-100 text-white'
+                                        },
+                                    4:
+                                        {
+                                            'title': 'Attempt #2',
+                                            'class': 'bg-danger-300 text-white'
+                                        },
+                                    5:
+                                        {
+                                            'title': 'Overdue',
+                                            'class': 'badge-danger'
+                                        },
+                                    6:
+                                        {
+                                            'title': 'Attention!',
+                                            'class': 'badge-primary'
+                                        },
+                                    7:
+                                        {
+                                            'title': 'In Progress',
+                                            'class': 'badge-success'
+                                        },
+                                };
+                                if (typeof badge[data] === 'undefined')
+                                {
+                                    return data;
+                                }
+                                return '<span class="badge ' + badge[data].class + ' badge-pill">' + badge[data].title + '</span>';
+                            },
+                        }],
+                });
+        });
+    </script>
+{% endblock %}

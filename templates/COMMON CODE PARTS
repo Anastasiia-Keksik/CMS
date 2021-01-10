@@ -1,0 +1,16 @@
+{% if user.VisibleName == 1 %}{{ user.Username }}
+{% elseif user.VisibleName == 2 %}{{ user.FirstName }} {{ user.LastName }}
+{% elseif user.VisibleName == 3 %}{{ user.FirstName }} "{{ user.Username }}" {{ user.LastName }} {% endif %}
+
+        if ($request->request->get('_token'))
+        {
+            if ($this->isCsrfTokenValid('description_token', $request->request->get('_token'))) {
+
+            }else{
+                return new Response("token invalid");
+            }
+        }else{
+            return new Response("error");
+        }
+
+        jquery.timeAgo

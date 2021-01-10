@@ -44,7 +44,7 @@
                                 </form>
                                 <div id="removed" class="text-center" style="width:100%"></div>
                             </div>
-                            <small>Files will be displayed alphabetically - take care of the proper naming. Use only english letters and numbers. Using other language letters will results with wrong sorting!</small>
+                            <small>Files will be displayed alphabetically - take care of the proper naming. Use only english letters and numbers. Using other language letters might results with wrong sorting!</small>
                             <br>
                             <form action="{{ path('publish_Episode', {'episode':episode.id}) }}" method="post" enctype="multipart/form-data">
                                 <input type="hidden" required name="_token" value="{{ csrf_token('publishEpisode') }}">
@@ -73,6 +73,46 @@
                             <input type="hidden" value="{{ csrf_token('send_episode_thumbnail') }}" name="_token">
                         </div>
                         </form>
+                            <hr>
+                            <div class="input-group">
+                                <input type="text" class="form-control co-author" placeholder="Add Co-Author" aria-label="Add Co-Author" aria-describedby="basic-addon2" onchange="coauthorChange(this.value)">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" data-toggle="modal" data-target="#add-co-author">search</span>
+                                </div>
+                            </div>
+                                    <div class="modal fade" id="add-co-author" tabindex="-1" role="dialog" style="display: none" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title text-left">Add Co-Author
+                                                        <small class="m-0 text-muted">search through your contacts</small>
+                                                    </h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                                                    </button>
+                                                </div>
+                                                    <div class="modal-body">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control co-author2" placeholder="Add Co-Author" aria-label="Add Co-Author" aria-describedby="basic-addon2">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text" onclick="searchForContact()">Search</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- SHOW USERS -->
+
+                                                        <div id="users-target" class="w-100 mt-3 text-center">
+                                                            <h4>Search for your contacts.</h4>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <span type="button" class="btn btn-secondary" data-dismiss="modal">Close</span>
+                                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
                     </div>
                 </div>
             </div>
@@ -447,6 +487,53 @@ Variables:
                     function fade_out() {
                         $("#saved").fadeOut();
                     }
+                }
+            });
+        }
+    </script>
+    <script>
+        function coauthorChange(val){
+            $('.co-author2').val(val)
+        }
+
+        function searchForContact() {
+            $.ajax('{{ path('app_searchForContact') }}', {
+                method: 'POST',
+                data: {
+                    string: $('.co-author2').val()
+                },
+                success: function (data) {
+                    $('#users-target').html('');
+                    console.log(data)
+                    data.forEach(function (data){
+                        $('#users-target').append(
+                            '<div class="d-flex justify-content-between border-info rounded" style="border-width: 1px; border-style: solid; height: 38px">'+
+                                '<span class="rounded-left fweight-700 p-2">'+data.firstname+' "'+data.username+'" '+data.lastname+'</span>'+
+                                '<a id="person_'+data.id+'_save_button" class="rounded-right bg-info-300 p-2" onclick="SaveContactToProject(\''+data.id+'\')">Dodaj</a>'+
+                            '</div>'
+                        )
+
+                    })
+                },
+                error: function () {
+                    console.log('failed to load contact');
+                }
+            });
+        }
+
+        function SaveContactToProject(id) {
+            $.ajax('{{ path('comic_SavePersonToProject') }}', {
+                method: 'POST',
+                data: {
+                    person: id,
+                    _token: '{{ csrf_token('save_person') }}',
+                    project: '{{ episode.Project.Id }}'
+                },
+                success: function (data) {
+                    $('#person_'+data.id+'_save_button').text("ADDED");
+                },
+                error: function () {
+                    console.log('failed to save contact');
                 }
             });
         }

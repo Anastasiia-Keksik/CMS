@@ -66,6 +66,16 @@ class SocialPost
      */
     private $yes;
 
+    /**
+     * @ORM\Column(type="string", length=12, nullable=true)
+     */
+    private $BGcolor;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $BGopacity;
+
     public function __construct()
     {
         $this->socialPostComments = new ArrayCollection();
@@ -221,6 +231,30 @@ class SocialPost
                 $ye->setSocialPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getBGcolor(): ?string
+    {
+        return $this->BGcolor;
+    }
+
+    public function setBGcolor(?string $BGcolor): self
+    {
+        $this->BGcolor = $BGcolor;
+
+        return $this;
+    }
+
+    public function getBGopacity(): ?float
+    {
+        return $this->BGopacity;
+    }
+
+    public function setBGopacity(?float $BGopacity): self
+    {
+        $this->BGopacity = $BGopacity;
 
         return $this;
     }

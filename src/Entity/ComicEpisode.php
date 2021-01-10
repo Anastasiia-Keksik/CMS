@@ -71,6 +71,17 @@ class ComicEpisode
      */
     private $favourites;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Project::class, mappedBy="ComicEpisode", cascade={"persist", "remove"})
+     */
+    private $project;
+
+    private $isMine = false;
+
+    private $revenue;
+
+    private $income;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4();
@@ -190,6 +201,42 @@ class ComicEpisode
         return $this;
     }
 
+    public function getIsMine(): ?bool
+    {
+        return $this->isMine;
+    }
+
+    public function setIsMine(bool $isMine): self
+    {
+        $this->isMine = $isMine;
+
+        return $this;
+    }
+
+    public function getRevenue(): ?int
+    {
+        return $this->revenue;
+    }
+
+    public function setRevenue(int $revenue): self
+    {
+        $this->revenue = $revenue;
+
+        return $this;
+    }
+
+    public function getIncome(): ?int
+    {
+        return $this->income;
+    }
+
+    public function setIncome(int $income): self
+    {
+        $this->income = $income;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Favourites[]
      */
@@ -217,6 +264,28 @@ class ComicEpisode
                 $favourite->setComicEpisodes(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($project === null && $this->project !== null) {
+            $this->project->setComicEpisode(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($project !== null && $project->getComicEpisode() !== $this) {
+            $project->setComicEpisode($this);
+        }
+
+        $this->project = $project;
 
         return $this;
     }

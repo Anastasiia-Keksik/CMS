@@ -47,7 +47,7 @@
                 <i class="fal fa-search"></i>
             </a>
         </div>
-        <div class="hidden-sm-down header-icon d-flex">
+        <div class="hidden-sm-down d-flex">
         <!-- app settings -->
         {% include 'smartadmin/parts/settings.html.twig' %}
         <!-- app shortcuts -->
@@ -59,102 +59,6 @@
         </div>
         <!-- app publish -->
         {% include 'smartadmin/parts/publishDropdown.html.twig' %}
-
         <!-- app user menu -->
-        {% if is_granted("ROLE_USER") %}
-        <div>
-            <a href="#" data-toggle="dropdown" title="drlantern@gotbootstrap.com" class="header-icon ml-2">
-                <img src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}" class="profile-image mine-avatar rounded-circle bg-primary border-primary" style="border-width: 2px; border-style: solid;" alt="Dr. Codex Lantern">
-                <!-- you can also add username next to the avatar with the codes below:
-                <span class="ml-1 mr-1 text-truncate text-truncate-header hidden-xs-down">Me</span>
-                <i class="ni ni-chevron-down hidden-xs-down"></i> -->
-            </a>
-            <div class="dropdown-menu dropdown-menu-animated dropdown-lg">
-            {% if pageName == "Profile" and user.Username == profile.Username and bgopen != 'open' %}
-                <a href="#">
-            {% else %}
-                <a href="{{path('app_profile', {'profile':user.Username})}}">
-            {% endif %}
-                <div class="dropdown-header bg-trans-gradient d-flex flex-row py-4 rounded-top">
-                    <div class="d-flex flex-row align-items-center mt-1 mb-1 color-white">
-                                            <span class="mr-2">
-                                                <img src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}" class="rounded-circle profile-image" alt="Dr. Codex Lantern">
-                                            </span>
-                        <div class="info-card-text">
-                            <div class="fs-lg text-truncate text-truncate-lg">{{ user.Username }}</div>
-                            <span class="text-truncate text-truncate-md opacity-80">{{ user.email }}</span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-                <div class="dropdown-divider m-0"></div>
-                <a href="#" class="dropdown-item" data-action="app-reset">
-                    <span data-i18n="drpdwn.reset_layout">Reset Layout</span>
-                </a>
-                <a href="#" class="dropdown-item" data-toggle="modal" data-target=".js-modal-settings">
-                    <span data-i18n="drpdwn.settings">Settings</span>
-                </a>
-                    <a href="#" class="dropdown-item" >
-                        <span data-i18n="drpdwn.stripe_acc">Wallet</span>
-                    </a>
-
-                <div class="dropdown-divider m-0"></div>{# forums #}
-                <div class="dropdown-multilevel dropdown-multilevel-left">
-                    <div class="dropdown-item">
-                        Forums I am part of
-                    </div>
-                    <div class="dropdown-menu">
-                        <div class="dropdown-item disabled">Mine Forums:</div>
-                        {% for forum in user.userPrivateForum %}
-                            <a href="{{ path('user_forum', {'id':forum.Id}) }}" class="dropdown-item" data-toggle="tooltip" title data-original-title="{{ forum.description }}">{{ forum.name }}</a>
-                        {% endfor %}
-
-                        <div class="dropdown-item disabled">Forums I Belong:</div>
-                        {% for member in user.ForumsMember %}
-                            {% set thisIsMine = false %}
-                            {% for minePrivateForums in user.userPrivateForum %}
-                                {% if member.Forum.Id == minePrivateForums.Id %}
-                                    {% set thisIsMine = true %}
-                                {% endif %}
-                            {% endfor%}
-                            {% if thisIsMine == false %}
-                                <a href="{{ path('user_forum', {'id':member.Forum.Id}) }}" class="dropdown-item" data-toggle="tooltip" title data-original-title="{{ member.Forum.description }}">{{ member.Forum.name }}</a>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="dropdown-divider m-0"></div>
-                <a href="#" class="dropdown-item" data-action="app-fullscreen">
-                    <span data-i18n="drpdwn.fullscreen">Fullscreen</span>
-                    <i class="float-right text-muted fw-n">F11</i>
-                </a>
-                <a href="#" class="dropdown-item" data-action="app-print">
-                    <span data-i18n="drpdwn.print">Print</span>
-                    <i class="float-right text-muted fw-n">Ctrl + P</i>
-                </a>
-                <div class="dropdown-multilevel dropdown-multilevel-left">
-                    <div class="dropdown-item">
-                        Language
-                    </div>
-                    <div class="dropdown-menu">
-                        <a href="#?lang=fr" class="dropdown-item" data-action="lang" data-lang="fr">Français</a>
-                        <a href="#?lang=en" class="dropdown-item active" data-action="lang" data-lang="en">English (US)</a>
-                        <a href="#?lang=es" class="dropdown-item" data-action="lang" data-lang="es">Español</a>
-                        <a href="#?lang=ru" class="dropdown-item" data-action="lang" data-lang="ru">Русский язык</a>
-                        <a href="#?lang=jp" class="dropdown-item" data-action="lang" data-lang="jp">日本語</a>
-                        <a href="#?lang=ch" class="dropdown-item" data-action="lang" data-lang="ch">中文</a>
-                    </div>
-                </div>
-                <div class="dropdown-divider m-0"></div>
-                <a href="{{ path('create_forum', {'user':user.Username}) }}" class="dropdown-item fw-400">Create forum</a>
-                <div class="dropdown-divider m-0"></div>
-                <a class="dropdown-item fw-500 pt-3 pb-3" href="{{ path('app_logout') }}">
-                    <span data-i18n="drpdwn.page-logout">Logout</span>
-                    <span class="float-right fw-n d-none">{{ user.Username }}</span>
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
+        {% include 'smartadmin/parts/appUserMenu.twig' %}
 </header>

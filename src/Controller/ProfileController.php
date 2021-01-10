@@ -120,6 +120,14 @@ class ProfileController extends AbstractController
                 $img->save("upload/social/BackGrounds/" . $user->getUsername() . '/' . $newFilename);
 
                 $SP->setBackgroundFilename($newFilename);
+
+                if($request->get('white-color-opacity') and $request->get('white-color-opacity') != 0){
+                    $SP->setBGcolor('255,255,255');
+                    $SP->setBGopacity($request->get('white-color-opacity'));
+                }else if ($request->get('black-color-opacity') and $request->get('black-color-opacity') != 0){
+                    $SP->setBGcolor('0,0,0');
+                    $SP->setBGopacity($request->get('black-color-opacity'));
+                }
             } else {
                 //invalid token
             }
@@ -166,11 +174,11 @@ class ProfileController extends AbstractController
     {
         $mainMenu = $mainMenuService->getMenu();
         $repository = $entityManager->getRepository(Account::class);
+        $user = $this->getUser();
 
-        $comics = $comicsRepo->findAll();
+        $comics = $comicsRepo->findMineComics($user->getId());
 
         $userCredentials = $repository->findOneBy(['username' => $profile]);
-        $user = $this->getUser();
 
         $design = $pdsr->find($user);
 
@@ -216,7 +224,10 @@ class ProfileController extends AbstractController
                     'Comments' => [],
                     'Comments_length' => $comments_length[0]['1'],
                     'MainCommentsLength' => $main_comments_length[0]['1'],
-                    'BGFilename' => $post->getBackgroundFilename()
+                    'BGFilename' => $post->getBackgroundFilename(),
+                    'VisibleName' => $post->getAccount()->getVisibleName(),
+                    'BGcolor' => $post->getBGcolor(),
+                    'BGopacity' => $post->getBGopacity(),
                 ];
                 $commentIt = 0;
                 $comments = $underCommentsRepo->findNewestComments($post->getId(), '3');
@@ -232,7 +243,8 @@ class ProfileController extends AbstractController
                             'AuthorAvatarFileName' => $comment->getAuthor()->getAvatarFileName(),
                             'createdAt' => $comment->getCreatedAt(),
                             'modifiedAt' => $comment->getModifiedAt(),
-                            'CommentConversation' => []
+                            'CommentConversation' => [],
+                            'VisibleName' => $comment->getAuthor()->getVisibleName()
                         ]);
 
                         $underComments = $underCommentsRepo->findBy(['underAnotherComment' => $comment->getId()]);
@@ -246,7 +258,8 @@ class ProfileController extends AbstractController
                                 'AuthorLastName' => $underComment->getAuthor()->getLastName(),
                                 'AuthorAvatarFileName' => $underComment->getAuthor()->getAvatarFileName(),
                                 'createdAt' => $underComment->getCreatedAt(),
-                                'modifiedAt' => $underComment->getModifiedAt()
+                                'modifiedAt' => $underComment->getModifiedAt(),
+                                'VisibleName' => $underComment->getAuthor()->getVisibleName()
                             ]);
                         }
                     }

@@ -361,3 +361,7 @@
 .hover-blue:hover {
     color: darkblue;
 }
+tt {
+    font-family: "Lucida Console", "Menlo", "Monaco", "Courier",
+    monospace;
+}

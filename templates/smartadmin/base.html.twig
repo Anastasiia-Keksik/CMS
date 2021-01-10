@@ -900,6 +900,130 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
                 GotArt = true;
             }
         }
+
+        let notificationLoaded = false;
+        function loadNotifications(){
+            if (notificationLoaded === false){
+                $('#invitations').html('<div class="w-100 text-center">Loading...</div>');
+                $.ajax('{{ path('app_loadNotifications') }}', {
+                    method: "POST",
+                    success: function (data) {
+                        data = JSON.parse(data)
+                        notificationLoaded = true;
+                        data.forEach(elm => {
+                            $('#invitations').html(' <li id="invition_from-'+elm.person.Id+'">'+
+                                ' <a href="/profile/'+elm.person.Username+'" class="d-flex align-items-center">'+
+                                '                                 <span class="status status-danger mr-2">'+
+                                '                                      <span class="profile-image rounded-circle d-inline-block" style="background-image:url(\'/smartadmin/img/demo/avatars/avatar-b.png\')"></span>'+
+                                '                                  </span>'+
+                                '     <span class="d-flex flex-column flex-1 ml-1">'+
+                                '                                     <div class="d-flex flex-row name">'+
+                                '                                         <span class="name w-50 text-truncate">'+elm.person.FirstName+' '+elm.person.LastName+'</span>'+
+                                '                                         <div class="w-50"><span class="fs-nano text-muted mt-1 float-right">'+elm.person.CreatedAt+'</span></div>'+
+                                '                                     </div>'+
+                                '         <span>'+elm.person.Username+'&nbsp;</span>'+
+                                '                                     <div class="btn-group">'+
+                                '                                         <span class="btn btn-outline-info btn-xs">Accept</span>'+
+                                '                                         <span class="btn btn-outline-danger btn-xs">Reject</span>'+
+                                '                                     </div>'+
+                                '                                   </span>'+
+                                '  </a>'+
+                                ' </li>');
+                        })
+                    },
+                    error: function () {
+                        console.log('somethingWrong');
+                    }
+                });
+            }
+        }
+    </script>
+    <script>
+        function InvitePerson(id, circleId){
+            $('.invitation').html('<i class="fal fa-clock"></i> wait')
+            $.ajax({
+                url: '/sendInvitationRequest/'+id+'/'+circleId,
+                method: 'GET',
+                success: function () {
+                    $('.invitation').html('<i class="fal fa-hand-middle-finger"></i> Cancel invitation')
+                },
+                error: function () {
+                    $('.invitation').html('<i class="fal fa-tired"></i> Some error - try again')
+                }
+            });
+        }
+    </script>
+    <script>
+        let newCircleNameId;
+
+        function createCircle(id){
+            newCircleNameId = id;
+            if ($('#newCircleName-'+id).val() != ''){
+                $('#choseCircleImage').modal('show')
+                if (!$('#namerequired-'+id).hasClass('d-none')){
+                    $('#namerequired-'+id).addClass('d-none')
+                }
+            }else{
+                $('#namerequired-'+id).removeClass('d-none')
+            }
+        }
+
+        function choseCircleImage(image){
+            $('#choseCircleImage').modal('hide')
+            $.ajax({
+                url: '/createCircle',
+                data: {
+                    '_token': '{{ csrf_token('createCircle') }}',
+                    'CircleName': $('#newCircleName-'+newCircleNameId).val(),
+                    'ImageName': image
+                },
+                method: 'POST',
+                dataType: 'json',
+                success: function (data) {
+                    $('.circle-target').append('<div class="col-4 text-center" onclick="InvitePerson(\'{{ user.Id }}\', \''+data.id+'\')">'+
+                        '    <img width="100px" height="100px" style="border: 1px black solid; border-radius: 15px;">'+
+                        '    <p>'+$('#newCircleName-'+newCircleNameId).val()+'</p>'+
+                        '</div>')
+                },
+                error: function (error) {
+                    console.log(error.status)
+                }
+            });
+        }
+
+        let areCirclesAlreadyLoaded = false
+        let areTheyLoadingCircles = false
+        function showCircles(){
+            if (areCirclesAlreadyLoaded === false && areTheyLoadingCircles === false){
+                areTheyLoadingCircles = true
+                $('.circle-target').html('<span class="w-100 text-center mb-g">Loading...</span>')
+                $.ajax({
+                    url: '/getCircles',
+                    data: {
+                        '_token': '{{ csrf_token('getCircles') }}',
+                    },
+                    method: 'POST',
+                    dataType: 'json',
+                    success: function (data) {
+                        //data = JSON.parse(data)
+                        $('.circle-target').html('')
+                        data.forEach(elm => {
+                            console.log(elm)
+                            $('.circle-target').append('<div class="col-4 text-center" onclick="InvitePerson(\'{{ user.Id }}\', \''+elm.id+'\')">'+
+                                '    <img width="100px" height="100px" style="border: 1px black solid; border-radius: 15px;">'+
+                                '    <p>'+elm.Name+'</p>'+
+                                '</div>')
+                        })
+                        areCirclesAlreadyLoaded = true;
+                        areTheyLoadingCircles = false;
+                    },
+                    error: function (error) {
+                        console.log(error.status)
+                        areTheyLoadingCircles = false;
+                    }
+                });
+            }
+        }
     </script>
 {% endblock %}
 <!--This page contains the basic JS and CSS files to get started on your project. If you need aditional addon's or plugins please see scripts located at the bottom of each page in order to find out which JS/CSS files to add.-->

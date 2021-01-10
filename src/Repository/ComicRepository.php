@@ -19,22 +19,23 @@ class ComicRepository extends ServiceEntityRepository
         parent::__construct($registry, Comic::class);
     }
 
-    // /**
-    //  * @return Comic[] Returns an array of Comic objects
-    //  */
-    /*
-    public function findByExampleField($value)
+     /**
+      * @return Comic[] Returns an array of Comic objects
+      */
+
+    public function findMineComics($user)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+            ->andWhere('pa.User = :user')
+            ->leftJoin('c.project', 'p')
+            ->leftJoin('p.Account', 'pa')
+            ->setParameter('user', $user)
+            ->orderBy('c.createdAt', 'ASC')
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+
 
     /*
     public function findOneBySomeField($value): ?Comic

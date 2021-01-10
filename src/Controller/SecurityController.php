@@ -92,6 +92,8 @@ SecurityController extends AbstractController
             $account = $form->getData();
             $account->setTemplate($_SERVER['DEFAULT_TEMPLATE']);//TODO: pobierac default template z bazy
             $account->setAvatarFileName('empty-avatar.png');
+            $account->setVisibleName(3);
+            $account->getBgPosition(0);
 
             $account->setPassword($passwordEncoder->encodePassword(
                 $account,

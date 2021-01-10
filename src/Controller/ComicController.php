@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Comic;
 use App\Entity\ComicEpisode;
+use App\Entity\ProfileUserConnection;
+use App\Entity\Project;
+use App\Entity\ProjectUserConnection;
 use App\Entity\SocialPost;
 use App\Repository\ComicCategoriesRepository;
 use App\Repository\ComicEpisodeRepository;
@@ -67,7 +70,7 @@ class ComicController extends AbstractController
         $comicEpisodes = $comicEpisodeRepository->get10Episodes($comicid->getId(), $page);
         $episodesCount = $comicEpisodeRepository->getCountEpisodesPublished($comicid->getId())[0][1];
 
-        $comics = $comicRepo->findAll();
+        $comics = $comicRepo->findMineComics($user->getId());
 
         return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/comic/comicList.html.twig', [
             'title'=>'Komiks - '.$_SERVER['APP_NAME'], // tytul komiksu
@@ -154,6 +157,17 @@ class ComicController extends AbstractController
                 $comic->setDescription(substr($request->request->get('description'),0,501));
                 $comic->setBrutality($request->request->get('brutality'));
                 $comic->setNudity($request->request->get('nudity'));
+                $project = new Project();
+                $project->setComic($comic);
+                $project->setStatus(0);
+                $project->setType(1);
+                $projectUserConn = new ProjectUserConnection();
+                $projectUserConn->setProject($project);
+                $projectUserConn->setUser($this->getUser());
+                $projectUserConn->setCreatedAt(new \DateTime());
+                $projectUserConn->setRevenue(100);
+                // 1 - Comic
+                // 2 - Comic episode
 
                 if ($request->request->get('style') == "worm"){
                     $comic->setViewerStyle(1);
@@ -211,6 +225,8 @@ class ComicController extends AbstractController
 
                 $em->persist($diary);
                 $em->persist($comic);
+                $em->persist($project);
+                $em->persist($projectUserConn);
                 $em->flush();
             }else{
                 dd('invalid token');
@@ -219,7 +235,7 @@ class ComicController extends AbstractController
 
         $categories = $comicCatRepo->findAll();
 
-        $comics = $comicRepo->findAll();
+        $comics = $comicRepo->findMineComics($user->getId());
 
         $mainMenu = $mainMenuService->getMenu();
         return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/comic/addComic.html.twig', [
@@ -326,9 +342,22 @@ class ComicController extends AbstractController
             $Episode->setLikes(0);
             $Episode->setViews(0);
             $Episode->setComic($comicid);
-            $Episode->setCreatedAt(new\DateTime());
+            $Episode->setCreatedAt(new \DateTime());
             $Episode->setPublished(0);
+            $project = new Project();
+            $project->setComicEpisode($Episode);
+            $project->setStatus(0);
+            $project->setType(2);
+            // 1 - Comic
+            // 2 - Comic episode
+            $projectUserConn = new ProjectUserConnection();
+            $projectUserConn->setProject($project);
+            $projectUserConn->setUser($this->getUser());
+            $projectUserConn->setCreatedAt(new \DateTime());
+            $projectUserConn->setRevenue(100);
 
+            $em->persist($project);
+            $em->persist($projectUserConn);
             $em->persist($Episode);
             $em->flush();
 
@@ -372,7 +401,14 @@ class ComicController extends AbstractController
      * @Security("is_granted('ROLE_USER')")
      */
     public function deleteImage($image, ComicEpisode $episode, Request $request, EntityManagerInterface $em){
-        if ($episode->getComic()->getAuthor() == $this->getUser()){
+        $authors = $episode->getProject()->getAccount();
+        $isAuthor = false;
+        foreach ($authors as $author){
+            if ($author->getUser()->getId() == $this->getUser()->getId()){
+                $isAuthor = true;
+            }
+        }
+        if ($isAuthor == true){
             if ($request->request->get('_token')){
                 if ($this->isCsrfTokenValid('delete_image_episode', $request->request->get('_token'))){
                     $array = $episode->getImages();
@@ -411,11 +447,15 @@ class ComicController extends AbstractController
     /**
      * @Route("editEpisode/{episodeid}", name="edit_episode")
      * @Security("is_granted('ROLE_USER')")
+     * @param ComicEpisode $episodeid
+     * @param MainMenuService $mainMenuService
+     * @param ComicRepository $comicsRepo
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function editEpisode(ComicEpisode $episodeid, MainMenuService $mainMenuService, ComicRepository $comicsRepo)
     {
         $profile = $this->getUser();
-        $comics = $comicsRepo -> findAll();
+        $comics = $comicsRepo->findMineComics($this->getUser()->getId());
 
         $thumbnail = file_exists($this->getParameter('kernel.project_dir')."/public/upload/comics/".$episodeid->getComic()->getId()."/".$episodeid->getId()."/glimpse.png");
 

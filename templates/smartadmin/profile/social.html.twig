@@ -1,9 +1,9 @@
 <div class="tab-pane fade{% if tab == 'profile' %} show active{% endif %}" id="profile" role="tab_panel">
 {#    <div class="col-lg-12 col-xl-6 order-lg-3 order-xl-2">#}
-        <div class="card composed-left NewSocialPostPanel mb-g" onclick="openModal1();" style="background: none">
+        <div class="card composed-left NewSocialPostPanel mb-g" {# onclick="openModal1();" #} style="background: none;">
             <div class="card-body pl-0 pt-0 pr-0 pb-0 bg-white rounded" id="wallpaper" style="{# background-image: url('{{ asset('upload/23751.jpg') }}'); background-size: 100%#}">
-                <div id="black-transparent" class="w-100 rounded black-transparent" style="background-color: rgba(0,0,0, 0)">
-                    <div id="white-transparent" class="w-100 rounded" style="background-color: rgba(255,255,255, 0)">
+                <div class="w-100 rounded black-transparent" style="background-color: rgba(0,0,0, 0)">
+                    <div class="w-100 rounded white-transparent" style="background-color: rgba(255,255,255, 0)">
                         <div class="d-flex flex-column">
                     <form id="NewSocialPostForm" action="{{ path('app_sendNewPost') }}" method="POST" enctype="multipart/form-data">
                         <div class="border-0 flex-1 position-relative shadow-top pt-0">
@@ -14,22 +14,26 @@
                                         <span class="profile-image rounded-circle d-block" style="background-image:url('{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
                                         </div>
                                         <h5 class="mb-0 flex-1 text-white  opacity-70 fw-400" style="mix-blend-mode: difference;">
-                                        {{ user.FirstName}} "{{ user.Username }}" {{ user.LastName }}
+                                            {% if user.VisibleName == 1 %}{{ user.Username }}
+                                            {% elseif user.VisibleName == 2 %}{{ user.FirstName }} {{ user.LastName }}
+                                            {% elseif user.VisibleName == 3 %}{{ user.FirstName }} "{{ user.Username }}" {{ user.LastName }} {% endif %}
                                         <small class="m-0 l-h-n">
                                         {{ user.Occupation }}
                                         </small>
                                         </h5>
-                                        <span id="clock" class="text-black fw-500 fs-xs opacity-70" {% if true %}style="font-family: \'quartz-clock\'; font-weight: normal; font-style: normal;"{% endif %}>
+                                        <span class="text-black fw-500 clock fs-xs opacity-70" {% if true %}style="font-family: \'quartz-clock\'; font-weight: normal; font-style: normal;"{% endif %}>
                                         {# CLOCK #}
                                                      </span>
                                     </div>
                                     <div class="">
-                                        <textarea required="required" id="NewSocialPost" name="NewSocialPost" class="NewSocialPost text-black-50 form-control border-0 p-0 fs-xl bg-transparent" rows="4" oninput="NewSocialPostContentFun(document.getElementById('NewSocialPost').value)"></textarea>
+                                        <textarea placeholder="What's on your mind {{ user.firstName }}?..." required="required" id="NewSocialPost" name="NewSocialPost" class="NewSocialPost text-black-50 form-control border-0 px-4 pt-2 fs-xl bg-transparent" rows="4" oninput="NewSocialPostContentFun(document.getElementById('NewSocialPost').value)"></textarea>
                                     </div>
                                     <div class="position-absolute" style="width:100px; bottom: 55px; right: 5px; ">
                                         <input id="newSocialPostSlider" type="text" value="js-range-slider" class="d-none" tabindex="-1" readonly="">
                                     </div>
-                                    <button class="btn btn-outline-default ml-auto position-absolute" style="right: 5px; bottom: 5px;"><span style=" color: white; mix-blend-mode: difference;">Dodaj Post</span></button>
+                                    <i class="btn btn-icon btn-outline-default" data-toggle="modal" data-target=".upload-wallpaper" style="bottom: 5px; left: 5px; border-width: 0"><i class="fal fa-image fa-2x"></i></i>
+                                    <span class="btn btn-outline-default ml-auto position-absolute" style="right: 110px; bottom: 5px;" onclick="postLookout()"><span {# style=" color: white; mix-blend-mode: difference;" #}>Podgląd</span></span>
+                                    <button class="btn btn-outline-default ml-auto position-absolute" style="right: 5px; bottom: 5px;"><span {# style=" color: white; mix-blend-mode: difference;" #}>Dodaj Post</span></button>
                                     <div id="buttonDropdownTarget hidden-xs-up"><a href="#" id="linkToggleDropdown" class="hidden-xs-up dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a></div>
 {#                                <span class="profile-image rounded-circle d-block position-absolute avatar-size-50" style="background-image:url('{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>#}
                                     <script>
@@ -40,11 +44,13 @@
 {#                                </div>#}
                                 </div>
                                 <input type="hidden" name="wallpaper" value="" id="wallpaperform">
+                                <input type="hidden" name="white-color-opacity" value="0" id="white-color-opacity-value-target">
+                                <input type="hidden" name="black-color-opacity" value="0" id="black-color-opacity-value-target">
                                 <input type="hidden" name="wallpaperExt" value="" id="wallpaperformExt">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token('newpost') }}">
                             </div>
                         </div>
-                        <button class="btn dropdown-item hidden-xs-up" id="wallpaperLink" data-toggle="modal" data-target=".upload-wallpaper" type="button"></button>
+{#                        <button class="btn dropdown-item hidden-xs-up" id="wallpaperLink" data-toggle="modal" data-target=".upload-wallpaper" type="button"></button>#}
 
                         {#                        <div class="height-8 d-flex flex-row align-items-center flex-wrap flex-shrink-0">#}
 {#                            <div class="btn-group dropdown">#}
@@ -82,7 +88,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="background-color: transparent">
                 <div class="modal-body p-0 d-flex justify-content-center">
-                    <div class="card m-0 composed-left NewSocialPostPanel" onclick="" data-toggle="modal" data-target="WriteNewPost">
+                    <div class="card m-0 composed-left NewSocialPostPanel" onclick="">
                         <div class="card-body pl-0 pt-0 pr-0 pb-0 rounded" id="wallpaper" style="background-image: url('{{ asset('upload/23751.jpg') }}'); background-size: 100%">
                             <div class="d-flex flex-column">
                                 <form id="NewSocialPostFormModal" action="{{ path('app_sendNewPost') }}" method="POST" enctype="multipart/form-data">
@@ -94,7 +100,9 @@
                                                         <span class="profile-image rounded-circle d-block" style="background-image:url('{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
                                                     </div>
                                                     <h5 class="mb-0 flex-1 text-black opacity-70 fw-500">
-                                                        {{ user.FirstName}} "{{ user.Username }}" {{ user.LastName }}
+                                                        {% if user.VisibleName == 1 %}{{ user.Username }}
+                                                        {% elseif user.VisibleName == 2 %}{{ user.FirstName }} {{ user.LastName }}
+                                                        {% elseif user.VisibleName == 3 %}{{ user.FirstName }} "{{ user.Username }}" {{ user.LastName }} {% endif %}
                                                         <small class="m-0 l-h-n">
                                                             {{ user.Occupation }}
                                                         </small>
@@ -156,8 +164,8 @@
         <!-- post comment -->
         <div class="card mb-g composed-left PostPanel">
             <div class="card-body pb-0 px-0 pt-0 rounded-top shadow-5" {% if post.BGFilename is not null %}style="background-image: url('{{ asset('upload/social/BackGrounds/'~post.AuthorUsername~'/'~post.BGFilename) }}'); background-size: 100%;"{% endif %}>
-                <div id="black-transparent_{{ post.Id }}" class="w-100" style="background-color: rgba(0,0,0, 0)">
-                    <div id="white-transparent_{{ post.Id }}" class="w-100" style="background-color: rgba(255,255,255, 0)">
+                <div id="black-transparent_{{ post.Id }}" class="w-100 rounded-top" {% if post.BGcolor is defined and post.BGcolor == '0,0,0' %}style="background-color: rgba({{ post.BGcolor }}, {{ post.BGopacity }})"{% endif %}>
+                    <div id="white-transparent_{{ post.Id }}" class="w-100 rounded-top" {% if post.BGcolor is defined and post.BGcolor == '255,255,255' %}style="background-color: rgba({{ post.BGcolor }}, {{ post.BGopacity }})"{% endif %}>
                         <div id="postUserCreBg_{{ post.Id }}" onmouseover="postupperbgColorChange('postUserCreBg_{{ post.Id }}')" onmouseleave="postupperbgColorChangeBack('postUserCreBg_{{ post.Id }}')" class="rounded-top px-4 text-black pt-3"
                              style="background: rgb(255,255,255); background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 55%, rgba(255,255,255,.4) 100%);">
                             <div class="d-flex flex-row pb-2 mb-1 pt-2 pl-2 rounded-pill border-top-0 border-left-0 border-bottom-0 rounded-right-0 pr-2 border-right-0">
@@ -165,48 +173,51 @@
                                     <span class="profile-image rounded-circle d-block" style="background-image:url('{{ asset('upload/avatars/'~post.AuthorUsername~'/'~post.AuthorAvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
                                 </div>
                                 <h5 class="mb-0 flex-1 text-black opacity-70 fw-400">{#                                    background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.8419117988992471) 24%, rgba(0,0,0,0.7606793059020483) 40%, rgba(0,0,0,0.6738445720084909) 49%, rgba(0,0,0,0.6262255243894433) 52%, rgba(0,0,0,0) 100%);#}
-                                    {{ post.AuthorFirstName }} "{{post.AuthorUsername}}" {{ post.AuthorLastName }}
+                                    {% if post.VisibleName == 1 %}{{ post.Username }}
+                                    {% elseif post.VisibleName == 2 %}{{ post.AuthorFirstName }} {{ post.AuthorLastName }}
+                                    {% elseif post.VisibleName == 3 %}{{ post.AuthorFirstName }} "{{ post.AuthorUsername }}" {{ post.AuthorLastName }} {% endif %}
                                     <small class="m-0 l-h-n">
                                         {{post.AuthorOccupation}}
                                     </small>
                                 </h5>
-                                <span class="fs-xs color-fusion-900">
-                                                            {{post.createdAt|ago}}
-                                                        </span>
+                                <span class="fs-xs color-fusion-900">{{post.createdAt|ago}}</span>
                             </div>
                         </div>
                         <div class="px-4">
-                        <div class="pb-3 pt-2 border-top-0 border-left-0 border-right-0 text-muted">
-                            {{ post.Content|raw }}
-                        </div>
-                        <div class="d-flex py-3 justify-content-between">
-                            <div class="rounded p-1" style="background-color: rgba(255,255,255,0.5)">
-                            <a href="javascript:void(0);" class="d-inline-flex align-items-center">
-                                <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span class="color-primary-700">{{post.Likes}} Likes</span>
-                            </a>&nbsp;&nbsp;&nbsp;
-                            <a href="javascript:void(0);" class="d-inline-flex align-items-center">
-                                <i class="fal fa-comment fs-xs mr-1 color-primary-700"></i> <span class="color-primary-700">{{post.Comments_length}} Comments</span>
-                            </a>
+                            <div class="pb-3 pt-2 border-top-0 border-left-0 border-right-0 text-muted">
+                                {{ post.Content|raw }}
                             </div>
-                            <div class="rounded p-1" style="background-color: rgba(255,255,255,0.5);">
-                                <span class="color-primary-700">
-                                    Answer
-                                </span>
-                                &nbsp;&nbsp;&nbsp;
-                                <span>
-                                    <a class="" data-toggle="modal" data-target="#postModal" onclick="activatePostCarousel('#post_{{ post.Id }}_carousel');">
-                                        <span class="color-primary-700">Read full</span>
-                                    </a>
-                                </span>
-                                {% if profile.Username == user.Username %}
+                            <div class="d-flex py-3 justify-content-between">
+                                <div class="rounded p-1" style="background-color: rgba(255,255,255,0.5)">
+                                <a href="javascript:void(0);" class="d-inline-flex align-items-center">
+                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span class="color-primary-700">{{post.Likes}} Likes</span>
+                                </a>&nbsp;&nbsp;&nbsp;
+                                <a href="javascript:void(0);" class="d-inline-flex align-items-center">
+                                    <i class="fal fa-comment fs-xs mr-1 color-primary-700"></i> <span class="color-primary-700">{{post.Comments_length}} Comments</span>
+                                </a>
+                                </div>
+                                <div class="rounded p-1" style="background-color: rgba(255,255,255,0.5);">
+                                    <span class="color-primary-700">
+                                        Answer to
+                                        {% if post.VisibleName == 1 %}{{ post.AuthorUsername }}
+                                        {% elseif post.VisibleName == 2 %}{{ post.AuthorFirstName }} {{ post.AuthorLastName }}
+                                        {% elseif post.VisibleName == 3 %}{{ post.AuthorFirstName }} "{{ post.AuthorUsername }}" {{ post.AuthorLastName }} {% endif %}
+                                    </span>
                                     &nbsp;&nbsp;&nbsp;
                                     <span>
-                                        <a class="" href="#" ><span class="color-primary-700">Edit</span></a>
+                                        <a class="" data-toggle="modal" data-target="#postModal" onclick="activatePostCarousel('#post_{{ post.Id }}_carousel');">
+                                            <span class="color-primary-700">Read full</span>
+                                        </a>
                                     </span>
-                                {% endif %}
+                                    {% if profile.Username == user.Username %}
+                                        &nbsp;&nbsp;&nbsp;
+                                        <span>
+                                            <a class="" href="#" ><span class="color-primary-700">Edit</span></a>
+                                        </span>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
@@ -235,7 +246,7 @@
                                 <span href="#" class="text-dark fw-500">
                                                 <a type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ni ni-action-redo"></i></a> {{ comment.AuthorFirstName }} "{{comment.AuthorUsername}}" {{ comment.AuthorLastName }}
                                                 <div class="dropdown-menu" style="">
-                                                    <button class="dropdown-item" data-toggle="modal" data-target=".favourites">Add Conversation to favourites</button>
+                                                    <button class="dropdown-item" data-toggle="modal" data-target=".favourites">Add Conversation to MEMORIES</button>
                                                 </div>
                                 </span><span class="text-muted fs-xs opacity-70 ml-auto">
                                                             {{comment.createdAt|ago}}
@@ -252,7 +263,9 @@
                                 <a href="#answer_{{ comment.Id }}" data-toggle="collapse" aria-expanded="false" aria-controls="answer_{{ comment.Id }}" class="float-left"
                                    {% if loop.last != true %}onclick="changeCommentCss('#comment_{{ post.Id }}_{{ loop.index }}', '#comment_{{ post.Id }}_{{ loop.index+1 }}')"{% endif %}>
                                     <span data-toggle="tooltip" data-original-title="Create new conversation" data-placement="top">
-                                        <i class="far fa-caret-down"></i> Answer to {{comment.AuthorUsername}}
+                                        <i class="far fa-caret-down"></i> Answer to {% if comment.VisibleName == 1 %}{{ comment.AuthorUsername }}
+                                        {% elseif comment.VisibleName == 2 %}{{ comment.AuthorFirstName }} {{ comment.AuthorLastName }}
+                                        {% elseif comment.VisibleName == 3 %}{{ comment.AuthorFirstName }} "{{ comment.AuthorUsername }}" {{ comment.AuthorLastName }} {% endif %}
                                     </span>
                                 </a>
                             </div>
@@ -286,9 +299,12 @@
                                     <div class="mb-0 flex-1 text-dark mr-1 ">
                                         <div class="d-flex">
                                             <span href="#" class="text-dark fw-500">
-                                                <a type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ni ni-action-redo"></i></a> {{ comment.AuthorFirstName }} "{{comment.AuthorUsername}}" {{ comment.AuthorLastName }}
+                                                <a type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ni ni-action-redo"></i></a>
+                                                {% if comment.VisibleName == 1 %}{{ comment.AuthorUsername }}
+                                                {% elseif comment.VisibleName == 2 %}{{ comment.AuthorFirstName }} {{ comment.AuthorLastName }}
+                                                {% elseif comment.VisibleName == 3 %}{{ comment.AuthorFirstName }} "{{ comment.AuthorUsername }}" {{ comment.AuthorLastName }} {% endif %}
                                                 <div class="dropdown-menu" style="">
-                                                    <button class="dropdown-item" data-toggle="modal" data-target=".favourites">Add Conversation to favourites</button>
+                                                    <button class="dropdown-item" data-toggle="modal" data-target=".favourites">Add Conversation to MEMORIES</button>
                                                 </div>
                                             </span><span class="text-muted fs-xs opacity-70 ml-auto">
                                                                         {{ ConversationComment.createdAt|ago }}
@@ -306,7 +322,11 @@
                                                     {#  onclick="changeCommgentCss('#comment_{{ post.Id }}_{{ loop.index }}', '#comment_{{ post.Id }}_{{ loop.index+1 }}')"#}
                                                class="float-right">
                                                 <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top">
-                                                    Answer to {{ ConversationComment.AuthorUsername }} <i class="far fa-caret-right"></i>
+                                                    Answer to
+                                                        {% if ConversationComment.VisibleName == 1 %}{{ ConversationComment.AuthorUsername }}
+                                                        {% elseif ConversationComment.VisibleName == 2 %}{{ ConversationComment.AuthorFirstName }} {{ ConversationComment.AuthorLastName }}
+                                                        {% elseif ConversationComment.VisibleName == 3 %}{{ ConversationComment.AuthorFirstName }} "{{ ConversationComment.AuthorUsername }}" {{ ConversationComment.AuthorLastName }} {% endif %}
+                                                    <i class="far fa-caret-right"></i>
                                                 </span>
                                             </a>
                                         </div>
@@ -501,7 +521,9 @@
                                                     <span class="profile-image rounded-circle d-block" style="background-image:url('{{ asset('upload/avatars/'~post.AuthorUsername~'/'~post.AuthorAvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
                                                 </div>
                                                 <h5 class="mb-0 flex-1 text-black fw-500">
-                                                    {{ post.AuthorFirstName }} "{{post.AuthorUsername}}" {{ post.AuthorLastName }}
+                                                    {% if post.VisibleName == 1 %}{{ post.AuthorUsername }}
+                                                    {% elseif post.VisibleName == 2 %}{{ post.AuthorFirstName }} {{ post.AuthorLastName }}
+                                                    {% elseif post.VisibleName == 3 %}{{ post.AuthorFirstName }} "{{ post.AuthorUsername }}" {{ post.AuthorLastName }} {% endif %}
                                                     <small class="m-0 l-h-n">
                                                         {{post.AuthorOccupation}}
                                                     </small>
@@ -526,7 +548,10 @@
                                                 </div>
                                                 <div class="rounded p-1" style="background-color: rgba(255,255,255,0.5);">
                             <span class="color-primary-700">
-                                Answer
+                                Answer to
+                                    {% if post.VisibleName == 1 %}{{ post.AuthorUsername }}
+                                    {% elseif post.VisibleName == 2 %}{{ post.AuthorFirstName }} {{ post.AuthorLastName }}
+                                    {% elseif post.VisibleName == 3 %}{{ post.AuthorFirstName }} "{{ post.AuthorUsername }}" {{ post.AuthorLastName }} {% endif %}
                             </span>
                                                     &nbsp;&nbsp;&nbsp;
                                                     <span>
@@ -567,7 +592,9 @@
                                                         <div class="mb-0 flex-1 text-dark">
                                                             <div class="d-flex">
                                                                 <a href="javascript:void(0);" class="text-dark fw-500">
-                                                                    {{ comment.AuthorFirstName }} "{{comment.AuthorUsername}}" {{ comment.AuthorLastName }}
+                                                                    {% if comment.VisibleName == 1 %}{{ comment.AuthorUsername }}
+                                                                    {% elseif comment.VisibleName == 2 %}{{ comment.AuthorFirstName }} {{ comment.AuthorLastName }}
+                                                                    {% elseif comment.VisibleName == 3 %}{{ comment.AuthorFirstName }} "{{ comment.AuthorUsername }}" {{ comment.AuthorLastName }} {% endif %}
                                                                 </a><span class="text-muted fs-xs opacity-70 ml-auto">
                                                                 {{comment.createdAt|ago}} minutes
                                                             </span>
@@ -589,7 +616,9 @@
                                                                     <div class="mb-0 flex-1 text-dark">
                                                                         <div class="d-flex">
                                                                             <a href="javascript:void(0);" class="text-dark fw-500">
-                                                                                {{ Conversation.AuthorUsername }}
+                                                                                {% if Conversation.VisibleName == 1 %}{{ Conversation.AuthorUsername }}
+                                                                                {% elseif Conversation.VisibleName == 2 %}{{ Conversation.AuthorFirstName }} {{ Conversation.AuthorLastName }}
+                                                                                {% elseif Conversation.VisibleName == 3 %}{{ Conversation.AuthorFirstName }} "{{ Conversation.AuthorUsername }}" {{ Conversation.AuthorLastName }} {% endif %}
                                                                             </a><span class="text-muted fs-xs opacity-70 ml-auto">
                                                                         {{ Conversation.createdAt|ago }}
                                                                     </span>
@@ -653,4 +682,41 @@
         </div>
     </div>
 
+    <div class="modal fade" id="postLookout" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content shadow-none" style="background-color: rgba(0,0,0,0)">
+                <!-- post comment -->
+                <div class="card">
+                    <div id="wallpaperlookout" class="card-body pb-0 px-0 pt-0 rounded">
+                        <div class="w-100 rounded black-transparent" style="background-color: rgba(0,0,0, 0)">
+                            <div class="w-100 rounded white-transparent" style="background-color: rgba(255,255,255, 0)">
+
+                                <div class="d-flex flex-row pb-0 px-4 pt-3  border-top-0 border-left-0 border-right-0" style="background: rgb(255,255,255); background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.3) 55%, rgba(255,255,255,.4) 100%);">
+                                    <div class="d-inline-block align-middle status status-success mr-3">
+                                        <span class="profile-image rounded-circle d-block" style="background-image:url('{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
+                                    </div>
+                                    <h5 class="mb-0 flex-1 text-black fw-500">
+                                        {% if user.VisibleName == 1 %}{{ user.Username }}
+                                        {% elseif user.VisibleName == 2 %}{{ user.FirstName }} {{ user.LastName }}
+                                        {% elseif user.VisibleName == 3 %}{{ user.FirstName }} "{{ user.Username }}" {{ user.LastName }} {% endif %}
+                                        <small class="m-0 l-h-n">
+                                            {{user.Occupation}}
+                                        </small>
+                                    </h5>
+                                        <span class="text-muted fs-xs opacity-70 clock">
+                                            {# CLOCK #}
+                                        </span>
+                                </div>
+                                <div id="postLookoutcontent-target" class="pb-3 pt-2 border-top-0 border-left-0 border-right-0 text-muted px-4">
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- post comment - end -->
+            </div>
+        </div>
+    </div>
 </div>

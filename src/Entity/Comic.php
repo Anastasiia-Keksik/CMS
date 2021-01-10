@@ -77,9 +77,14 @@ class Comic
     private $nudity;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $description;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Project::class, mappedBy="Comic", cascade={"persist", "remove"})
+     */
+    private $project;
 
     public function __construct()
     {
@@ -275,5 +280,10 @@ class Comic
         $this->description = $description;
 
         return $this;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
     }
 }

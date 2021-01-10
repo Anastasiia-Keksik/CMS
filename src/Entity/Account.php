@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=AccountRepository::class)
@@ -27,11 +28,13 @@ class Account implements UserInterface
      * @var string
      * @ORM\Column(type="string", length=36)
      * @ORM\Id
+     * @Groups({"notification"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"notification"})
      */
     private $username;
 
@@ -48,11 +51,13 @@ class Account implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=120, nullable=true)
+     * @Groups({"notification"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=120, nullable=true)
+     * @Groups({"notification"})
      */
     private $lastName;
 
@@ -217,6 +222,7 @@ class Account implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"notification"})
      */
     private $avatarFileName;
 
@@ -293,7 +299,7 @@ class Account implements UserInterface
     /**
      * @ORM\OneToMany(targetEntity=Favourites::class, mappedBy="User", orphanRemoval=true)
      */
-    private $yes;
+    private $favourite;
 
     /**
      * @ORM\Column(type="string", unique=true, nullable=true)
@@ -350,6 +356,31 @@ class Account implements UserInterface
      */
     private $phone;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $VisibleName;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ProjectUserConnection::class, mappedBy="User")
+     */
+    private $projects;
+
+    /**
+     * @ORM\OneToMany(targetEntity=InvitationRequest::class, mappedBy="WhoInvite", orphanRemoval=true)
+     */
+    private $invitationRequests;
+
+    /**
+     * @ORM\OneToMany(targetEntity=InvitationRequest::class, mappedBy="WhoInvited", orphanRemoval=true)
+     */
+    private $invitationRequiestsReceived;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Circles::class, mappedBy="User", orphanRemoval=true)
+     */
+    private $circles;
+
     public function __construct()
     {
         $this->mainMenuCategories = new ArrayCollection();
@@ -375,7 +406,11 @@ class Account implements UserInterface
         $this->userPrivateForum = new ArrayCollection();
         $this->forumsMember = new ArrayCollection();
         $this->userForumRanks = new ArrayCollection();
-        $this->yes = new ArrayCollection();
+        $this->favourite = new ArrayCollection();
+        $this->projects = new ArrayCollection();
+        $this->invitationRequests = new ArrayCollection();
+        $this->invitationRequiestsReceived = new ArrayCollection();
+        $this->circles = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -1405,28 +1440,28 @@ class Account implements UserInterface
     /**
      * @return Collection|Favourites[]
      */
-    public function getYes(): Collection
+    public function getFavourite(): Collection
     {
-        return $this->yes;
+        return $this->favourite;
     }
 
-    public function addYe(Favourites $ye): self
+    public function addFavourite(Favourites $Favourite): self
     {
-        if (!$this->yes->contains($ye)) {
-            $this->yes[] = $ye;
-            $ye->setUser($this);
+        if (!$this->favourite->contains($Favourite)) {
+            $this->favourite[] = $Favourite;
+            $Favourite->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeYe(Favourites $ye): self
+    public function removeFavourite(Favourites $Favourite): self
     {
-        if ($this->yes->contains($ye)) {
-            $this->yes->removeElement($ye);
+        if ($this->favourite->contains($Favourite)) {
+            $this->favourite->removeElement($Favourite);
             // set the owning side to null (unless already changed)
-            if ($ye->getUser() === $this) {
-                $ye->setUser(null);
+            if ($Favourite->getUser() === $this) {
+                $Favourite->setUser(null);
             }
         }
 
@@ -1561,6 +1596,138 @@ class Account implements UserInterface
     public function setPhone(?string $phone): self
     {
         $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getVisibleName(): ?int
+    {
+        return $this->VisibleName;
+    }
+
+    public function setVisibleName(int $VisibleName): self
+    {
+        $this->VisibleName = $VisibleName;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ProjectUserConnection[]
+     */
+    public function getProjects(): Collection
+    {
+        return $this->projects;
+    }
+
+    public function addProject(ProjectUserConnection $project): self
+    {
+        if (!$this->projects->contains($project)) {
+            $this->projects[] = $project;
+            $project->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProject(ProjectUserConnection $project): self
+    {
+        if ($this->projects->removeElement($project)) {
+            // set the owning side to null (unless already changed)
+            if ($project->getUser() === $this) {
+                $project->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|InvitationRequest[]
+     */
+    public function getInvitationRequests(): Collection
+    {
+        return $this->invitationRequests;
+    }
+
+    public function addInvitationRequest(InvitationRequest $invitationRequest): self
+    {
+        if (!$this->invitationRequests->contains($invitationRequest)) {
+            $this->invitationRequests[] = $invitationRequest;
+            $invitationRequest->setWhoInvite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvitationRequest(InvitationRequest $invitationRequest): self
+    {
+        if ($this->invitationRequests->removeElement($invitationRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($invitationRequest->getWhoInvite() === $this) {
+                $invitationRequest->setWhoInvite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|InvitationRequest[]
+     */
+    public function getInvitationRequiestsReceived(): Collection
+    {
+        return $this->invitationRequiestsReceived;
+    }
+
+    public function addInvitationRequiestsReceived(InvitationRequest $invitationRequiestsReceived): self
+    {
+        if (!$this->invitationRequiestsReceived->contains($invitationRequiestsReceived)) {
+            $this->invitationRequiestsReceived[] = $invitationRequiestsReceived;
+            $invitationRequiestsReceived->setWhoInvited($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvitationRequiestsReceived(InvitationRequest $invitationRequiestsReceived): self
+    {
+        if ($this->invitationRequiestsReceived->removeElement($invitationRequiestsReceived)) {
+            // set the owning side to null (unless already changed)
+            if ($invitationRequiestsReceived->getWhoInvited() === $this) {
+                $invitationRequiestsReceived->setWhoInvited(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Circles[]
+     */
+    public function getCircles(): Collection
+    {
+        return $this->circles;
+    }
+
+    public function addCircle(Circles $circle): self
+    {
+        if (!$this->circles->contains($circle)) {
+            $this->circles[] = $circle;
+            $circle->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCircle(Circles $circle): self
+    {
+        if ($this->circles->removeElement($circle)) {
+            // set the owning side to null (unless already changed)
+            if ($circle->getUser() === $this) {
+                $circle->setUser(null);
+            }
+        }
 
         return $this;
     }

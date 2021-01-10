@@ -38,6 +38,6 @@ class GetContactsService
     }
 
     public function getComics($user){
-        return $this->comicsReposiotory->findBy(['Author'=>$user]);
+        return $this->comicsReposiotory->findMineComics($user);
     }
 }

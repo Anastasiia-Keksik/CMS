@@ -63,6 +63,27 @@ class AccountRepository extends ServiceEntityRepository implements PasswordUpgra
     /**
      * @return Account[] Returns an array of Account objects
      */
+    public function searchByName($value, $searcherId)
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a.firstName as firstname', 'a.lastName as lastname', 'a.username as username', 'a.id as id')
+            ->andWhere('a.username like :val')
+            ->orWhere('a.firstName like :val')
+            ->orWhere('a.lastName like :val')
+            ->leftJoin('a.contacts', 'c1')
+            ->andWhere('c1.Account_source = :id')
+            ->orWhere('c1.Account_Targets = :id')
+            ->setParameter('val', '%'.$value.'%')
+            ->setParameter(':id', $searcherId)
+            ->orderBy('a.firstName', "ASC")
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return Account[] Returns an array of Account objects
+     */
     public function findJustUsernameAndAvatar($id)
     {
         return $this->createQueryBuilder('a')

@@ -2,14 +2,15 @@
 
 namespace App\Controller\API;
 
+use App\Entity\SocialPost;
 use App\Entity\SocialPostComment;
 use App\Form\ChoseMenuCategoryFormType;
 use App\Form\MakeNewRouteFormType;
 use App\Repository\AccountRepository;
 use App\Repository\SocialPostRepository;
-use App\Repository\SocialPost;
 use App\Repository\SocialPostCommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Bundle\MarkdownBundle\MarkdownParserInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -54,6 +55,7 @@ class SocialController extends AbstractController
 
         foreach ($socialPosts as $post){
             if($post->getSoftDelete()==false){
+                /** @var SocialPost $post */
                 $comments_length = $underCommentsRepo->countAllComments($post->getId());
                 $main_comments_length = $underCommentsRepo->countMainComments($post->getId());
                 $posts[$postsIt] = [
@@ -71,7 +73,10 @@ class SocialController extends AbstractController
                     'Comments'=>[],
                     'Comments_length'=>$comments_length[0]['1'],
                     'MainCommentsLength'=>$main_comments_length[0]['1'],
-                    'BGFilename' => $post->getBackgroundFilename()
+                    'BGFilename' => $post->getBackgroundFilename(),
+                    'VisibleName' => $post->getAccount()->getVisibleName(),
+                    'BGcolor' => $post->getBGcolor(),
+                    'BGopacity' => $post->getBGopacity(),
                 ];
                 $commentIt=0;
                 $comments = $underCommentsRepo->findNewestComments( $post->getId(),'3');
@@ -88,7 +93,8 @@ class SocialController extends AbstractController
                             'AuthorAvatarFileName'=>$comment->getAuthor()->getAvatarFileName(),
                             'createdAt'=>$comment->getCreatedAt(),
                             'modifiedAt'=>$comment->getModifiedAt(),
-                            'CommentConversation'=>[]
+                            'CommentConversation'=>[],
+                            'VisibleName' => $comment->getAuthor()->getVisibleName()
                         ]);
 
                         $underComments = $underCommentsRepo->findBy(['underAnotherComment'=>$comment->getId()]);
@@ -102,7 +108,8 @@ class SocialController extends AbstractController
                                 'AuthorLastName'=>$underComment->getAuthor()->getLastName(),
                                 'AuthorAvatarFileName'=>$underComment->getAuthor()->getAvatarFileName(),
                                 'createdAt'=>$underComment->getCreatedAt(),
-                                'modifiedAt'=>$underComment->getModifiedAt()
+                                'modifiedAt'=>$underComment->getModifiedAt(),
+                                'VisibleName' => $underComment->getAuthor()->getVisibleName()
                             ]);
                         }
                     }
@@ -233,6 +240,7 @@ class SocialController extends AbstractController
                     'status'=>'empty content',
                 ]);
             }
+            /** @var SocialPostComment $comment */
             $i=0;
             foreach($comments as $comment)
             {
@@ -249,7 +257,8 @@ class SocialController extends AbstractController
                     'AuthorAvatarFileUrl'=>$cm->getBrowserPath('/upload/avatars/'.$comment->getAuthor()->getUsername().'/'.$comment->getAuthor()->getAvatarFileName(), 'my_thumb'),
                     'createdAt'=>$comment->getCreatedAt() ? $comment->getCreatedAt()->format('Y-m-d H:i:s') : "",
                     'modifiedAt'=>$comment->getModifiedAt() ? $comment->getModifiedAt()->format('Y-m-d H:i:s') : "",
-                    'CommentConversation'=>[]
+                    'CommentConversation'=>[],
+                    'VisibleName' => $comment->getAuthor()->getVisibleName(),
                 ];
                 foreach ($commentConversationComments as $conversationComment){
                     array_push($commentary[$i]['CommentConversation'], [
@@ -262,6 +271,7 @@ class SocialController extends AbstractController
                         'AuthorAvatarFileUrl'=>$cm->getBrowserPath('/upload/avatars/'.$conversationComment->getAuthor()->getUsername().'/'.$conversationComment->getAuthor()->getAvatarFileName(), 'my_thumb'),
                         'createdAt'=>$conversationComment->getCreatedAt() ? $conversationComment->getCreatedAt()->format('Y-m-d H:i:s') : "",
                         'modifiedAt'=>$conversationComment->getModifiedAt() ? $conversationComment->getModifiedAt()->format('Y-m-d H:i:s') : "",
+                        'VisibleName' => $conversationComment->getAuthor()->getVisibleName()
                     ]);
                 }
                 $i++;
@@ -396,7 +406,8 @@ class SocialController extends AbstractController
                     'AuthorAvatarFileUrl'=>$cm->getBrowserPath('/upload/avatars/'.$comment->getAuthor()->getUsername().'/'.$comment->getAuthor()->getAvatarFileName(), 'my_thumb'),
                     'createdAt'=>$comment->getCreatedAt() ? $comment->getCreatedAt()->format('Y-m-d H:i:s') : "",
                     'modifiedAt'=>$comment->getModifiedAt() ? $comment->getModifiedAt()->format('Y-m-d H:i:s') : "",
-                    'CommentConversation'=>[]
+                    'CommentConversation'=>[],
+                    'VisibleName' => $comment->getAuthor()->getVisibleName(),
                 ];
                 foreach ($commentConversationComments as $conversationComment){
                     array_push($commentary[$i]['CommentConversation'], [
@@ -409,6 +420,7 @@ class SocialController extends AbstractController
                         'AuthorAvatarFileUrl'=>$cm->getBrowserPath('/upload/avatars/'.$conversationComment->getAuthor()->getUsername().'/'.$conversationComment->getAuthor()->getAvatarFileName(), 'my_thumb'),
                         'createdAt'=>$conversationComment->getCreatedAt() ? $conversationComment->getCreatedAt()->format('Y-m-d H:i:s') : "",
                         'modifiedAt'=>$conversationComment->getModifiedAt() ? $conversationComment->getModifiedAt()->format('Y-m-d H:i:s') : "",
+                        'VisibleName' => $conversationComment->getAuthor()->getVisibleName()
                     ]);
                 }
                 $i++;
@@ -422,6 +434,17 @@ class SocialController extends AbstractController
             return new JsonResponse([
                 'status'=>'empty content2',
             ]);
+        }
+    }
+
+    /**
+     * @Route("/getSocialPostLookout", name="api_app_social_post_Lookaout")
+     */
+    public function getSocialPostLookout(Request $request, MarkdownParserInterface $markdownParser){
+        if ($this->isCsrfTokenValid('lookout', $request->request->get('csrf_token'))) {
+            return new Response($markdownParser->transformMarkdown($request->get('content')));
+        }else{
+            echo 'bad CSRF token!';
         }
     }
 }

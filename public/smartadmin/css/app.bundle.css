@@ -1041,7 +1041,7 @@ html {
     z-index: 0;
     padding: 1.5rem;
     width: 100%;
-    display: block; }
+    display: none; } /* SZYMON CHANGE - was "block" */
 
 /* icon menu with stacked icons located in the app header */
 .app-list {

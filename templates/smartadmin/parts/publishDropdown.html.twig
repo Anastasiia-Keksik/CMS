@@ -18,7 +18,8 @@
                         <div id="comic_{{ comic.id }}_menu" class="dropdown-menu">
                             <a href="{{ path('app_komiks', {'comicid':comic.id}) }}" class="dropdown-item bg-primary-100">Open It</a>
                             <span class="dropdown-item disabled">Episodes {{ comic.comicEpisodes|length }}</span>
-                            <a href="{{ path('add_episode', {'comicid':comic.id}) }}" class="dropdown-item">New Episode</a>
+{#                            <a href="{{ path('add_episode', {'comicid':comic.id}) }}" class="dropdown-item">New Episode</a>#}
+                            <a href="{{ path('app_project', {'id':comic.project.id}) }}" class="dropdown-item">Project Page</a>
                         </div>
                     </div>
                 {% endfor %}
@@ -34,14 +35,8 @@
         <a href="#" class="dropdown-item" data-action="app-fullscreen">
             <span data-i18n="drpdwn.fullscreen">New Poem/Story or a Book</span>
         </a>
-        <a href="#" class="dropdown-item" data-action="app-print">
-            <span data-i18n="drpdwn.print">New Image</span>
-        </a>
-        <a href="#" class="dropdown-item" data-action="app-print">
-            <span data-i18n="drpdwn.print">New Social Post</span>
-        </a>
-        <a href="#" class="dropdown-item" data-action="app-print">
-            <span data-i18n="drpdwn.print">New Blog post</span>
+        <a href="{{ path('app_projects') }}" class="dropdown-item text-center">
+            <span>All Projects</span>
         </a>
     </div>
 

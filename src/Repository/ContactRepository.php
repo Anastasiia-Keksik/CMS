@@ -36,7 +36,6 @@ class ContactRepository extends ServiceEntityRepository
         return $stmt->fetchAll();
     }
 
-
     /*
     public function findOneBySomeField($value): ?Contact
     {

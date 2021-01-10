@@ -9,7 +9,7 @@
     <main id="js-page-content" role="main" class="page-content"
           style="background-image: url('{{ asset('upload/12554.jpg') }}');">
         {% include 'smartadmin/profile/parts/header.twig' %}
-        <div class="profile-container" style="">
+        <div class="{# profile-container #}" style="">
             <div class="row profile">
 
                 {#    <div class="col-lg-6 col-xl-3 order-lg-1 order-xl-1" style="width: 280px">#}
@@ -126,7 +126,7 @@
                 {#    </div>#}
                 <!-- CENTER -->
                 <!--PROFILE-->
-                <div class="col-6 order-2 tab-content">
+                <div class="col-6 order-2 tab-content" style="max-width: 598px">
 
                     {% include 'smartadmin/profile/social.html.twig' %}
 
@@ -169,17 +169,17 @@
                                             let nav_page = true;
                                         </script>
                                         <li class="nav-item"><a
-                                                    class="nav-link{% if tab == 'profile' %} active{% endif %} rounded"
+                                                    class="nav-link{% if tab == 'profile' %} active{% endif %} rounded btn-outline-primary"
                                                     data-toggle="pill" href="#profile" onclick="nav_page=true"
                                                     style="padding: 0.32vw 0.97vw"><span
                                                         class="w-font-smaller-2">Profile</span></a></li>
                                         <li class="nav-item"><a
-                                                    class="nav-link{% if tab == 'settings' %} active{% endif %} rounded"
+                                                    class="nav-link{% if tab == 'settings' %} active{% endif %} rounded btn-outline-primary"
                                                     data-toggle="pill" href="#settings" onclick="nav_page=false"
                                                     style="padding: 0.32vw 0.97vw"><span
                                                         class="w-font-smaller-2">Settings</span></a></li>
                                         <li class="nav-item"><a
-                                                    class="nav-link{% if tab == 'apperance' %} active{% endif %} rounded"
+                                                    class="nav-link{% if tab == 'apperance' %} active{% endif %} rounded btn-outline-primary"
                                                     data-toggle="pill" href="#apperance" onclick="nav_page=false"
                                                     style="padding: 0.32vw 0.97vw"><span
                                                         class="w-font-smaller-2">Apperance</span></a></li>
@@ -258,13 +258,13 @@
                                         {#                                        all</a>#}
                                         <a class="btn btn-outline-primary rounded w-100"
                                            href="{{ path('app_gallery', {'profile': profile.Username}) }}"
-                                           style="padding: 0.32vw 0.97vw"><span class="w-font-smaller-2">Gallery</span></a>
+                                           style="padding: 0.32vw 0.97vw; border-width: 0"><span class="w-font-smaller-2">Gallery</span></a>
                                     </div>
                                 </div>
                                 <div id="profileMiniGallery" class="w-100" style="max-height: 600px">
                                     {% for photo in gallery|slice(0,9) %}
                                         <a class="" href="{{ asset('/'~profile.Username~'/gallery#lg=1&slide='~loop.index0) }}">
-                                            <img class="img-responsive" src="{{ asset('upload/gallery/'~profile.Username~'/'~photo.FileName)|imagine_filter('gallery_thumb') }}" style="border-radius: 5px">
+                                            <img class="img-responsive" src="{{ asset('upload/gallery/'~profile.Username~'/'~photo.FileName)|imagine_filter('gallery_thumb') }}" style="{# border-radius: 5px #}">
                                         </a>
                                     {% endfor %}
                                 </div>
@@ -364,7 +364,7 @@
                     </div>
                 </div>
                 {#        3#}
-                <div class="col-3 order-3">
+                <div class="col-3 order-3" style="margin-left: auto; right: 0">
 
                     <!-- rating -->
                     <div class="card mb-g composed-right">
@@ -961,24 +961,24 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/froala_editor_profile.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/froala_style.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/code_view.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/draggable.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/colors.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/emoticons.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/image_manager.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/image.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/line_breaker.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/table.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/char_counter.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/video.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/fullscreen.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/file.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/quick_insert.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/help.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/third_party/spell_checker.css') }}">
-    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/special_characters.css') }}">
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/froala_editor_profile.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/froala_style.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/code_view.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/draggable.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/colors.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/emoticons.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/image_manager.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/image.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/line_breaker.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/table.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/char_counter.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/video.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/fullscreen.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/file.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/quick_insert.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/help.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/third_party/spell_checker.css') }}">#}
+{#    <link rel="stylesheet" href="{{ asset('smartadmin/froala/css/plugins/special_characters.css') }}">#}
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11"></script>
     <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/formplugins/cropperjs/cropper.css') }}">
     <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/formplugins/ion-rangeslider/ion-rangeslider.css') }}">
@@ -1662,8 +1662,9 @@ Variables:
         {# TODO: if scroll to somecomment is empty scroll then #}
         {% if bgopen is not defined or bgopen != 'open' %}
         $(document).ready(function () {
-            if ($(window).scrollTop() < 10) {
-                $('html, body').animate({scrollTop: '180px'}, 500);
+            if ($(window).scrollTop() < 180) {
+                //$('html, body').animate({scrollTop: '180px'}, 500);
+                $(window).scrollTop(180);
             }
         });
         {% endif %}
@@ -1931,13 +1932,13 @@ Variables:
         function deleteWallpaper(){
             if (wallpaper === true){
                 $('#wallpaper').css('background-image', 'none');
+                $('#wallpaperlookout').css('background-image', 'none');
                 $('#wallpaperform').val('');
                 $('#wallpaperformExt').val('');
                 $('.upload-wallpaper').modal('hide');
                 $('#wallpaper_delete_hidden').addClass('hidden-xs-up');
-                $('#black-transparent').css('background-color', 'none');
                 $('.black-transparent').css('background-color', 'none');
-                $('#white-transparent').css('background-color', 'none');
+                $('.white-transparent').css('background-color', 'none');
 
                 $("#newSocialPostSlider").addClass('hidden-xs-up')
 
@@ -1968,7 +1969,9 @@ Variables:
                     var resp = JSON.parse(this.response);
 
                     $('#wallpaper').css('background-image', 'url(' + resp.dataUrl + ')');
+                    $('#wallpaperlookout').css('background-image', 'url(' + resp.dataUrl + ')');
                     $('#wallpaper').css('background-size', '100%');
+                    $('#wallpaperlookout').css('background-size', '100%');
                     $('#wallpaperform').val(resp.dataUrl);
                     $('#wallpaperformExt').val(resp.Ext);
                     $('.upload-wallpaper').modal('hide');
@@ -2007,9 +2010,10 @@ Variables:
                             white_opacity = 0;
                             console.log(black_opacity);
                         }
-                        $('#black-transparent').css('background-color', 'rgba(000,000,000, '+black_opacity+')');
                         $('.black-transparent').css('background-color', 'rgba(000,000,000, '+black_opacity+')');
-                        $('#white-transparent').css('background-color', 'rgba(255,255,255, '+white_opacity+')');
+                        $('.white-transparent').css('background-color', 'rgba(255,255,255, '+white_opacity+')');
+                        $('#white-color-opacity-value-target').val(white_opacity);
+                        $('#black-color-opacity-value-target').val(black_opacity);
 
                     });
                 }
@@ -2227,7 +2231,7 @@ Variables:
                                     '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
                                     '                        ' + comment.AuthorFirstName + ' "' + comment.AuthorUsername + '" ' + comment.AuthorLastName +
                                     '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
-                                    '                                                            ' + comment.createdAt + ' minutes\n' +
+                                    '                                                            ' + jQuery.timeago(comment.createdAt) +
                                     '                                                        </span>\n' +
                                     '                            </div>\n' +
                                     '                            <p class="mb-0">\n' +
@@ -2258,7 +2262,7 @@ Variables:
                                             '   <a href=\"javascript:void(0);\" class=\"text-dark fw-500\"> \n' +
                                             insideComment.AuthorFirstName + " \"" + insideComment.AuthorUsername + "\" " + insideComment.AuthorLastName +
                                             '   </a><span class=\"text-muted fs-xs opacity-70 ml-auto\"> \n' +
-                                            insideComment.createdAt +
+                                            jQuery.timeago(insideComment.createdAt) +
                                             '   </span> \n' +
                                             '   </div> \n' +
                                             '   <p class=\"mb-0\"> \n' +
@@ -2355,7 +2359,7 @@ Variables:
         };
         my_Clock.prototype.update = function () {
             this.updateTime(1);
-            $('#clock').html(this.hours + ":" + this.minutes + ":" + this.seconds)
+            $('.clock').html(this.hours + ":" + this.minutes + ":" + this.seconds)
             //console.log(this.hours + ":" + this.minutes + ":" + this.seconds);
         };
         my_Clock.prototype.updateTime = function (secs) {
@@ -2471,138 +2475,139 @@ Variables:
             }
         });
     </script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/froala_editor.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/align.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/code_beautifier.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/code_view.min.js') }}"></script>
-    {#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/char_counter.min.js') }}"></script>#}
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/colors.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/draggable.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/emoticons.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/entities.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/file.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/font_size.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/font_family.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/fullscreen.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/image.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/image_manager.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/line_breaker.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/inline_style.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/link.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/lists.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/paragraph_format.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/paragraph_style.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/quick_insert.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/quote.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/table.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/save.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/url.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/video.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/help.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/print.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/third_party/spell_checker.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/special_characters.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/word_paste.min.js') }}"></script>
+{#    FROALA #}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/froala_editor.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/align.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/code_beautifier.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/code_view.min.js') }}"></script>#}
+{#    #}{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/char_counter.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/colors.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/draggable.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/emoticons.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/entities.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/file.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/font_size.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/font_family.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/fullscreen.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/image.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/image_manager.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/line_breaker.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/inline_style.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/link.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/lists.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/paragraph_format.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/paragraph_style.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/quick_insert.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/quote.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/table.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/save.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/url.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/video.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/help.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/print.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/third_party/spell_checker.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/special_characters.min.js') }}"></script>#}
+{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/word_paste.min.js') }}"></script>#}
     <script>
         function openModal1() {
             $('#WriteNewPost').modal();
         }
     </script>
-    <script>
-        FroalaEditor.DefineIcon('wallpaper', {NAME: 'ellipsis-v', SVG_KEY: 'more'});
-        FroalaEditor.RegisterCommand('wallpaper', {
-            title: 'Place Wallpaper',
-            focus: false,
-            undo: false,
-            refreshAfterCallback: true,
-            callback: function () {
-                $('#wallpaperLink').click();
-                this.events.focus();
-            }
-        });
+{#    <script>#}
+{#        FroalaEditor.DefineIcon('wallpaper', {NAME: 'ellipsis-v', SVG_KEY: 'more'});#}
+{#        FroalaEditor.RegisterCommand('wallpaper', {#}
+{#            title: 'Place Wallpaper',#}
+{#            focus: false,#}
+{#            undo: false,#}
+{#            refreshAfterCallback: true,#}
+{#            callback: function () {#}
+{#                $('#wallpaperLink').click();#}
+{#                this.events.focus();#}
+{#            }#}
+{#        });#}
 
 
 
-        let editor = new FroalaEditor('#NewSocialPost', {
-            toolbarButtons: {
-                'wallpaper': {
-                    'buttons': ['wallpaper'],
-                    align: 'left'
-                },
-                'moreText': {
-                    'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'clearFormatting'],
-                    buttonsVisible: 3,
-                    align: 'left'
-                },
-                'moreParagraph': {
-                    'buttons': ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'paragraphFormat', 'lineHeight', 'outdent', 'indent', 'quote'],
-                    buttonsVisible: 0,
-                    align: 'left'
-                },
-                // 'moreMisc': {
-                //     'buttons': ['undo', 'redo', 'fullscreen', 'print', 'getPDF', 'selectAll', 'help']
-                // }
-                'send': {
-                    'buttons': ['Clear'],
-                    align: 'rigth'
-                }
+        {#let editor = new FroalaEditor('#NewSocialPost', {#}
+        {#    toolbarButtons: {#}
+        {#        'wallpaper': {#}
+        {#            'buttons': ['wallpaper'],#}
+        {#            align: 'left'#}
+        {#        },#}
+        {#        'moreText': {#}
+        {#            'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'clearFormatting'],#}
+        {#            buttonsVisible: 3,#}
+        {#            align: 'left'#}
+        {#        },#}
+        {#        'moreParagraph': {#}
+        {#            'buttons': ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'paragraphFormat', 'lineHeight', 'outdent', 'indent', 'quote'],#}
+        {#            buttonsVisible: 0,#}
+        {#            align: 'left'#}
+        {#        },#}
+        {#        // 'moreMisc': {#}
+        {#        //     'buttons': ['undo', 'redo', 'fullscreen', 'print', 'getPDF', 'selectAll', 'help']#}
+        {#        // }#}
+        {#        'send': {#}
+        {#            'buttons': ['Clear'],#}
+        {#            align: 'rigth'#}
+        {#        }#}
 
-            },
-            toolbarBottom: true,
-            placeholderText: 'What\'s on your mind {{ user.firstName }}?...',
-            enter: FroalaEditor.ENTER_BR,
-            autofocus: false,
-            attribution: false,
+        {#    },#}
+        {#    toolbarBottom: true,#}
+        {#    placeholderText: 'What\'s on your mind {{ user.firstName }}?...',#}
+        {#    enter: FroalaEditor.ENTER_BR,#}
+        {#    autofocus: false,#}
+        {#    attribution: false,#}
 
-        }, function () {
-            $('#NewSocialPostForm').on('submit', function (e) {
-                if (editor.core.isEmpty()) {
-                    e.preventDefault();
-                    return false;
-                }
-            });
-        });
+        {#}, function () {#}
+        {#    $('#NewSocialPostForm').on('submit', function (e) {#}
+        {#        if (editor.core.isEmpty()) {#}
+        {#            e.preventDefault();#}
+        {#            return false;#}
+        {#        }#}
+        {#    });#}
+        {#});#}
 
-        let editorModal = new FroalaEditor('#NewSocialPostModal', {
-            toolbarButtons: {
-                'wallpaper': {
-                    'buttons': ['wallpaper'],
-                    align: 'left'
-                },
-                'moreText': {
-                    'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'clearFormatting'],
-                    buttonsVisible: 3,
-                    align: 'left'
-                },
-                'moreParagraph': {
-                    'buttons': ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'paragraphFormat', 'lineHeight', 'outdent', 'indent', 'quote'],
-                    buttonsVisible: 0,
-                    align: 'left'
-                },
-                // 'moreMisc': {
-                //     'buttons': ['undo', 'redo', 'fullscreen', 'print', 'getPDF', 'selectAll', 'help']
-                // }
-                'send': {
-                    'buttons': ['Clear'],
-                    align: 'rigth'
-                }
+        {#let editorModal = new FroalaEditor('#NewSocialPostModal', {#}
+        {#    toolbarButtons: {#}
+        {#        'wallpaper': {#}
+        {#            'buttons': ['wallpaper'],#}
+        {#            align: 'left'#}
+        {#        },#}
+        {#        'moreText': {#}
+        {#            'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'clearFormatting'],#}
+        {#            buttonsVisible: 3,#}
+        {#            align: 'left'#}
+        {#        },#}
+        {#        'moreParagraph': {#}
+        {#            'buttons': ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'paragraphFormat', 'lineHeight', 'outdent', 'indent', 'quote'],#}
+        {#            buttonsVisible: 0,#}
+        {#            align: 'left'#}
+        {#        },#}
+        {#        // 'moreMisc': {#}
+        {#        //     'buttons': ['undo', 'redo', 'fullscreen', 'print', 'getPDF', 'selectAll', 'help']#}
+        {#        // }#}
+        {#        'send': {#}
+        {#            'buttons': ['Clear'],#}
+        {#            align: 'rigth'#}
+        {#        }#}
 
-            },
-            toolbarBottom: true,
-            placeholderText: 'What\'s on your mind {{ user.firstName }}?...',
-            enter: FroalaEditor.ENTER_BR,
-            autofocus: true,
-            attribution: false,
+        {#    },#}
+        {#    toolbarBottom: true,#}
+        {#    placeholderText: 'What\'s on your mind {{ user.firstName }}?...',#}
+        {#    enter: FroalaEditor.ENTER_BR,#}
+        {#    autofocus: true,#}
+        {#    attribution: false,#}
 
-        }, function () {
-            $('#NewSocialPostFormModal').on('submit', function (e) {
-                if (editorModal.core.isEmpty()) {
-                    e.preventDefault();
-                    return false;
-                }
-            });
-        });
-    </script>
+        {#}, function () {#}
+        {#    $('#NewSocialPostFormModal').on('submit', function (e) {#}
+        {#        if (editorModal.core.isEmpty()) {#}
+        {#            e.preventDefault();#}
+        {#            return false;#}
+        {#        }#}
+        {#    });#}
+        {#});#}
+{#    </script>#}
     {#    <script>#}
     {#        $(document).ready(function(){#}
     {#                        $image_crop = $('#image_demo').croppie({#}
@@ -3087,7 +3092,7 @@ Variables:
                     $('.conversation-right').remove()
                     $('#extended-conversation_target-' + id).append(
                         //'<div id="con-move-target" class="position-fixed" style="left:0; top:116px; height:calc(100%-116px); z-index: 5000; background-color: red">jhgfh'+//przenoszony div myszka
-                        '   <div id="con_'+id+'" class="conversation-right rounded" width="118%" height="600px" src="/api/getMoreConversationCommentsIframe/'+id+'" style="position: absolute; left:calc(100% + 3rem); top:0; background: transparent; border: 0; z-index:91998">'+
+                        '   <div id="con_'+id+'" class="conversation-right rounded" width="118%" height="600px" src="/api/getMoreConversationCommentsIframe/'+id+'" style="position: absolute; left:calc(100% + 3rem); top:0; background: transparent; border: 0; z-index:1990">'+
                         '   </div>'
                         //'</div>'
                     )
@@ -3099,7 +3104,6 @@ Variables:
                             let it0=0;
                             let it1=1;
                             data.commentary.forEach(function (elm) {
-                                console.log(elm)
                                 $('#con_'+id).append('\n' +
                                     '<!-- Extended conversation comments -->\n' +
                                     '<div style="margin-right: 0.75rem" class="">\n' +
@@ -3111,9 +3115,9 @@ Variables:
                                     '            <div class="mb-0 flex-1 text-dark mr-1 ">\n' +
                                     '                <div class="d-flex">\n' +
                                     '                    <a href="javascript:void(0);" class="text-dark fw-500">\n' +
-                                    +elm.AuthorUsername +
+                                                             elm.AuthorUsername +
                                     '                    </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
-                                    elm.createdAt +
+                                    jQuery.timeago(elm.createdAt) +
                                     '                    </span>\n' +
                                     '                </div>\n' +
                                     '                <p class="mb-0">\n' +
@@ -3206,5 +3210,34 @@ Variables:
 
             }
         </script>
+    <script>
+        let modalShow = true;
+        function postLookout(){
+            if (modalShow == true) {
+                modalShow = false;
+                $.ajax({
+                    url: '{{ path('api_app_social_post_Lookaout') }}',
+                    data: {
+
+                        'csrf_token': '{{ csrf_token('lookout') }}',
+
+                        'content': NewSocialPostContent
+                    },
+                    method: 'POST',
+                    // // Expect a `mycustomtype` back from server
+                    // dataType: 'json',
+
+                    success: function (data) {
+                        $('#postLookoutcontent-target').html(data)
+                        $('#postLookout').modal();
+                        modalShow = true
+                    },
+                    error: function () {
+                        modalShow = true
+                    }
+                });
+            }
+        }
+    </script>
 {#  {% endif %} #}
 {% endblock %}

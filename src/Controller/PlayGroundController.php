@@ -34,7 +34,7 @@ class PlayGroundController extends AbstractController
      */
     public function index(MainMenuService $mainMenuService, ComicRepository $comicsRepo)
     {
-        $comics = $comicsRepo->findAll();
+        $comics = $comicsRepo->findMineComics($this->getUser()->getId());
         $username = $this->getUser()->getUsername();
         $token = (new Builder())
             ->withClaim('mercure', ['subscribe' => [sprintf("/%s", $username)]])

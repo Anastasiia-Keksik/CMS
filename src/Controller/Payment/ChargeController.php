@@ -34,7 +34,7 @@ class ChargeController extends AbstractController
                               ComicRepository $comicsRepo, GetContactsService $getContactsService){
         $mainMenu = $mainMenuService->getMenu();
 
-        $comics = $comicsRepo->findAll();
+        $comics = $comicsRepo->findMineComics($this->getUser()->getId());
         $contacts = $getContactsService->getContacts($this->getUser()->getId());
 
         $pay = new Payment();

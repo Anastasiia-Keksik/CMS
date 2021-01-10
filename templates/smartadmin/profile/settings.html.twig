@@ -2,7 +2,11 @@
     <div id="panel" class="panel">
         <div class="panel-hdr">
             <h2>
-                Ustawienia konta <span class="fw-300"><i>{{ user.Username }}</i></span>
+                Ustawienia konta <span class="fw-300"><i>
+                    {% if user.VisibleName == 1 %}{{ user.Username }}
+                    {% elseif user.VisibleName == 2 %}{{ user.FirstName }} {{ user.LastName }}
+                    {% elseif user.VisibleName == 3 %}{{ user.FirstName }} "{{ user.Username }}" {{ user.LastName }} {% endif %}
+                    </i></span>
             </h2>
         </div>
         <div class="panel-container show">
@@ -156,6 +160,16 @@
                             <input type="text" id="simpleinput" class="form-control" placeholder="{{ user.Username }}">
                         </div>
                     </fieldset><br>
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="form-label">Sign me with:</label><br>
+                            <div class="d-flex justify-content-between">
+                                <label><input type="radio" name="VisibleName" class="">Username</label>
+                                <label><input type="radio" name="VisibleName" class="">Firstname and Lastname</label>
+                                <label><input type="radio" name="VisibleName" class="">Both</label>
+                            </div>
+                        </div>
+                    </fieldset><br>
                     <div class="form-group">
                         <label class="form-label" for="password">Old Password</label>
                         <input type="password" id="password" class="form-control" name="oldPassword">
@@ -169,7 +183,7 @@
                         <input type="password" id="password" class="form-control" name="password2">
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-default float-right">Change Password</button>
+                        <button type="submit" class="btn btn-default float-right">Change Password and/or Visible Name</button>
 
                     </div>
                     <br><br>

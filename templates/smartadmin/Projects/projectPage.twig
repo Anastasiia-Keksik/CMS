@@ -1,0 +1,492 @@
+{% extends 'smartadmin/base.html.twig' %}
+
+{% block content %}
+    <!-- BEGIN Page Content -->
+    <!-- the #js-page-content id is needed for some plugins to initialize -->
+{#    <div class="profile-container" style="min-height: calc(100% - 45px)">#}
+        <main id="js-page-content" role="main" class="page-content p-0">
+            <div class="">
+                <div class="w-100 d-flex justify-content-center">
+                    <div class="w-100 bg-fusion-50"
+                         style="
+                                 height: 321px;
+                                 background: url('{{ asset('upload/comics/id/BG_FHD.jpg') }}');
+                                 background-repeat: repeat-x">
+
+                    </div>
+                </div>
+            </div>
+            <div class="" style="margin-top: -321px">
+                <div class="m-auto" style="width: 1200px">
+                    <div class="d-flex position-relative justify-content-center align-middle w-100" style="height: 240px">
+                        <img src="{{ asset('upload/comics/id/LOGO_FHD.png') }}" class="position-absolute mx-auto" style="top: 0px">
+                        <div class="position-absolute" style="height: 50px; border: 0px solid red; bottom: 0px; right: 0px;">
+
+                        </div>
+                        <div id="info" class="text-center m-auto">
+                            <h2 class="d-block" style="font-size: 20px; color: red;">Genre</h2>
+                            <h1 class="d-block text-white" style="font-size: 57px;">
+                                {% if project.Type == 1 %}
+                                    {{ project.Comic.Title }}
+                                {% elseif project.Type == 2 %}
+                                    {{ project.ComicEpisode.Comic.Title }}
+                                {% endif %}
+                            </h1>
+                            <img src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}" class="d-block mx-auto rounded-circle shadow-5">
+                            <p class="d-block" style="font-size: 20px"></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div id="panel-1" class="panel">
+                                <div class="panel-container">
+                                    <div class="panel-content">
+                                        <div class="row">
+                                            <div class="col-8">
+                                                {% if project.Type == 1 %}
+                                                    <h1>{{ project.Comic.Title }}</h1>
+                                                    <h4>Comic</h4>
+                                                {% elseif project.Type == 2 %}
+                                                    <h1>{{ project.ComicEpisode.Title }}</h1>
+                                                    <h4>Comic episode</h4>
+                                                {% endif %}
+                                                <div>
+                                                    {% for author in project.Account %}
+                                                        <a href="#" class="btn-m-s">
+                                                            <img src="{{ asset('upload/avatars/'~author.User.Username~'/'~author.User.AvatarFileName)|imagine_filter('my_thumb') }}" class="profile-image-sm rounded" alt='
+                                                                            {% if author.User.VisibleName == 1 %}{{ author.User.Username }}
+                                                                            {% elseif author.User.VisibleName == 2 %}{{ author.User.FirstName }} {{ author.User.LastName }}
+                                                                            {% elseif author.User.VisibleName == 3 %}{{ author.User.FirstName }} '{{ author.User.Username }}" {{ author.User.LastName }}{% endif %}
+                                                            ' data-toggle="tooltip" data-placement="top" title='{% if author.User.VisibleName == 1 %}{{ author.User.Username }}
+                                                        {% elseif author.User.VisibleName == 2 %}{{ author.User.FirstName }} {{ author.User.LastName }}
+                                                        {% elseif author.User.VisibleName == 3 %}{{ author.User.FirstName }} "{{ author.User.Username }}" {{ author.User.LastName }}{% endif %}'>
+                                                        </a>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            {% if project.Type == 1 %}
+                                            <div class="col-4">
+                                                {{ project.Comic.Description }}
+                                                <br>
+                                                {% if project.Comic.Description == NULL %}
+                                                    <a class="btn btn-outline-info float-right" data-toggle="modal" data-target="#change-description">Add description</a>
+                                                {% else %}
+                                                    <a class="btn btn-outline-info float-right" data-toggle="modal" data-target="#change-description">Change description</a>
+                                                {% endif %}
+
+                                                    <a href="{{ path('add_episode', {"comicid": project.Comic.Id}) }}" class="btn btn-outline-primary">Add Episode</a>
+                                            </div>
+                                            <div class="modal fade" id="change-description" tabindex="-1" role="dialog" style="display: none" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">
+                                                                Description
+                                                            </h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                                                            </button>
+                                                        </div>
+                                                        <form action="{{ path('comic_changeDescription', {'comic':project.Comic.id}) }}" method="POST">
+                                                        <div class="modal-body">
+                                                            <textarea class="form-control" rows="8" name="description">{{ project.Comic.Description }}</textarea>
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('description_token') }}">
+                                                            <input type="hidden" name="project" value="{{ project.Id }}">
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <span type="button" class="btn btn-secondary" data-dismiss="modal">Close</span>
+                                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                        </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if project.Type == 2 %}
+                                            <div class="row">
+                                                <div class="col-xs-12 col-md-6 order-md-2">
+                                                    <label>Coordination Notes</label>
+                                                    <form>
+                                                        <textarea class="form-control" rows="12" placeholder="This part of your project is called Coordination Note. If you are creating project with a team, where for example one person is responsible for sketch, other one for line art and two more for coloring. You can paste links to third party fileshare systems with packages of already done pages, and in this place coordinate the work on entire Project. You can also leave here a comments, to your work and work of your team colegues. Use it well, good luck.">{{ project.CoordinationNote }}</textarea>
+                                                        <button class="btn btn-outline-info w-100">Save</button>
+                                                    </form>
+                                                </div>
+                                                <div class="col-xs-12 col-md-6 order-md-1">
+                                                    <div class="panel-container mb-2">
+                                                        <label>Upload episode files:</label>
+                                                        <form action="{{ path('upload_Page') }}" id="uploadComic" class="dropzone needsclick upload" style="min-height: 7rem;" >
+                                                            <div class="dz-message needsclick">
+                                                                <i class="fal fa-cloud-upload text-muted mb-3"></i> <br>
+                                                                <span class="text-uppercase">Drop files here or click to upload.</span>
+                                                                <br>
+                                                            </div>
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('image_upload') }}">
+                                                            <input type="hidden" name="cid" value="{{ project.ComicEpisode.Comic.id }}">
+                                                            <input type="hidden" name="eid" value="{{ project.ComicEpisode.id }}">
+                                                        </form>
+                                                    </div>
+                                                    <small>Files will be displayed alphabetically - take care of the proper naming. Use only english letters and numbers. Using other language letters might results with wrong sorting!</small>
+                                                    <br>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    {% if project.ComicEpisode.images %}
+                                                        <label class="form-label">Already uploaded pages:</label>
+                                                        <div class="row mx-0 shadow-5 mb-g rounded pb-3"  style="background-color: rgba(25,25,25,0.2)" >
+                                                            {% for image in project.ComicEpisode.images %}
+                                                                <div id="{{ image }}" class="col-3 text-center mt-3"><img src="{{ asset('upload/comics/'~project.ComicEpisode.Comic.id~'/'~project.ComicEpisode.id~'/'~image) }}" alt="image" width="100%" class="rounded"
+                                                                                                                          data-toggle="tooltip" data-placement="auto" title="" data-original-title="{{ image }}"><br><a href="javascript: deleteImage('{{ image }}')">Delete</a><br></div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        {% if project.Type == 1 %}
+                                        <h2>Episodes:</h2>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <!-- datatable start -->
+                                                <table id="dt-basic-example" class="table table-bordered table-hover w-100">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Status</th>
+                                                        <th>Title</th>
+                                                        <th>Completion</th>
+                                                        <th>likes</th>
+                                                        <th data-toggle="tooltip" data-placement="top" title="Price per one view">price</th>
+                                                        <th data-toggle="tooltip" data-placement="top" title="Revenue from One view for you (price - revenue for other in team)">revenue</th>
+                                                        <th data-toggle="tooltip" data-placement="top" title="Number of people that viewed it">Views</th>
+                                                        <th data-toggle="tooltip" data-placement="top" title="Total sold value">Income</th>
+                                                        <th class="text-right" data-toggle="tooltip" data-placement="top" title="Your TEAM">Episode team</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    {% for episode in projectEpisodes %}
+                                                        <tr {% if episode.IsMine == false %}style="color: #cccccc; background-color: #eeeeee"{% endif %}>
+                                                            <td>{{ episode.Published }}</td>
+                                                            <td>
+                                                                {% if episode.IsMine == true %}
+                                                                    <a href="{{ path('app_project', {'id' : episode.Project.Id}) }}" class="fs-lg text-dark">{{ episode.Title }}</a>
+                                                                    <br>
+                                                                    <small class="text-muted">Created {{ episode.CreatedAt|ago }}</small>
+                                                                {% else %}
+                                                                    <span class="fs-lg" style="color: #cccccc;">{{ episode.Title }}</span>
+                                                                    <br>
+                                                                    <small style="color: #cccccc;">Created {{ episode.CreatedAt|ago }}</small>
+                                                                {% endif %}
+
+                                                            </td>
+                                                            <td>100</td>
+                                                            <td>{{ episode.Likes }}</td>
+                                                            <td>{{ episode.Price }}</td>
+                                                            <td>{% if episode.IsMine == true %}{{ (episode.Price / 100) * episode.Revenue }}{% else %}--{% endif %}</td>
+                                                            <td>{{ episode.Views }}</td>
+                                                            <td>{{ episode.Income }}</td>
+                                                            <td>
+                                                                <div class="fs-sm d-flex align-items-center flex-row-reverse">
+
+                                                                    {% for author in episode.project.Account %}
+
+                                                                        <a class="btn-m-s" data-toggle="modal" data-target="#user-credentials-{{ author.User.Id }}">
+                                                                            <img src="{{ asset('upload/avatars/'~author.User.Username~'/'~author.User.AvatarFileName)|imagine_filter('my_thumb') }}" class="profile-image-sm rounded" alt='
+                                                                            {% if author.User.VisibleName == 1 %}{{ author.User.Username }}
+                                                                            {% elseif author.User.VisibleName == 2 %}{{ author.User.FirstName }} {{ author.User.LastName }}
+                                                                            {% elseif author.User.VisibleName == 3 %}{{ author.User.FirstName }} "{{ author.User.Username }}" {{ author.User.LastName }}{% endif %}
+                                                                            ' data-toggle="tooltip" data-placement="top" title='{% if author.User.VisibleName == 1 %}{{ author.User.Username }}
+                                                                        {% elseif author.User.VisibleName == 2 %}{{ author.User.FirstName }} {{ author.User.LastName }}
+                                                                        {% elseif author.User.VisibleName == 3 %}{{ author.User.FirstName }} "{{ author.User.Username }}" {{ author.User.LastName }}{% endif %}'>
+                                                                        </a><br>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </td>
+                                                    {% endfor %}
+
+                                                    </tbody>
+                                                    <tfoot>
+                                                    <tr>
+                                                        <th>Status</th>
+                                                        <th>Title</th>
+                                                        <th>Completion</th>
+                                                        <th>likes</th>
+                                                        <th data-toggle="tooltip" data-placement="top" title="Price per one view">price</th>
+                                                        <th data-toggle="tooltip" data-placement="top" title="Revenue from One view for you (price - revenue for other in team)">revenue</th>
+                                                        <th data-toggle="tooltip" data-placement="top" title="Number of people that viewed it">Views</th>
+                                                        <th data-toggle="tooltip" data-placement="top" title="Total sold value">Income</th>
+                                                        <th class="text-right" data-toggle="tooltip" data-placement="top" title="Your TEAM">Episode team</th>
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+                                                <!-- datatable end -->
+                                                <!-- user details -->
+                                                    {% for user in presentUsers %}
+                                                        <div class="modal fade" id="user-credentials-{{ user.Id }}" tabindex="-1" role="dialog" style="display: none" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <img src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb_even_larger') }}"
+                                                                             class="shadow-5 img-thumbnail mine-avatar" alt=""
+                                                                             style="height: 120px; width: 120px; border-radius: 15px">
+                                                                        <h4 class="modal-title ml-4">
+                                                                            {% if user.VisibleName == 1 %}{{ user.Username }}
+                                                                            {% elseif user.VisibleName == 2 %}{{ user.FirstName }} {{ user.LastName }}
+                                                                            {% elseif user.VisibleName == 3 %}{{ user.FirstName }} "{{ user.Username }}" {{ user.LastName }}{% endif %}
+                                                                            <small class="text-muted">{{ user.Occupation }}</small>
+                                                                        </h4>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body ">
+                                                                        <div class="d-flex justify-content-between mb-g">
+                                                                            <span class="btn btn-primary fweight-900 invitation" style="width: calc(100% - 41px)" data-toggle="collapse" data-target="#circle-{{ user.Id }}" onclick="showCircles()"><i class="fal fa-user-friends"></i> Dodaj</span>
+                                                                            <span class="btn btn-primary btn-icon"><i class="fal fa-comment"></i></span>
+                                                                        </div>
+                                                                        <div class="collapse" id="circle-{{ user.Id }}" style="">
+                                                                            <div class="card card-body">
+                                                                                    {# onclick="InvitePerson('{{ user.Id }}')"#}
+                                                                                <div class="row circle-target">
+                                                                                    {# CIRCLES BOX #}
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-12">
+                                                                                        <div class="form-group">
+                                                                                            <div class="input-group">
+                                                                                                <div class="input-group-prepend">
+                                                                                                    <span class="input-group-text cursor-pointer" onclick="createCircle('{{ user.Id }}')">Create</span>
+                                                                                                </div>
+                                                                                                <input placeholder="New Unique Circle name..." type="text" class="form-control" id="newCircleName-{{ user.Id }}" aria-describedby="basic-addon3">
+                                                                                              </div>
+                                                                                            <small id="namerequired-{{ user.Id }}" class="color-danger-300 d-none">* Name is required</small>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        <div class="modal fade" id="choseCircleImage" tabindex="-1" role="dialog" style="display: none" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row overflow-auto" style="max-height: calc(90% - 240px)">
+                                                            <div class="col-4 text-center mb-g" onclick="choseCircleImage('1.jpg')">
+                                                                <img width="100px" height="100px" style="border: 1px black solid; border-radius: 15px;">
+                                                            </div>
+                                                            <div class="col-4 text-center" onclick="choseCircleImage('2.jpg')">
+                                                                <img width="100px" height="100px" style="border: 1px black solid; border-radius: 15px;">
+                                                            </div>
+                                                            <div class="col-4 text-center" onclick="choseCircleImage('3.jpg')">
+                                                                <img width="100px" height="100px" style="border: 1px black solid; border-radius: 15px;">
+                                                            </div>
+                                                            <div class="col-4 text-center" onclick="choseCircleImage('4.jpg')">
+                                                                <img width="100px" height="100px" style="border: 1px black solid; border-radius: 15px;">
+                                                            </div>
+                                                            <div class="col-4 text-center" onclick="choseCircleImage('5.jpg')">
+                                                                <img width="100px" height="100px" style="border: 1px black solid; border-radius: 15px;">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+{#    </div>#}
+    <!-- this overlay is activated only when mobile menu is triggered -->
+    <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% if project.Type == 2 %}
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/formplugins/dropzone/dropzone.css') }}">
+    {% endif %}
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/datagrid/datatables/datatables.bundle.css') }}">
+{% endblock %}
+
+{%  block leftMenu %}
+    {% include 'smartadmin/parts/leftMenu.html.twig' %}
+{% endblock %}
+
+{% block header %}
+    {% include 'smartadmin/parts/header.html.twig' %}
+{% endblock %}
+
+{% block footer %}
+    {% include 'smartadmin/parts/footer.twig' %}
+{%  endblock %}
+
+{% block quickmenu %}
+    {% include 'smartadmin/parts/quickmenu.twig' %}
+{% endblock %}
+
+{% block messenger %}
+    {% include 'smartadmin/parts/chat.twig' %}
+{% endblock %}
+
+{% block pagesettings %}
+    {% include 'smartadmin/parts/pagesettings.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('smartadmin/js/datagrid/datatables/datatables.bundle.js') }}"></script>
+    <script>
+        $(document).ready(function()
+        {
+            // initialize datatable
+            $('#dt-basic-example').dataTable(
+                {
+                    responsive: true,
+                    columnDefs: [
+                        {
+                            targets: 2,
+                            render: function(data, type, full, meta)
+                            {
+                                return '<small class="mb-1 d-block">Completion with: ' + data + '%</small> <div class="progress progress-sm"><div class="progress-bar" role="progressbar" style="width:' + data + '%;" aria-valuenow="' + data + '" aria-valuemin="0" aria-valuemax="100"></div></div>';
+                            },
+                        },
+                        {
+                            targets: 0,
+                            /*	The `data` parameter refers to the data for the cell (defined by the
+                                `data` option, which defaults to the column being worked with, in this case `data: 16`.*/
+                            render: function(data, type, full, meta)
+                            {
+                                var badge = {
+                                    0:
+                                        {
+                                            'title': 'Pending',
+                                            'class': 'badge-warning'
+                                        },
+                                    1:
+                                        {
+                                            'title': 'Delivered',
+                                            'class': 'badge-success'
+                                        },
+                                    2:
+                                        {
+                                            'title': 'Canceled',
+                                            'class': 'badge-secondary'
+                                        },
+                                    3:
+                                        {
+                                            'title': 'Attempt #1',
+                                            'class': 'bg-danger-100 text-white'
+                                        },
+                                    4:
+                                        {
+                                            'title': 'Attempt #2',
+                                            'class': 'bg-danger-300 text-white'
+                                        },
+                                    5:
+                                        {
+                                            'title': 'Overdue',
+                                            'class': 'badge-danger'
+                                        },
+                                    6:
+                                        {
+                                            'title': 'Attention!',
+                                            'class': 'badge-primary'
+                                        },
+                                    7:
+                                        {
+                                            'title': 'In Progress',
+                                            'class': 'badge-success'
+                                        },
+                                };
+                                if (typeof badge[data] === 'undefined')
+                                {
+                                    return data;
+                                }
+                                return '<span class="badge ' + badge[data].class + ' badge-pill">' + badge[data].title + '</span>';
+                            },
+                        }],
+                });
+        });
+    </script>
+    {% if project.Type == 2 %}
+    <script src="{{ asset('smartadmin/js/formplugins/dropzone/dropzone.js') }}"></script>
+    <script>
+        $('.dropzone').dropzone({
+            acceptedFiles: "image/jpg,image/jpeg,image/gif,image/png",
+            paramName: "page", // The name that will be used to transfer the file
+            maxFilesize: 2, // MB
+            maxFiles: 100,// zobaczymy, trzba zrobic jeszcze albumy
+            init: function() {
+                9
+                this.on("maxfilesexceeded", function(file) {
+                    //alert("You are not allowed to chose more than 10 files at once!");
+                    this.removeFile(file);
+
+                });
+
+            },
+            success: function( file, response ) {
+                console.log(response);
+
+                file.previewElement.querySelector("img").src = response.src;
+                file.previewElement.querySelector("img").alt = response.imagefilename;
+                file.propername = response.imagefilename;
+            },
+            addRemoveLinks: true,
+            removedfile: function(file) {
+                let fileName = file.propername;
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/deleteImage/'+fileName+'/{{ project.ComicEpisode.id }}',
+                    data: {'_token': '{{ csrf_token('delete_image_episode') }}'},
+                    sucess: function(data){
+                        console.log('success: ' + data);
+                    }
+                });
+
+                var _ref;
+                return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
+            }
+        });
+    </script>
+    <script>
+        function deleteImage(image) {
+            $.ajax({
+                url: '/deleteImage/'+image+'/{{ project.ComicEpisode.id }}',
+                data: {
+                    '_token': '{{ csrf_token('delete_image_episode') }}'
+                },
+                method: 'POST',
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log(data.image);
+                    $(document.getElementById(data.image)).addClass('hidden-xs-up');
+                }
+            });
+        }
+    </script>
+        <script>
+            initApp.pushSettings("layout-composed", true);
+        </script>
+    {% endif %}
+{% endblock %}
