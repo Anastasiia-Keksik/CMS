@@ -2104,26 +2104,26 @@ Variables:
         //TODO: DODAC ELSE IF zamiast ELSE by nie wysylalo niepotrzebnie ajaxa gdy i ten pedzie pusty - to samo wyzej
         //Conversation Comment CommentToComment Comment To Comment
         function submitCommentToComment(entity, id, right=false) {
+            console.log("RIGHT: " + right)
             if ((event.keyCode === 13 || event.which === '13') && !event.shiftKey) {
                 event.preventDefault();
                 //$('#COMMENT_'+id+'_POST').submit();
                 let doNotSubmit = false;
-                var username = '{{ user.Username }}';
                 var avatarUrl = '\'{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}\'';
-                var FirstName = '{{ user.FirstName }}';
-                var LastName = '{{ user.LastName }}';
                 var token = '{{ csrf_token('comment') }}';
                 console.log('data: ' + $('#new_comment_to_the_conversation_' + id).val())
                 var dataContent = '';
                 if ($('#new_comment_to_the_conversation_' + id).val() != '') {
                     dataContent = {
                         'Content': $('#new_comment_to_the_conversation_' + id).val(),
-                        '_token': token
+                        '_token': token,
+                        'right' : right
                     }
                 } else if ($('#new_comment_to_the_conversation_2_' + id).val() != '') {
                     dataContent = {
                         'Content': $('#new_comment_to_the_conversation_2_' + id).val(),
-                        '_token': token
+                        '_token': token,
+                        'right': right
                     }
                 }else {
                     //do not submit if content is empty
@@ -2135,62 +2135,15 @@ Variables:
                         data: dataContent,
                         method: 'POST',
                         // Expect a `mycustomtype` back from server
-                        dataType: 'json',
+                        dataType: 'html',
 
                         success: function (data) {
-                            // old
-                            //     if (data.status != "empty content" && right === false) {
-                            //         $('.addCommentTarget_' + id).append('<div class="d-flex flex-row w-100 py-4">\n' +
-                            //             '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
-                            //             '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + avatarUrl + '); background-size: cover;"></span>\n' +
-                            //             '                        </div>\n' +
-                            //             '                        <div class="mb-0 flex-1 text-dark">\n' +
-                            //             '                            <div class="d-flex">\n' +
-                            //             '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
-                            //             '                        ' + FirstName + ' "' + username + '" ' + LastName +
-                            //             '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
-                            //             '                                                            ' + data.CreatedAt + ' minutes\n' +
-                            //             '                                                        </span>\n' +
-                            //             '                            </div>\n' +
-                            //             '                            <p class="mb-0">\n' +
-                            //             '                                ' + data.Content +
-                            //             '                            </p>\n' +
-                            //             '                            <div>\n' +
-                            //             '                                <a href="javascript: addHeart(\'' + data.commentId + '\');" class="d-inline-flex align-items-center text-dark">\n' +
-                            //             '                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
-                            //             '                                </a>\n' +
-                            //             '                                <a href="#answer_' + data.commentId + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + data.commentId + '"> Answer</a>\n' +
-                            //             '                            </div>\n' +
-                            //             '                            <div id=\"conversation_target\" \n' +
-                            //             '                        </div>\n' +
-                            //             '                    </div>');
-                            //     }
-                            // }
-                            if (data.status != "empty content" && right === false) {
-                                $('.addCommentTarget_' + id).append('<div class="d-flex flex-row w-100 py-4">\n' +
-                                    '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
-                                    '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + avatarUrl + '); background-size: cover;"></span>\n' +
-                                    '                        </div>\n' +
-                                    '                        <div class="mb-0 flex-1 text-dark">\n' +
-                                    '                            <div class="d-flex">\n' +
-                                    '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
-                                    '                        ' + FirstName + ' "' + username + '" ' + LastName +
-                                    '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
-                                    '                                                            ' + data.CreatedAt + ' minutes\n' +
-                                    '                                                        </span>\n' +
-                                    '                            </div>\n' +
-                                    '                            <p class="mb-0">\n' +
-                                    '                                ' + data.Content +
-                                    '                            </p>\n' +
-                                    '                            <div>\n' +
-                                    '                                <a href="javascript: addHeart(\'' + data.commentId + '\');" class="d-inline-flex align-items-center text-dark">\n' +
-                                    '                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
-                                    '                                </a>\n' +
-                                    '                                <a href="#answer_' + data.commentId + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + data.commentId + '"> Answer</a>\n' +
-                                    '                            </div>\n' +
-                                    '                            <div id=\"conversation_target\" \n' +
-                                    '                        </div>\n' +
-                                    '                    </div>');
+                            console.log(data)
+                            if (data.status !== "empty content" && right === false) {
+                                $('.addCommentTarget_' + id).append(data);
+                            } else if (data.status !== "empty content" && right === true){
+                                console.log('add prepend to con_'+id+'_new_target')
+                                $('#con_'+id+'_new_target').prepend(data)
                             }
                         }
                     });
@@ -2245,7 +2198,7 @@ Variables:
                                     '{# onclick="changeCommgentCss(\'#comment_{{ post.Id }}_{{ loop.index }}\', \'#comment_{{ post.Id }}_{{ loop.index+1 }}\')" #}\n' +
                                     '                                           class="float-left">\n' +
                                     '                                            <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top" onclick="scroolTo(\'answer_'+ comment.Id +'\')">\n' +
-                                    '                                                Answer to ' + comment.AuthorUsername + ' <i class="far fa-caret-down"></i>\n' +
+                                    '                                                Answer <i class="far fa-caret-down"></i>\n' +
                                     '                                            </span>\n' +
                                     '                                        </a>\n' +
                                     '                                    </div>'
@@ -2277,7 +2230,7 @@ Variables:
                                             '{# onclick="changeCommgentCss(\'#comment_{{ post.Id }}_{{ loop.index }}\', \'#comment_{{ post.Id }}_{{ loop.index+1 }}\')" #}\n' +
                                             '                                           class="float-right">\n' +
                                             '                                            <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top">\n' +
-                                            '                                                Answer to ' + insideComment.AuthorUsername + ' <i class="far fa-caret-right"></i>\n' +
+                                            '                                                Answer <i class="far fa-caret-right"></i>\n' +
                                             '                                            </span>\n' +
                                             '                                        </a>\n' +
                                             '                                    </div>' +
@@ -3090,58 +3043,26 @@ Variables:
                         $('#right-arrow-'+oopid.slice(4)).html('<i class="fal fa-angle-right fa-2x" style=""></i>')
                     })
                     $('.conversation-right').remove()
+                    console.log('con_'+id+'_new_target')
                     $('#extended-conversation_target-' + id).append(
                         //'<div id="con-move-target" class="position-fixed" style="left:0; top:116px; height:calc(100%-116px); z-index: 5000; background-color: red">jhgfh'+//przenoszony div myszka
-                        '   <div id="con_'+id+'" class="conversation-right rounded" width="118%" height="600px" src="/api/getMoreConversationCommentsIframe/'+id+'" style="position: absolute; left:calc(100% + 3rem); top:0; background: transparent; border: 0; z-index:1990">'+
-                        '   </div>'
+                        '<div style="position: absolute; left:calc(100% + 3rem); top:0;" class="conversation-right">'+
+                        '   <div id="con_'+id+'_new_target">'+
+                        '       <div id="con_'+id+'" class="" style="' +
+                        // '           width: 118%; height: 600px;' +
+                        '           background: red; border: 0px black solid; z-index:1990">'+
+                        '       </div>'+
+                        '   </div>'+
+                        '</div>'
                         //'</div>'
                     )
                     $.ajax('/api/getMoreConversationComments/'+id, {
                         method: "POST",
+                        dataType: 'html',
                         processData: false,
                         contentType: false,
                         success: function (data) {
-                            let it0=0;
-                            let it1=1;
-                            data.commentary.forEach(function (elm) {
-                                $('#con_'+id).append('\n' +
-                                    '<!-- Extended conversation comments -->\n' +
-                                    '<div style="margin-right: 0.75rem" class="">\n' +
-                                    '    <div class="d-flex position-absolutee flex-row rounded mt-2 pt-2 px-0 pb-0" style="border: 1px black solid; width: 400px; top: 0; left: calc(400px*'+it1+' + 1.5rem*'+it0+'); z-index: 2000; background: #707070">\n' +
-                                    '        <div class="d-flex flex-row rounded d-inline-block pt-1 align-middle bg-light w-100 pb-2 px-2" style="border-top: 0 black solid;">\n' +
-                                    '            <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
-                                    '                <span class="ml-1 mt-1 profile-image profile-image-md rounded d-block mt-1" style="background-image: url(\''+ elm.AuthorAvatarFileUrl +'\'); background-size: cover;"></span>\n' +
-                                    '            </div>\n' +
-                                    '            <div class="mb-0 flex-1 text-dark mr-1 ">\n' +
-                                    '                <div class="d-flex">\n' +
-                                    '                    <a href="javascript:void(0);" class="text-dark fw-500">\n' +
-                                                             elm.AuthorUsername +
-                                    '                    </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
-                                    jQuery.timeago(elm.createdAt) +
-                                    '                    </span>\n' +
-                                    '                </div>\n' +
-                                    '                <p class="mb-0">\n' +
-                                    elm.Content  +
-                                    '                </p>\n' +
-                                    '                <div>\n' +
-                                    '                    <a href="javascript: addHeart(  '+ elm.Id +'  );" class="d-inline-flex align-items-center text-dark">\n' +
-                                    '                        <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
-                                    '                    </a>\n' +
-                                    '\n' +
-                                    '                    <a href="#answer_ Comment.Id " data-toggle="collapse" aria-expanded="false" aria-controls="answer_Comment.Id "\n' +
-                                    '                            {# onclick="changeCommgentCss(#comment_{{ post.Id }}_{{ loop.index }}, #comment_{{ post.Id }}_{{ loop.index1 }})" #}\n' +
-                                    '                       class="float-right">\n' +
-                                    '                                                                    <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top">\n' +
-                                    '                                                                                        Answer to '+ elm.AuthorUsername +'  <i class="far fa-caret-down"></i>\n' +
-                                    '                                                                                    </span>\n' +
-                                    '                    </a>\n' +
-                                    '                </div>\n' +
-                                    '            </div>\n' +
-                                    '        </div>\n' +
-                                    '    </div>\n' +
-                                    '</div>')
-
-                            })
+                            $('#con_'+id).append(data)
                             //console.log(data);
                         },
                         error: function () {

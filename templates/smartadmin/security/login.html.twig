@@ -78,6 +78,7 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
      **/
     if (themeSettings.themeOptions)
     {
+        themeSettings.themeOptions = themeSettings.themeOptions.replace('header-function-fixed', '');
         classHolder.className = themeSettings.themeOptions;
         console.log("%c✔ Theme settings loaded", "color: #148f32");
     }

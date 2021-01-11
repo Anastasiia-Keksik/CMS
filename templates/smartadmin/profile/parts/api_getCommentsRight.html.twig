@@ -1,0 +1,41 @@
+{% set it0 = 0 %}
+{% set it1 = 1 %}
+{% for comment in Comments %}
+<!-- Extended conversation comments -->
+<div style="margin-right: 0.75rem" class="">
+        <div class="d-flex position-absolute flex-row rounded mt-2 pt-2 px-0 pb-0" style="border: 1px black solid; width: 380px; top: 0; left: calc(380px*{{ it0 }} + 8px*{{ it0 }}); z-index: 2000; background: #707070">
+                <div class="d-flex flex-row rounded d-inline-block pt-1 align-middle bg-light w-100 pb-2 px-2" style="border-top: 0 black solid;">
+                        <div class="d-inline-block align-middle status status-sm status-success mr-3">
+                                <span class="ml-1 mt-1 profile-image profile-image-md rounded d-block mt-1" style="background-image: url('{{ comment.AuthorAvatarFileUrl }}'); background-size: cover;"></span>
+                            </div>
+                        <div class="mb-0 flex-1 text-dark mr-1 ">
+                                <div class="d-flex">
+                                        <a href="javascript:void(0);" class="text-dark fw-500">
+                                            {{ comment.AuthorUsername }}
+                                            </a><span class="text-muted fs-xs opacity-70 ml-auto">
+                                    {{ comment.createdAt|ago }}
+                                                        </span>
+                                    </div>
+                                <p class="mb-0">
+                                    {{ comment.Content }}
+                                    </p>
+                                <div>
+                                        <a href="javascript: addHeart('{{ comment.Id }}');" class="d-inline-flex align-items-center text-dark small">
+                                                <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>
+                                            </a>
+
+                                        <a href="#answer_ Comment.Id " data-toggle="collapse" aria-expanded="false" aria-controls="answer_Comment.Id "
+                                                {# onclick="changeCommgentCss(#comment_{{ post.Id }}_{{ loop.index }}, #comment_{{ post.Id }}_{{ loop.index1 }})" #}
+                                           class="float-right">
+                                                    <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top" class="small">
+                                                          Answer to {{ comment.AuthorUsername }}  <i class="far fa-caret-down"></i>
+                                                    </span>
+                                        </a>
+                                    </div>
+                            </div>
+                    </div>
+            </div>
+    </div>
+    {% set it0 = it0+1 %}
+    {% set it1 = it1+1 %}
+{% endfor %}

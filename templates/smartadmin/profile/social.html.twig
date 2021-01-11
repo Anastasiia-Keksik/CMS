@@ -197,16 +197,11 @@
                                 </a>
                                 </div>
                                 <div class="rounded p-1" style="background-color: rgba(255,255,255,0.5);">
-                                    <span class="color-primary-700">
-                                        Answer to
-                                        {% if post.VisibleName == 1 %}{{ post.AuthorUsername }}
-                                        {% elseif post.VisibleName == 2 %}{{ post.AuthorFirstName }} {{ post.AuthorLastName }}
-                                        {% elseif post.VisibleName == 3 %}{{ post.AuthorFirstName }} "{{ post.AuthorUsername }}" {{ post.AuthorLastName }} {% endif %}
-                                    </span>
+                                    <span class="color-primary-700 ">Answer</span>
                                     &nbsp;&nbsp;&nbsp;
                                     <span>
                                         <a class="" data-toggle="modal" data-target="#postModal" onclick="activatePostCarousel('#post_{{ post.Id }}_carousel');">
-                                            <span class="color-primary-700">Read full</span>
+                                            <span class="color-primary-700 ">Read full</span>
                                         </a>
                                     </span>
                                     {% if profile.Username == user.Username %}
@@ -257,16 +252,13 @@
                             </p>
 
                             <div>
-                                <a href="javascript: addHeart('{{ comment.Id }}');" class="d-inline-flex float-right align-items-center text-dark">
+                                <a href="javascript: addHeart('{{ comment.Id }}');" class="d-inline-flex float-right small align-items-center text-dark">
                                     <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>
                                 </a>
                                 <a href="#answer_{{ comment.Id }}" data-toggle="collapse" aria-expanded="false" aria-controls="answer_{{ comment.Id }}" class="float-left"
                                    {% if loop.last != true %}onclick="changeCommentCss('#comment_{{ post.Id }}_{{ loop.index }}', '#comment_{{ post.Id }}_{{ loop.index+1 }}')"{% endif %}>
-                                    <span data-toggle="tooltip" data-original-title="Create new conversation" data-placement="top">
-                                        <i class="far fa-caret-down"></i> Answer to {% if comment.VisibleName == 1 %}{{ comment.AuthorUsername }}
-                                        {% elseif comment.VisibleName == 2 %}{{ comment.AuthorFirstName }} {{ comment.AuthorLastName }}
-                                        {% elseif comment.VisibleName == 3 %}{{ comment.AuthorFirstName }} "{{ comment.AuthorUsername }}" {{ comment.AuthorLastName }} {% endif %}
-                                    </span>
+                                    <span class="small" data-toggle="tooltip" data-original-title="Create new conversation" data-placement="top">
+                                        <i class="far fa-caret-down"></i> Answer </span>
                                 </a>
                             </div>
 
@@ -314,19 +306,15 @@
                                             {{ ConversationComment.Content }}
                                         </p>
                                         <div>
-                                            <a href="javascript: addHeart('{{ ConversationComment.Id }}');" class="d-inline-flex align-items-center text-dark">
+                                            <a href="javascript: addHeart('{{ ConversationComment.Id }}');" class="d-inline-flex small align-items-center text-dark">
                                                 <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>
                                             </a>
 
                                             <a href="#answer_{{ ConversationComment.Id }}" data-toggle="collapse" aria-expanded="false" aria-controls="answer_{{ ConversationComment.Id }}"
                                                     {#  onclick="changeCommgentCss('#comment_{{ post.Id }}_{{ loop.index }}', '#comment_{{ post.Id }}_{{ loop.index+1 }}')"#}
                                                class="float-right">
-                                                <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top">
-                                                    Answer to
-                                                        {% if ConversationComment.VisibleName == 1 %}{{ ConversationComment.AuthorUsername }}
-                                                        {% elseif ConversationComment.VisibleName == 2 %}{{ ConversationComment.AuthorFirstName }} {{ ConversationComment.AuthorLastName }}
-                                                        {% elseif ConversationComment.VisibleName == 3 %}{{ ConversationComment.AuthorFirstName }} "{{ ConversationComment.AuthorUsername }}" {{ ConversationComment.AuthorLastName }} {% endif %}
-                                                    <i class="far fa-caret-right"></i>
+                                                <span class="small" data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top">
+                                                    Answer <i class="far fa-caret-right"></i>
                                                 </span>
                                             </a>
                                         </div>
@@ -369,7 +357,7 @@
 {#                                                            #}{#  onclick="changeCommgentCss('#comment_{{ post.Id }}_{{ loop.index }}', '#comment_{{ post.Id }}_{{ loop.index+1 }}')"#}
 {#                                                       class="float-right">#}
 {#                                                <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top">#}
-{#                                                    Answer to {{ ConversationComment.AuthorUsername }} <i class="far fa-caret-down"></i>#}
+{#                                                    Answer <i class="far fa-caret-down"></i>#}
 {#                                                </span>#}
 {#                                                    </a>#}
 {#                                                </div>#}
@@ -383,12 +371,13 @@
                                 <!-- add new Conversation comment -->
                                 <div class="pt-3 w-100 collapse" id="answer_{{ ConversationComment.Id }}"><form id="COMMENT_{{ ConversationComment.Id }}_POST" method="post">
                                     <textarea id="new_comment_to_the_conversation_{{ ConversationComment.Id }}" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
-                                      rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment', '{{ ConversationComment.Id }}')"></textarea>
+                                      rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment', '{{ ConversationComment.Id }}', true)"></textarea>
                                         <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">
                                         <input type="hidden" name="profile_name" value="{{ profile.Username }}">
                                         <input type="submit"
                                                style="position: absolute; left: -9999px; width: 1px; height: 1px;"
                                                tabindex="-1" />
+                                        <!--- check -->
                                     </form>
                                 </div>
                                 <!-- add comment end -->
@@ -539,7 +528,7 @@
 
                                             <div class="d-flex py-3 px-4 w-100 justify-content-between">
                                                 <div class="rounded p-1" style="background-color: rgba(255,255,255,0.5)">
-                                                    <a href="javascript:void(0);" class="d-inline-flex align-items-center">
+                                                    <a href="javascript:void(0);" class="d-inline-flex align-items-center ">
                                                         <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span class="color-primary-700">{{post.Likes}} Likes</span>
                                                     </a>&nbsp;&nbsp;&nbsp;
                                                     <a href="javascript:void(0);" class="d-inline-flex align-items-center">
@@ -547,12 +536,7 @@
                                                     </a>
                                                 </div>
                                                 <div class="rounded p-1" style="background-color: rgba(255,255,255,0.5);">
-                            <span class="color-primary-700">
-                                Answer to
-                                    {% if post.VisibleName == 1 %}{{ post.AuthorUsername }}
-                                    {% elseif post.VisibleName == 2 %}{{ post.AuthorFirstName }} {{ post.AuthorLastName }}
-                                    {% elseif post.VisibleName == 3 %}{{ post.AuthorFirstName }} "{{ post.AuthorUsername }}" {{ post.AuthorLastName }} {% endif %}
-                            </span>
+                            <span class="color-primary-700">Answer </span>
                                                     &nbsp;&nbsp;&nbsp;
                                                     <span>
                                 <a class="" data-toggle="modal" data-target="#postModal" onclick="activatePostCarousel('#post_{{ post.Id }}_carousel');">
@@ -603,8 +587,8 @@
                                                                 {{comment.Content}}
                                                             </p>
 
-                                                            <div><a href="javascript: addHeart('{{ comment.Id }}');" class="d-inline-flex align-items-center text-dark">
-                                                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>
+                                                            <div><a href="javascript: addHeart('{{ comment.Id }}');" class="d-inline-flex align-items-center text-dark small">
+                                                                    <i class="fas fa-heart fs-xs mr-1 text-danger "></i> <span>0 Likes</span>
                                                                 </a>
                                                                 <a href="#answer_{{ comment.Id }}" data-toggle="collapse" aria-expanded="false" aria-controls="answer_{{ comment.Id }}" {% if loop.last != true %}onclick="changeCommentCss('#comment_{{ post.Id }}_{{ loop.index }}', '#comment_{{ post.Id }}_{{ loop.index+1 }}')"{% endif %}> Answer</a></div>
 

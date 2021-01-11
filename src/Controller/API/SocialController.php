@@ -123,7 +123,7 @@ class SocialController extends AbstractController
         {
             return new Response('empty');
         }
-        return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/api_loadPost.html.twig",[
+        return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_loadPost.html.twig",[
             'posts'=>$posts,
             'profile'=>$profile,
             'user'=>$this->getUser()
@@ -203,14 +203,26 @@ class SocialController extends AbstractController
         }else{
             //TODO: bad csrf
         }
-        return new JsonResponse([
-            'status'=>'ok',
-            'Author'=>$this->getUser()->getUsername(),
-            'Content'=>$request->request->get('Content'),
-            'CreatedAt'=> $data,
-            'ConversationId'=>null,
-            'commentId'=>$newComment->getId(),
-        ]);
+
+        if ($request->request->get('right') === "false"){
+            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_ConversationComment.html.twig" ,[
+                'status'=>'ok',
+                'user'=>$this->getUser(),
+                'content'=>$request->request->get('Content'),
+                'CreatedAt'=> $data,
+                'conversationId'=>null,
+                'commentId'=>$newComment->getId(),
+            ]);
+        } else {
+            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_ConversationCommentRight.html.twig" ,[
+                'status'=>'ok',
+                'user'=>$this->getUser(),
+                'content'=>$request->request->get('Content'),
+                'CreatedAt'=> $data,
+                'conversationId'=>null,
+                'commentId'=>$newComment->getId(),
+            ]);
+        }
     }
 
     /**
@@ -386,9 +398,7 @@ class SocialController extends AbstractController
             $commentary = [];
             if ($comments == [])
             {
-                return new JsonResponse([
-                    'status'=>'empty content',
-                ]);
+                return new Response('', 204);
             }
             $i=0;
             foreach($comments as $comment)
@@ -426,14 +436,13 @@ class SocialController extends AbstractController
                 $i++;
             }
 
-            return new JsonResponse([
-                'commentary'=>$commentary
+            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_getCommentsRight.html.twig", [
+                'Comments' => $commentary
             ]);
+
         }else{
             //TODO: bad csrf
-            return new JsonResponse([
-                'status'=>'empty content2',
-            ]);
+            return new Response('', 204);
         }
     }
 
