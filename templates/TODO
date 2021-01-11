@@ -93,3 +93,5 @@ bezpieczenstwo
     Wyjebac projekty i zastapic je zwyklym comic i episode, cooperacje tez tam dodac
 
     https://github.com/catamphetamine/javascript-time-ago - tlumaczony TimeAgo dla Javascript
+
+    ustawic max na 256 characters w chacie, to nie text area wiec uwazaj

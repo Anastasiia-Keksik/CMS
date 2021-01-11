@@ -68,8 +68,14 @@ class ProfileController extends AbstractController
 
             $user = $this->getUser();
 
+            if (strlen($request->request->get('NewSocialPost')>4000)){
+                $content = substr($request->request->get('NewSocialPost'),0,4000);
+            }else {
+                $content = $request->request->get('NewSocialPost');
+            }
+
             $SP = new SocialPost();
-            $SP->setContent($request->request->get('NewSocialPost'));
+            $SP->setContent($content);
             $SP->setAccount($user);
             $SP->setCreatedAt(new \DateTime());
             $SP->setSoftDelete('0');

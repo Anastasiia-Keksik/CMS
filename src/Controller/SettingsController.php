@@ -60,6 +60,12 @@ class SettingsController extends AbstractController
 
             $logger->info("Image - $originalFilename were as avatar for " . $id->getUsername() . "");
         }
+
+        if (strlen($request->request->get('Signature')) > 256){
+            $content = substr($request->request->get('Signature'), 0, 256);
+        } else {
+            $content = $request->request->get('Signature');
+        }
             
 
         $em = $this -> getDoctrine()->getManager();
@@ -67,7 +73,7 @@ class SettingsController extends AbstractController
         $sygnatura = $id->getSignature();
 
         if ($sygnatura !=  null){
-            $sygnatura->setSignature($request->request->get("Signature"));
+            $sygnatura->setSignature($content);
             $em -> persist($sygnatura);
         }
 

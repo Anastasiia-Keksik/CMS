@@ -27,6 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SocialController extends AbstractController
 {
+    private $maxCommentLength = 600;
 
     /**
      * @Route("/testowyurl")
@@ -141,6 +142,10 @@ class SocialController extends AbstractController
             return new JsonResponse([
                 'status'=>'empty content'
             ]);
+        } elseif (strlen($request->request->get('Content')) > $this->maxCommentLength){
+            $content = substr($request->request->get('Content'), 0, $this->maxCommentLength);
+        } else {
+            $content = $request->request->get('Content');
         }
 
         $data = new \DateTime('now');
@@ -148,7 +153,7 @@ class SocialController extends AbstractController
         if ($this->isCsrfTokenValid('comment', $token)){
             $newComment = new SocialPostComment();
             $newComment -> setAuthor($this->getUser());
-            $newComment -> setContent($request->request->get('Content'));
+            $newComment -> setContent($content);
             $newComment -> setCreatedAt($data);
             $newComment -> setSoftDelete('0');
             $newComment -> setUnderAnotherComment(null);
@@ -183,6 +188,10 @@ class SocialController extends AbstractController
             return new JsonResponse([
                 'status'=>'empty content'
             ]);
+        } elseif (strlen($request->request->get('Content')) > $this->maxCommentLength){
+            $content = substr($request->request->get('Content'), 0, $this->maxCommentLength);
+        } else {
+            $content = $request->request->get('Content');
         }
 
         $data = new \DateTime('now');

@@ -134,12 +134,12 @@ class ChatMessageController extends AbstractController
 
         //dd($recipient);
 
-        if ($request->request->get('content')){
-            $content = $request->request->get('content', null);
-        }else{
-
+        if (strlen($request->request->get('Content')) > 256){
+            $content = substr($request->request->get('Content'), 0, 256);
+        } else {
+            $content = $request->request->get('Content');
         }
-//        $content = "testowa wiadomosc 2";
+
         $message = new ChatMessage();
         $message->setContent($content);
         $message->setCreatedAt(new \DateTime());

@@ -1,6 +1,6 @@
 <div class="d-flex flex-row w-100 py-4">
                           <div class="d-inline-block align-middle status status-sm status-success mr-3">
-                                  <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + avatarUrl + '); background-size: cover;"></span>
+                                  <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url('{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
                               </div>
                           <div class="mb-0 flex-1 text-dark">
                                   <div class="d-flex">
