@@ -6,10 +6,34 @@
         let letMeShowMore2 = new Array();
     </script>
     <!-- the #js-page-content id is needed for some plugins to initialize -->
-    <main id="js-page-content" role="main" class="page-content"
-          style="background-image: url('{{ asset('upload/12554.jpg') }}');">
+    <main id="js-page-content" role="main" class="page-content position-relative"
+          style="background-image: url('{{ asset('upload/5.jpg') }}'); background-size: cover">
+         <div id="ShowExtendedConversation-Target" class="d-none" style="width: 100%; height: 100%; background: rgba(0,0,0, 0.8); position: fixed; z-index:10; margin-top: -24px; margin-left: -32px">
+               <div style="width: 100%; height: 100%; position: relative">
+                   <button type="button" class="btn btn-dark btn-icon btn-lg text-white-50 opacity-75" onclick="hideAndDestroyEC()" style="top: 15px; right: 15px; position: absolute; z-index: 14;">
+                       <i class="fal fa-times"></i>
+                   </button>
+                   <div id="ExtendedConversation-Target" class="position-relative d-flex flex-row"></div>
+               </div>
+         </div>
         {% include 'smartadmin/profile/parts/header.twig' %}
-        <div class="{# profile-container #}" style="">
+        <!-- answer modal -->
+        <div class="modal fade answer-modal" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-transparent" role="document">
+                <div class="modal-content" style="background: rgba(21,41,82, 0.6)">
+                    <div class="modal-body">
+                        <textarea id="new_comment_to_the_Inside_conversation" class="form-control rounded px-2 pt-1 pb-1"
+                            name="Comment_content" placeholder="add a comment..."
+                            rows="6" style="background: rgba(10,10,10, 0.2); border-color: black" onkeypress="submitCommentToCommentRInside('comment')"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" style="background: rgba(0,0,0, 0.4)" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-info" style="background: rgba(0,0,0, 0.4)">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="{# profile-container #}" >
             <div class="row profile">
 
                 {#    <div class="col-lg-6 col-xl-3 order-lg-1 order-xl-1" style="width: 280px">#}
@@ -2059,39 +2083,15 @@ Variables:
                 }
                 if (doNotSend === false) {
                     $.ajax({
-                        url: '/api/addCommentToPost/' + id, //SocialController
+                        url: '/api/addCommentToPost/' + id,
                         data: dataContent,
                         method: 'POST',
-                        // Expect a `mycustomtype` back from server
-                        dataType: 'json',
+                        dataType: 'html',
 
                         success: function (data) {
                             console.log(data);
-                            if (data.status != "empty content") {
-                                $('.addCommentTarget_' + id).append('<div class="d-flex flex-row w-100 py-4">\n' +
-                                    '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
-                                    '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + avatarUrl + '); background-size: cover;"></span>\n' +
-                                    '                        </div>\n' +
-                                    '                        <div class="mb-0 flex-1 text-dark">\n' +
-                                    '                            <div class="d-flex">\n' +
-                                    '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
-                                    '                        ' + FirstName + ' "' + username + '" ' + LastName +
-                                    '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
-                                    '                                                            ' + data.CreatedAt + ' minutes\n' +
-                                    '                                                        </span>\n' +
-                                    '                            </div>\n' +
-                                    '                            <p class="mb-0">\n' +
-                                    '                                ' + data.Content +
-                                    '                            </p>\n' +
-                                    '                            <div>\n' +
-                                    '                                <a href="javascript: addHeart(\'' + data.commentId + '\');" class="d-inline-flex align-items-center text-dark">\n' +
-                                    '                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
-                                    '                                </a>\n' +
-                                    '                                <a href="#answer_' + data.commentId + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + data.commentId + '"> Answer</a>\n' +
-                                    '                            </div>\n' +
-                                    '                            <div id=\"conversation_target\" \n' +
-                                    '                        </div>\n' +
-                                    '                    </div>');
+                            if (data != "Empty content") {
+                                $('.addCommentTarget_' + id).append(data);
                             }
                         }
                     });
@@ -2103,11 +2103,10 @@ Variables:
 
         //TODO: DODAC ELSE IF zamiast ELSE by nie wysylalo niepotrzebnie ajaxa gdy i ten pedzie pusty - to samo wyzej
         //Conversation Comment CommentToComment Comment To Comment
-        function submitCommentToComment(entity, id, right=false) {
+        function submitCommentToComment(entity, id, right='1') {
             console.log("RIGHT: " + right)
             if ((event.keyCode === 13 || event.which === '13') && !event.shiftKey) {
                 event.preventDefault();
-                //$('#COMMENT_'+id+'_POST').submit();
                 let doNotSubmit = false;
                 var avatarUrl = '\'{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}\'';
                 var token = '{{ csrf_token('comment') }}';
@@ -2134,22 +2133,66 @@ Variables:
                         url: '/api/addCommentToComment/' + id, //SocialController
                         data: dataContent,
                         method: 'POST',
-                        // Expect a `mycustomtype` back from server
                         dataType: 'html',
 
                         success: function (data) {
                             console.log(data)
-                            if (data.status !== "empty content" && right === false) {
-                                $('.addCommentTarget_' + id).append(data);
-                            } else if (data.status !== "empty content" && right === true){
-                                console.log('add prepend to con_'+id+'_new_target')
-                                $('#con_'+id+'_new_target').prepend(data)
+                            // do konwersacji
+                            if (data !== "Empty content" && right === '1') {
+                                $('#addComment-Target_'+id).append(data)
+                            } // dodajemy right
+                            else if (data !== "Empty content" && right === '2'){
+                                $('#ExtendedConversation-Target').prepend(data)
+                                $('#ExtendedConversationMargin').css('margin-left', '0')
+                            } // dodawanie prawego w black boxie po dodanym komentarzu :D
+                            else if (data !== "Empty content" && right === '3'){
+                                console.log(data)
+                                $('#TargetForNewComments-'+id).append(data)
+                                $('#TargetForNewCommentsCollapse-'+id).slideDown('fast')
+                                $('.slide-down').slideDown('fast');
                             }
                         }
                     });
                 }
                 $('#new_comment_to_the_conversation_' + id).val("");
                 $('#new_comment_to_the_conversation_2_' + id).val("");
+            }
+        }
+        function submitCommentToCommentRInside(entity) {
+            if ((event.keyCode === 13 || event.which === '13') && !event.shiftKey) {
+                event.preventDefault();
+                let doNotSubmit = false;
+                var token = '{{ csrf_token('comment') }}';
+                var dataContent = '';
+                //checking if content have some text
+                if ($('#new_comment_to_the_Inside_conversation').val() != '') {
+                    dataContent = {
+                        'Content': $('#new_comment_to_the_Inside_conversation').val(),
+                        '_token': token,
+                        'right': '4' //for Right BlackBox
+                    }
+                } else {
+                    //do not submit if content is empty
+                    doNotSubmit = true;
+                }
+                if (doNotSubmit === false) {
+                    console.log('dataToSend: '+$('#new_comment_to_the_Inside_conversation').val())
+                    $.ajax({
+                        url: '/api/addCommentToComment/' + CommentInsideId, //SocialController
+                        data: dataContent,
+                        method: 'POST',
+                        dataType: 'html',
+                        success: function (data) {
+                            console.log('received data: '+data)
+                            // do konwersacji
+                            if (data !== "Empty content") {
+
+
+                            }
+                        }
+                    });
+                }
+                $('#new_comment_to_the_Inside_conversation').val("");
             }
         }
     </script>
@@ -2168,109 +2211,14 @@ Variables:
                     },
                     method: 'POST',
                     // Expect a `mycustomtype` back from server
-                    dataType: 'json',
+                    dataType: 'html',
 
                     success: function (data) {
                         console.log(pagination[postid]);
                         console.log(data);
-                        if (data.status != "empty content") {
-                            data.comments.forEach((comment) => {
-                                var komentarz = '<div class="d-flex flex-row w-100 py-4">\n' +
-                                    '                        <div class="d-inline-block align-middle status status-sm status-success mr-3">\n' +
-                                    '                            <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url(' + comment.AuthorAvatarFileUrl + '); background-size: cover;"></span>\n' +
-                                    '                        </div>\n' +
-                                    '                        <div class="mb-0 flex-1 text-dark">\n' +
-                                    '                            <div class="d-flex">\n' +
-                                    '                                <a href="javascript:void(0);" class="text-dark fw-500">\n' +
-                                    '                        ' + comment.AuthorFirstName + ' "' + comment.AuthorUsername + '" ' + comment.AuthorLastName +
-                                    '                                </a><span class="text-muted fs-xs opacity-70 ml-auto">\n' +
-                                    '                                                            ' + jQuery.timeago(comment.createdAt) +
-                                    '                                                        </span>\n' +
-                                    '                            </div>\n' +
-                                    '                            <p class="mb-0">\n' +
-                                    '                                ' + comment.Content +
-                                    '                            </p>\n' +
-                                    '                                   <div>\n' +
-                                    '                                        <a href="javascript: addHeart(\'' + comment.Id + '\');" class="d-inline-flex align-items-center float-right text-dark">\n' +
-                                    '                                            <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
-                                    '                                        </a>\n' +
-                                    '                                        <a href="#answer_' + comment.Id + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + comment.Id + '"\n' +
-                                    '{# onclick="changeCommgentCss(\'#comment_{{ post.Id }}_{{ loop.index }}\', \'#comment_{{ post.Id }}_{{ loop.index+1 }}\')" #}\n' +
-                                    '                                           class="float-left">\n' +
-                                    '                                            <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top" onclick="scroolTo(\'answer_'+ comment.Id +'\')">\n' +
-                                    '                                                Answer <i class="far fa-caret-down"></i>\n' +
-                                    '                                            </span>\n' +
-                                    '                                        </a>\n' +
-                                    '                                    </div>'
-                                '                            <div id=\"conversation_target_' + comment.Id + '_before\"> </div> \n';
-                                if (comment.CommentConversation.length > 0) {
-                                    comment.CommentConversation.forEach((insideComment) => {
-                                        komentarz = komentarz +
-                                            '<div class=\"pl-0 d-flex flex-row w-100 pb-0 pt-4\"> \n' +
-                                            '   <div class=\"d-inline-block align-middle status status-sm status-success mr-3\"> \n' +
-                                            '   <span class=\"profile-image profile-image-md rounded-circle d-block mt-1\" style=\"background-image:url(' + insideComment.AuthorAvatarFileUrl + '); background-size: cover;\"></span> \n' +
-                                            '   </div> \n' +
-                                            '   <div class=\"mb-0 flex-1 text-dark\"> \n' +
-                                            '   <div class=\"d-flex\"> \n' +
-                                            '   <a href=\"javascript:void(0);\" class=\"text-dark fw-500\"> \n' +
-                                            insideComment.AuthorFirstName + " \"" + insideComment.AuthorUsername + "\" " + insideComment.AuthorLastName +
-                                            '   </a><span class=\"text-muted fs-xs opacity-70 ml-auto\"> \n' +
-                                            jQuery.timeago(insideComment.createdAt) +
-                                            '   </span> \n' +
-                                            '   </div> \n' +
-                                            '   <p class=\"mb-0\"> \n' +
-                                            insideComment.Content +
-                                            '   </p> \n' +
-
-                                            '                                   <div>\n' +
-                                            '                                        <a href="javascript: addHeart(\'' + insideComment.Id + '\');" class="d-inline-flex align-items-center text-dark">\n' +
-                                            '                                            <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>\n' +
-                                            '                                        </a>\n' +
-                                            '                                        <a href="#answer_' + insideComment.Id + '" data-toggle="collapse" aria-expanded="false" aria-controls="answer_' + insideComment.Id + '"\n' +
-                                            '{# onclick="changeCommgentCss(\'#comment_{{ post.Id }}_{{ loop.index }}\', \'#comment_{{ post.Id }}_{{ loop.index+1 }}\')" #}\n' +
-                                            '                                           class="float-right">\n' +
-                                            '                                            <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top">\n' +
-                                            '                                                Answer <i class="far fa-caret-right"></i>\n' +
-                                            '                                            </span>\n' +
-                                            '                                        </a>\n' +
-                                            '                                    </div>' +
-
-
-                                            '   </div> \n' +
-                                            '   </div> \n'+
-                                            '                   <!-- add comment -->\n' +
-                                            '                    <div class="py-3 w-100 collapse" id="answer_'+ insideComment.Id +'"><form id="COMMENTinconversation_'+ insideComment.Id +'" method="post">\n' +
-                                            '                            <textarea id="new_comment_to_the_conversation_'+ insideComment.Id +'" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."\n' +
-                                            '                                      rows="2" style="background-color: unset" onkeypress="submitCommentToComment(\'comment\', \''+ insideComment.Id +'\', true)"></textarea>\n' +
-                                            '                            <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">\n' +
-                                            '                            <input type="submit"\n' +
-                                            '                                   style="position: absolute; left: -9999px; width: 1px; height: 1px;"\n' +
-                                            '                                   tabindex="-1" />\n' +
-                                            '                        </form>\n' +
-                                            '                    </div>\n' +
-                                            '                    <!-- add comment end -->'
-                                        ;
-                                    });
-                                }
-
-                                komentarz = komentarz + '                            <div id=\"conversation_target_' + comment.Id + '_after\"> </div> \n' +
-                                    '                        </div>\n' +
-                                    '                    </div>'+
-                                    '                   <!-- add comment -->\n' +
-                                    '                    <div class="py-3 w-100 collapse" id="answer_'+ comment.Id +'"><form id="COMMENTinconversation_'+ comment.Id +'" method="post">\n' +
-                                    '                            <textarea id="new_comment_to_the_conversation_'+ comment.Id +'" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."\n' +
-                                    '                                      rows="2" style="background-color: unset" onkeypress="submitCommentToComment(\'comment\', \''+ comment.Id +'\', true)"></textarea>\n' +
-                                    '                            <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">\n' +
-                                    '                            <input type="submit"\n' +
-                                    '                                   style="position: absolute; left: -9999px; width: 1px; height: 1px;"\n' +
-                                    '                                   tabindex="-1" />\n' +
-                                    '                        </form>\n' +
-                                    '                    </div>\n' +
-                                    '                    <!-- add comment end -->'
-                                ;
-                                $('#loadCommentsTarget_' + postid).prepend(komentarz);
-                                $('#loadCommentsTarget2_' + postid).prepend(komentarz);
-                            });
+                            $('#loadCommentsTarget_'+ postid).prepend(data);
+                            $('#loadCommentsTarget2_'+ postid).prepend(data);
+                            $('.slide-down').slideDown()
                             pagination[postid]++;
                             comment_length[postid] = comment_length[postid] - 10;
                             if (comment_length[postid] <= 0) {
@@ -2284,7 +2232,6 @@ Variables:
                                 $('#ShowCommentsLengthTag_full_' + postid).html('');
                             }
                             $('#ShowCommentsLengthNumber_full_' + postid).html(comment_length_full_[postid]);
-                        }
                         $('body').tooltip({selector: '[data-toggle="tooltip"]'})
 
                         letMeShowMore = true;
@@ -2294,9 +2241,133 @@ Variables:
             letMeShowMore = false;
         }
 
+        let letMeShowMoreComments = true;
+
+        //Main - is when getting just Comments from conversation inside profile window. False when inside black box
+        function getMoreCommentsToComment(commentid, main = true) {// check max 10
+            if (letMeShowMoreComments === true) {
+                $.ajax({
+                    url: '/api/getMoreCommentsToComment/' + commentid,
+                    data: {
+                        'pagination': pagination[commentid],
+                        '_token': '{{ csrf_token('getMoreComments') }}',
+                        'main': main
+                    },
+                    method: 'POST',
+                    dataType: 'html',
+
+                    success: function (data) {
+                        console.log(pagination[commentid]);
+                        console.log(data);
+                        $('#loadCommentsTarget_'+ commentid).prepend(data);
+                        $('#loadCommentsTarget2_'+ commentid).prepend(data);
+                        $('.slide-down').slideDown()
+                        pagination[commentid]++;
+                        comment_length[commentid] = comment_length[commentid] - 10;
+                        if (comment_length[commentid] <= 0) {
+                            $('#ShowCommentsLengthTag_' + commentid).html('')
+                        }
+                        $('#ShowCommentsLengthNumber_' + commentid).html(comment_length[commentid]);
+
+
+                        comment_length_full_[commentid] = comment_length_full_[commentid] - 10;
+                        if (comment_length_full_[commentid] <= 0) {
+                            $('#ShowCommentsLengthTag_full_' + commentid).html('');
+                        }
+                        $('#ShowCommentsLengthNumber_full_' + commentid).html(comment_length_full_[commentid]);
+                        $('body').tooltip({selector: '[data-toggle="tooltip"]'})
+
+                        letMeShowMoreComments = true;
+                    }
+                });
+            }
+            letMeShowMoreComments = false;
+        }
+
         function scroolTo(id){
             console.log(document.querySelector('#'+id).getBoundingClientRect())
             $('window').scrollTop(document.getElementById(id).scrollIntoView())
+        }
+
+
+        function getMoreCommentsToCommentRightInsideRight(commentid) {// check max 10
+            if (letMeShowMoreComments === true) {
+                $.ajax({
+                    url: '/api/getCommentsToCommentRightInsideRight/' + commentid,
+                    data: {
+                        'pagination': pagination[commentid],
+                        '_token': '{{ csrf_token('comments') }}'
+                    },
+                    method: 'POST',
+                    dataType: 'html',
+
+                    success: function (data) {
+                        console.log(pagination[commentid]);
+                        console.log(data);
+                        $('#comment-'+commentid).append(data);
+                        // $('#loadCommentsTarget2_'+ commentid).prepend(data);
+                        comments_to_update.forEach(function (item) {
+                            $('#ShowCommentsLengthNumber_'+item).html(comment_length[item]);
+                        })
+                        pagination[commentid]++;
+                        comment_length[commentid] = comment_length[commentid] - 10;
+                        if (comment_length[commentid] <= 0) {
+                            $('#ShowCommentsLengthTag_' + commentid).html('')
+                        }
+                        $('#ShowCommentsLengthNumber_' + commentid).html(comment_length[commentid]);
+
+
+                        comment_length_full_[commentid] = comment_length_full_[commentid] - 10;
+                        if (comment_length_full_[commentid] <= 0) {
+                            $('#ShowCommentsLengthTag_full_' + commentid).html('');
+                        }
+                        $('#ShowCommentsLengthNumber_full_' + commentid).html(comment_length_full_[commentid]);
+                        $('body').tooltip({selector: '[data-toggle="tooltip"]'})
+
+                        letMeShowMoreComments = true;
+                    }
+                });
+            }
+            letMeShowMoreComments = false;
+        }
+
+        function getMoreCommentsToCommentRightInside(commentid) {// check max 10
+            if (letMeShowMoreComments === true) {
+                $.ajax({
+                    url: '/api/getMoreCommentsToCommentRightInside/' + commentid,
+                    data: {
+                        'pagination': pagination[commentid],
+                        '_token': '{{ csrf_token('getMoreComments') }}'
+                    },
+                    method: 'POST',
+                    dataType: 'html',
+
+                    success: function (data) {
+                        console.log(pagination[commentid]);
+                        console.log(data);
+                        $('#TargetForNewComments-'+commentid).prepend(data);
+                        // $('#loadCommentsTarget2_'+ commentid).prepend(data);
+                         $('.slide-down').slideDown()
+                        pagination[commentid]++;
+                        comment_length[commentid] = comment_length[commentid] - 10;
+                        if (comment_length[commentid] <= 0) {
+                            $('#ShowCommentsLengthTag_' + commentid).html('')
+                        }
+                        $('#ShowCommentsLengthNumber_' + commentid).html(comment_length[commentid]);
+
+
+                        comment_length_full_[commentid] = comment_length_full_[commentid] - 10;
+                        if (comment_length_full_[commentid] <= 0) {
+                            $('#ShowCommentsLengthTag_full_' + commentid).html('');
+                        }
+                        $('#ShowCommentsLengthNumber_full_' + commentid).html(comment_length_full_[commentid]);
+                        $('body').tooltip({selector: '[data-toggle="tooltip"]'})
+
+                        letMeShowMoreComments = true;
+                    }
+                });
+            }
+            letMeShowMoreComments = false;
         }
     </script>
     <script>
@@ -2428,190 +2499,14 @@ Variables:
             }
         });
     </script>
-{#    FROALA #}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/froala_editor.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/align.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/code_beautifier.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/code_view.min.js') }}"></script>#}
-{#    #}{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/char_counter.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/colors.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/draggable.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/emoticons.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/entities.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/file.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/font_size.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/font_family.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/fullscreen.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/image.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/image_manager.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/line_breaker.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/inline_style.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/link.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/lists.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/paragraph_format.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/paragraph_style.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/quick_insert.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/quote.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/table.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/save.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/url.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/video.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/help.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/print.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/third_party/spell_checker.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/special_characters.min.js') }}"></script>#}
-{#    <script type="text/javascript" src="{{ asset('smartadmin/froala/js/plugins/word_paste.min.js') }}"></script>#}
     <script>
         function openModal1() {
             $('#WriteNewPost').modal();
         }
     </script>
-{#    <script>#}
-{#        FroalaEditor.DefineIcon('wallpaper', {NAME: 'ellipsis-v', SVG_KEY: 'more'});#}
-{#        FroalaEditor.RegisterCommand('wallpaper', {#}
-{#            title: 'Place Wallpaper',#}
-{#            focus: false,#}
-{#            undo: false,#}
-{#            refreshAfterCallback: true,#}
-{#            callback: function () {#}
-{#                $('#wallpaperLink').click();#}
-{#                this.events.focus();#}
-{#            }#}
-{#        });#}
-
-
-
-        {#let editor = new FroalaEditor('#NewSocialPost', {#}
-        {#    toolbarButtons: {#}
-        {#        'wallpaper': {#}
-        {#            'buttons': ['wallpaper'],#}
-        {#            align: 'left'#}
-        {#        },#}
-        {#        'moreText': {#}
-        {#            'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'clearFormatting'],#}
-        {#            buttonsVisible: 3,#}
-        {#            align: 'left'#}
-        {#        },#}
-        {#        'moreParagraph': {#}
-        {#            'buttons': ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'paragraphFormat', 'lineHeight', 'outdent', 'indent', 'quote'],#}
-        {#            buttonsVisible: 0,#}
-        {#            align: 'left'#}
-        {#        },#}
-        {#        // 'moreMisc': {#}
-        {#        //     'buttons': ['undo', 'redo', 'fullscreen', 'print', 'getPDF', 'selectAll', 'help']#}
-        {#        // }#}
-        {#        'send': {#}
-        {#            'buttons': ['Clear'],#}
-        {#            align: 'rigth'#}
-        {#        }#}
-
-        {#    },#}
-        {#    toolbarBottom: true,#}
-        {#    placeholderText: 'What\'s on your mind {{ user.firstName }}?...',#}
-        {#    enter: FroalaEditor.ENTER_BR,#}
-        {#    autofocus: false,#}
-        {#    attribution: false,#}
-
-        {#}, function () {#}
-        {#    $('#NewSocialPostForm').on('submit', function (e) {#}
-        {#        if (editor.core.isEmpty()) {#}
-        {#            e.preventDefault();#}
-        {#            return false;#}
-        {#        }#}
-        {#    });#}
-        {#});#}
-
-        {#let editorModal = new FroalaEditor('#NewSocialPostModal', {#}
-        {#    toolbarButtons: {#}
-        {#        'wallpaper': {#}
-        {#            'buttons': ['wallpaper'],#}
-        {#            align: 'left'#}
-        {#        },#}
-        {#        'moreText': {#}
-        {#            'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'clearFormatting'],#}
-        {#            buttonsVisible: 3,#}
-        {#            align: 'left'#}
-        {#        },#}
-        {#        'moreParagraph': {#}
-        {#            'buttons': ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'paragraphFormat', 'lineHeight', 'outdent', 'indent', 'quote'],#}
-        {#            buttonsVisible: 0,#}
-        {#            align: 'left'#}
-        {#        },#}
-        {#        // 'moreMisc': {#}
-        {#        //     'buttons': ['undo', 'redo', 'fullscreen', 'print', 'getPDF', 'selectAll', 'help']#}
-        {#        // }#}
-        {#        'send': {#}
-        {#            'buttons': ['Clear'],#}
-        {#            align: 'rigth'#}
-        {#        }#}
-
-        {#    },#}
-        {#    toolbarBottom: true,#}
-        {#    placeholderText: 'What\'s on your mind {{ user.firstName }}?...',#}
-        {#    enter: FroalaEditor.ENTER_BR,#}
-        {#    autofocus: true,#}
-        {#    attribution: false,#}
-
-        {#}, function () {#}
-        {#    $('#NewSocialPostFormModal').on('submit', function (e) {#}
-        {#        if (editorModal.core.isEmpty()) {#}
-        {#            e.preventDefault();#}
-        {#            return false;#}
-        {#        }#}
-        {#    });#}
-        {#});#}
-{#    </script>#}
-    {#    <script>#}
-    {#        $(document).ready(function(){#}
-    {#                        $image_crop = $('#image_demo').croppie({#}
-    {#                enableExif: true,#}
-    {#                viewport: {#}
-    {#                    width:130,#}
-    {#                    height:130,#}
-    {#                    type:'square' //circle#}
-    {#                },#}
-    {#                boundary:{#}
-    {#                    width:300,#}
-    {#                    height:300#}
-    {#                }#}
-    {#            });#}
-
-    {#            $('#AvatarFile').on('change', function(){#}
-    {#                var reader = new FileReader();#}
-    {#                reader.onload = function (event) {#}
-    {#                    $image_crop.croppie('bind', {#}
-    {#                        url: event.target.result#}
-    {#                    }).then(function(){#}
-    {#                        console.log('jQuery bind complete');#}
-    {#                    });#}
-    {#                }#}
-    {#                reader.readAsDataURL(this.files[0]);#}
-    {#                $('#uploadAvatarModal').modal('show');#}
-    {#            });#}
-
-    {#            $('.crop_image').click(function(event){#}
-    {#                $image_crop.croppie('result', {#}
-    {#                    type: 'canvas',#}
-    {#                    size: 'viewport'#}
-    {#                }).then(function(response){#}
-    {#                    $.ajax({#}
-    {#                        url:"upload.php",#}
-    {#                        type: "POST",#}
-    {#                        data:{"image": response},#}
-    {#                        success:function(data)#}
-    {#                        {#}
-    {#                            $('#uploadAvatarModal').modal('hide');#}
-    {#                            $('.mine-avatar').html(data);#}
-    {#                        }#}
-    {#                    });#}
-    {#                })#}
-    {#            });#}
-
-    {#        });#}
-    {#    </script>#}
     <script src="{{ asset('smartadmin/js/formplugins/cropperjs/cropper.js') }}"></script>
     <script>
-
+        //avatar
         $(function()
         {
             'use strict';
@@ -2656,35 +2551,6 @@ Variables:
                 console.log('click');
                 $image.cropper(options);
             });
-
-            // Cropper
-            // $image.on(
-            //     {
-            //         ready: function(e)
-            //         {
-            //             console.log(e.type);
-            //         },
-            //         cropstart: function(e)
-            //         {
-            //             console.log(e.type, e.detail.action);
-            //         },
-            //         cropmove: function(e)
-            //         {
-            //             console.log(e.type, e.detail.action);
-            //         },
-            //         cropend: function(e)
-            //         {
-            //             console.log(e.type, e.detail.action);
-            //         },
-            //         crop: function(e)
-            //         {
-            //             console.log(e.type);
-            //         },
-            //         zoom: function(e)
-            //         {
-            //             console.log(e.type, e.detail.ratio);
-            //         }
-            //     }).cropper(options);
 
             // Buttons
             if (!$.isFunction(document.createElement('canvas').getContext))
@@ -2981,47 +2847,6 @@ Variables:
             }
         });
     </script>
-    {#    <script>#}
-    {#        let white_opacity = 0;#}
-    {#        let black_opacity = 0;#}
-    {#        $(document).ready(function() {#}
-    {#            var ionskin = "sharp";#}
-
-    {#            $("#newSocialPostSlider").ionRangeSlider(#}
-    {#                {#}
-    {#                    skin: ionskin,#}
-    {#                    type: 'single',#}
-    {#                    grid: false,#}
-    {#                    hide_min_max: true,#}
-    {#                    hide_from_to: true,#}
-    {#                    from: 0,#}
-    {#                    min: -0.9,#}
-    {#                    max: 0.9,#}
-    {#                    step: 0.1#}
-    {#                });#}
-
-    {#            $("#newSocialPostSlider").on("change", function () {#}
-    {#                var $inp = $(this);#}
-    {#                var value = $inp.prop("value"); // reading input value#}
-
-    {#                if (value >= 0 && value <= 0.9)#}
-    {#                    {#}
-    {#                            white_opacity = value;#}
-    {#                            black_opacity = 0;#}
-    {#                    }#}
-    {#                if (value >= -0.9 && value <= 0)#}
-    {#                    {#}
-    {#                            black_opacity =  +value - +value - +value;#}
-    {#                            white_opacity = 0;#}
-    {#                            console.log(black_opacity);#}
-    {#                    }#}
-    {#                $('#black-transparent').css('background-color', 'rgba(000,000,000, '+black_opacity+')');#}
-    {#                $('.black-transparent').css('background-color', 'rgba(000,000,000, '+black_opacity+')');#}
-    {#                $('#white-transparent').css('background-color', 'rgba(255,255,255, '+white_opacity+')');#}
-
-    {#            });#}
-    {#        });#}
-    {#    </script>#}
 
     <script>
         {% if avatar is not null and tab == 'settings' %}
@@ -3034,35 +2859,73 @@ Variables:
 
 {#  {% if user.Username == profile.Username %} #}
         <script>
-            function getMoreCommentsRight(id) {// check max 10
+
+            let comments_to_update = Array();
+
+            function getMoreCommentsRight(id, insideExtendedWindow = false) {// check max 10
                 if (letMeShowMore2[id] === true) {
-                    $('.conversation-right').each(function (index) {
-                        var oopid = $(this).attr('id')//
-                        console.log(oopid.slice(4))
-                        letMeShowMore2[oopid.slice(4)] = true;
-                        $('#right-arrow-'+oopid.slice(4)).html('<i class="fal fa-angle-right fa-2x" style=""></i>')
-                    })
-                    $('.conversation-right').remove()
-                    console.log('con_'+id+'_new_target')
-                    $('#extended-conversation_target-' + id).append(
-                        //'<div id="con-move-target" class="position-fixed" style="left:0; top:116px; height:calc(100%-116px); z-index: 5000; background-color: red">jhgfh'+//przenoszony div myszka
-                        '<div style="position: absolute; left:calc(100% + 3rem); top:0;" class="conversation-right">'+
-                        '   <div id="con_'+id+'_new_target" class="d-flex">'+
-                        '       <div id="con_'+id+'" class="position-relative" style="' +
-                        // '           width: 118%; height: 600px;' +
-                        '           background: transpater; border: 0px black solid; z-index:1990">'+
-                        '       </div>'+
-                        '   </div>'+
-                        '</div>'
-                        //'</div>'
-                    )
+                    console.log('pagination: ' + pagination[id]);
+                    console.log(id);
+                    let _commentTk = '{{ csrf_token('comment') }}';
+                    $('#ShowExtendedConversation-Target').removeClass('d-none')
                     $.ajax('/api/getMoreConversationComments/'+id, {
                         method: "POST",
+                        data: {
+                            'pagination': CommentPageNr[id],
+                            '_token': '{{ csrf_token('getMoreCommentsRight') }}'
+                        },
                         dataType: 'html',
-                        processData: false,
-                        contentType: false,
                         success: function (data) {
-                            $('#con_'+id).append(data)
+                            if (insideExtendedWindow === false){
+                                $('#ExtendedConversation-Target').append('<div style="margin-right: 8px" class="">' +
+                                    '<div class="d-flex position-absolute flex-column rounded mt-2 pt-0 px-0 pb-0" style="border: 0px black solid; width: 380px; top: 0; left: 0; z-index: 12;">'+
+                                    '<div class="rounded m-0 p-0 d-flex flex-row pt-2" style="border: 1px black solid; width: 100%; background: #D4AF37">'+
+                                    '<div class="d-flex flex-row rounded d-inline-block pt-1 align-middle bg-light w-100 pb-2 px-2" style="border-top: 0 black solid;">'+
+                                    '<div class="d-inline-block align-middle status status-sm status-success mr-3 text-center">'+
+                                    '<span class="ml-1 mt-1 profile-image profile-image-md rounded d-block mt-1" style="background-image: url('+conversationCommentAvatarUrl[id]+'); background-size: cover;"></span>' +
+                                    '</div>'+
+                                    '<div class="mb-0 flex-1 text-dark mr-1 ">'+
+                                    '<div class="d-flex">'+
+                                    '<a href="javascript:void(0);" class="text-dark fw-500">'+
+                                    conversationCommentAuthorUsername[id]+
+                                    '</a>' +
+                                    '<span class="text-muted fs-xs opacity-70 ml-auto">'+
+                                    conversationCommentCreatedAt[id]+
+                                    '</span>'+
+                                    '</div>'+
+                                    '<p class="mb-0">'+
+                                    conversationCommentContent[id]+
+                                    '</p>'+
+                                    '<div>'+
+                                    '<a href="javascript: addHeart('+id+');" class="d-inline-flex align-items-center text-dark small">'+
+                                    '<i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>'+
+                                    '<a href="#answer_ Comment.Id " data-toggle="collapse" aria-expanded="false" aria-controls="answer_Comment.Id " class="float-right">'+
+                                    '<span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top" class="small" onclick="toggleAnswer(\''+id+'\')">'+
+                                    'Answer to '+conversationCommentAuthorUsername[id]+'  <i class="far fa-caret-down"></i>'+
+                                    '</span>'+
+                                    '</a>'+
+                                    '</div>'+
+                                    '</div>'+
+                                    '</div>'+
+                                    '</div>'+
+                                    '<form id="TargetCommentForm-'+id+'" method="post" style="display: none">'+
+                                    '<textarea id="new_comment_to_the_conversation_'+id+'" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."'+
+                                        'rows="6" style="background-color: unset" onkeypress="submitCommentToComment(\'comment\', \''+id+'\', \'2\')"></textarea>'+
+                                    '<input type="hidden" name="_token" value="'+_commentTk+'">'+
+                                    '<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" tabindex="-1" >'+
+                                    '</form>'+
+                                    '<div class="rounded text-center bg-light text-black" style="width: 380px; border: 1px black solid">'+
+                                        '&nbsp;'+
+                                    '</div>'+
+                                    '</div>'+
+                                    '</div>')
+                                $('#ExtendedConversation-Target').append(data)
+                                comments_to_update.forEach(function (item) {
+                                    $('#ShowCommentsLengthNumber_'+item).html(comment_length[item]);
+                                })
+                            }else{
+
+                            }
                             //console.log(data);
                         },
                         error: function () {
@@ -3073,9 +2936,11 @@ Variables:
                     //     '<iframe id="'+id+'" class="position-absolute conversation-iframe rounded" width="118%" height="600px" src="/api/getMoreConversationCommentsIframe/'+id+'" style="left:calc(100% + 3rem); top:0; background: transparent; border: 0; z-index:91998">' +
                     //     '</iframe>')
                     letMeShowMore2[id] = false;
-                    let div = document.getElementById("con_"+id);
-                    $('#right-arrow-'+id).html('<i class="fal fa-angle-left fa-2x" style=""></i>')
+                    // let div = document.getElementById("con_"+id);
+                    $('#right-arrow-'+id).html('<i class="fal fa-angle-right fa-2x" style=""></i>') //changed
 
+                    //let divMover = document.getElementsByClassName("ConversationMover");
+                    let div = document.getElementById("ExtendedConversation-Target");
                         var mousePosition;
                         var offset = [0,0];
                         var isDown = false;
@@ -3087,6 +2952,13 @@ Variables:
                                 div.offsetTop - e.clientY
                             ];
                         }, true);
+                    // function mouseMover(){
+                    //     isDown = true;
+                    //     offset = [
+                    //         div.offsetLeft - e.clientX,
+                    //         div.offsetTop - e.clientY
+                    //     ];
+                    // }
 
                         document.addEventListener('mouseup', function() {
                             isDown = false;
@@ -3106,28 +2978,16 @@ Variables:
                             }
                         }, true);
 
-                    // div.addEventListener('touchmove', function(e) {
-                    //     // grab the location of touch
-                    //     var touchLocation = e.targetTouches[0];
-                    //
-                    //     // assign box new coordinates based on the touch.
-                    //     div.style.left = touchLocation.pageX + 'px';
-                    //     div.style.top = touchLocation.pageY + 'px';
-                    // })
-                    //
-                    // div.addEventListener('touchend', function(e) {
-                    //     // current box position.
-                    //     var x = parseInt(div.style.left);
-                    //     var y = parseInt(div.style.top);
-                    // })
+                        //HERE GIVE A TOUCH MOVE
                 }else{
                     let div = null;
                     $('#con_' + id).remove();
                     letMeShowMore2[id] = true
-                    $('#right-arrow-'+id).html('<i class="fal fa-angle-right fa-2x" style=""></i>')
+                    $('#right-arrow-'+id).html('<i class="fal fa-angle-left fa-2x" style=""></i>') //changed
                 }
-                CommentPageNr[id]++;
-                CommentPageNr[id]++;
+                // zbedne, po co to?
+                // CommentPageNr[id]++;
+                // CommentPageNr[id]++;
 
             }
         </script>
@@ -3158,6 +3018,27 @@ Variables:
                     }
                 });
             }
+        }
+
+        function hideAndDestroyEC(){
+            $('#ShowExtendedConversation-Target').addClass('d-none')
+            $('#ExtendedConversation-Target').html('')
+        }
+    </script>
+    <script>
+        function toggleUnderComments(id){
+            $('#TargetForNewCommentsCollapse-'+id).slideToggle("fast")
+        }
+
+        function toggleAnswer(id){
+            $('#TargetCommentForm-'+id).slideToggle("fast")
+        }
+
+        let CommentConversationInsideId = '';
+        let CommentInsideId = '';
+        function setVariablesForInsideAnswer(conversationId, commentId){
+            CommentConversationInsideId = conversationId;
+            CommentInsideId = commentId;
         }
     </script>
 {#  {% endif %} #}

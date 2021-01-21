@@ -1,0 +1,52 @@
+<div style="margin-right: 0">
+    <div class="d-flex flex-column rounded mt-2 pt-0 px-0 pb-0" style="width: 380px; top: 0; margin-left: 388px; z-index: 12;">
+        <div class="rounded m-0 p-0 d-flex flex-row pt-2" style="border: 1px black solid; width: 100%; background: #707070">
+            <div class="d-flex flex-row rounded d-inline-block pt-1 align-middle bg-light w-100 pb-2 px-2" style="border-top: 0 black solid;">
+                <div class="d-inline-block align-middle status status-sm status-success mr-3 text-center">
+                    <span class="ml-1 mt-1 profile-image profile-image-md rounded d-block mt-1" style="background-image: url('{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
+                    <span><i class="fal fa-angle-double-letgft"></i><i class="fal fa-angle-double-left"></i></span>
+                </div>
+                <div class="mb-0 flex-1 text-dark mr-1 ">
+                    <div class="d-flex">
+                        <a href="javascript:void(0);" class="text-dark fw-500">
+                            {{ user.Username }}
+                        </a><span class="text-muted fs-xs opacity-70 ml-auto">
+                                        {{ CreatedAt|ago }}
+                                                            </span>
+                    </div>
+                    <p class="mb-0">
+                        {{ content }}
+                    </p>
+                    <div>
+                        <a href="javascript: addHeart('290e7b86-bb5d-44df-b548-2fa5ffa8862c');" class="d-inline-flex align-items-center text-dark small">
+                            <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>
+                        </a>
+
+
+                        <a href="#answer_{{ commentId }}" data-toggle="collapse" aria-expanded="false" aria-controls="answer_{{ commentId }}" class="float-right">
+                            <span data-toggle="tooltip" data-original-title="Comment this Conversation" data-placement="top" class="small" onclick="toggleAnswer('{{ commentId }}')">
+                                  Answer <i class="far fa-caret-down"></i>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form id="TargetCommentForm-{{ commentId }}" method="post" style="display: none">
+            <textarea id="new_comment_to_the_conversation_{{ commentId }}" class="form-control border-0 p-0" name="Comment_content" placeholder="add a comment..." rows="6" style="background-color: unset" onkeypress="submitCommentToComment('comment', '{{ commentId }}', '3')"></textarea>
+            <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">
+            <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" tabindex="-1">
+        </form>
+        <div id="TargetForNewCommentsCollapse-{{ commentId }}" class="text-center" style="width: 380px; display: none">
+            <div class="rounded text-center cursor-pointer text-white-50" style="width: 380px; border: 0px black solid" onclick="toggleUnderComments('{{ commentId }}')">
+                Show/Hide
+            </div>
+            <div id="TargetForNewComments-{{ commentId }}" class="text-center text-white" style="width: 380px; border: 0px black solid;">
+
+            </div>
+        </div>
+        <div class="rounded text-center bg-light cursor-pointer text-black" style="width: 380px; border: 1px black solid" onclick="toggleUnderComments('{{ commentId }}')">
+            Show/Hide - 0 comments
+        </div>
+    </div>
+</div>

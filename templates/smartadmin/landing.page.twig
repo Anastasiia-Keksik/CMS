@@ -78,7 +78,7 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
             <div class="flex-1" style="">
                 <div class="container py-4 py-lg-5 my-lg-5 px-4 px-sm-0">
                     <div class="row">
-                        <div class="col col-md-6 col-lg-7 px-5 hidden-sm-down" style="background-color: rgba(255,255,255,0.2); border-radius: 25px; border: 0px rgba(255,255,255,0.4) solid;">
+                        <div class="col col-md-6 col-lg-7 px-5 hidden-sm-down" style="background-color: rgba(0,0,0,0.4); border-radius: 25px; border: 0px rgba(255,255,255,0.4) solid;">
                             <h2 class="fs-xxl fw-500 mt-4 text-white">
                                 In this GALAXIE you can find your own planet. Search for your unique style! <br>
                                 Discover what makes You YOU!
@@ -100,16 +100,16 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
                             <h1 class="text-white fw-300 mb-3 d-sm-block d-md-none">
                                 Secure login
                             </h1>
-                            <div class="card p-4 rounded-plus bg-faded">
+                            <div class="card p-4 rounded-plus bg-faded" style="background: rgba(0,0,0, 0.4)">
                                 <form id="js-login" novalidate="" action="{{ path('app_login') }}" method="post">
                                     <div class="form-group">
-                                        <label class="form-label" for="username">Username</label>
+                                        <label class="form-label text-white-50" for="username">Username</label>
                                         <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
                                         <div class="invalid-feedback">No, you missed this one.</div>
                                         <div class="help-block">Your unique username to app</div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label" for="password">Password</label>
+                                        <label class="form-label text-white-50" for="password">Password</label>
                                         <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
                                         <div class="invalid-feedback">Sorry, you missed this one.</div>
                                         <div class="help-block">Your password</div>
@@ -117,7 +117,7 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
                                     <div class="form-group text-left">
                                         <div class="custom-control custom-checkbox">
                                             <input type="checkbox" class="custom-control-input" name="_remember_me" id="rememberme">
-                                            <label class="custom-control-label" for="rememberme"> Remember me for the next 30 days</label>
+                                            <label class="custom-control-label text-white-50" for="rememberme"> Remember me for the next 30 days</label>
                                         </div>
                                     </div>
                                     <input type="hidden" name="_csrf_token"
@@ -125,10 +125,10 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
                                     >
                                     <div class="row no-gutters">
                                         <div class="col-lg-6 pr-lg-1 my-2">
-                                            <button type="submit" class="btn btn-info btn-block btn-lg">Sign in with <i class="fab fa-google"></i></button>
+                                            <button type="submit" class="btn btn-info btn-block btn-lg" style="background: rgba(0,0,0, 0.6)">Sign in with <i class="fab fa-google"></i></button>
                                         </div>
                                         <div class="col-lg-6 pl-lg-1 my-2">
-                                            <button id="js-login-btn" type="submit" class="btn btn-danger btn-block btn-lg">Secure login</button>
+                                            <button id="js-login-btn" type="submit" class="btn btn-danger btn-block btn-lg" style="background: rgba(0,0,0, 0.6)">Secure login</button>
                                         </div>
                                     </div>
                                 </form>

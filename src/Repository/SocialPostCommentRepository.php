@@ -76,6 +76,7 @@ class SocialPostCommentRepository extends ServiceEntityRepository
     public function findCommentsBySomething($howmuch, $orderBy, $startFrom, $pagination, $postid)
     {
         $pagination = ($pagination-1) * 10 + $startFrom;
+        if ($pagination < 0) { $pagination = 0; }
         if ($orderBy == "likes"){
             return $this->createQueryBuilder('c')
                 ->select('c')
@@ -109,6 +110,7 @@ class SocialPostCommentRepository extends ServiceEntityRepository
     public function findCommentConversationBySomething($howmuch, $orderBy, $startFrom, $pagination, $commentid)
     {
         $pagination = ($pagination-1) * 10 + $startFrom;
+        if ($pagination < 0) { $pagination = 0; }
         if ($orderBy == "likes"){
             return $this->createQueryBuilder('c')
                 ->select('c')
@@ -140,37 +142,37 @@ class SocialPostCommentRepository extends ServiceEntityRepository
     public function countAllComments($post)
     {
         return $this->createQueryBuilder('ccp')
-            ->select('COUNT(ccp)')
+            ->select('COUNT(ccp.id)')
             ->andWhere('ccp.softDelete != 1')
             ->andWhere('ccp.Post = :val')
             ->setParameter('val', $post)
             ->getQuery()
-            ->getResult()
+            ->getSingleScalarResult()
             ;
     }
 
     public function countMainComments($post)
     {
         return $this->createQueryBuilder('ccp')
-            ->select('COUNT(ccp)')
+            ->select('COUNT(ccp.id)')
             ->andWhere('ccp.softDelete != 1')
             ->andWhere('ccp.underAnotherComment is null')
             ->andWhere('ccp.Post = :val')
             ->setParameter('val', $post)
             ->getQuery()
-            ->getResult()
+            ->getSingleScalarResult()
             ;
     }
 
     public function countCommentsInConversation($commentid)
     {
         return $this->createQueryBuilder('ccp')
-            ->select('COUNT(ccp)')
+            ->select('COUNT(ccp.id)')
             ->andWhere('ccp.softDelete != 1')
             ->andWhere('ccp.underAnotherComment = :comment')
             ->setParameter('comment', $commentid)
             ->getQuery()
-            ->getResult()
+            ->getSingleScalarResult()
             ;
     }
 

@@ -95,3 +95,7 @@ bezpieczenstwo
     https://github.com/catamphetamine/javascript-time-ago - tlumaczony TimeAgo dla Javascript
 
     ustawic max na 256 characters w chacie, to nie text area wiec uwazaj
+
+    usun slider po usunieciu tla i wyzeruj kolory
+
+    przy wyswietlanie komentarzy mam slice (0,3) zastanow sie czy to nie sciaga wszystkich kkomentarzy z bazdy bo moze tracisz na zasobach

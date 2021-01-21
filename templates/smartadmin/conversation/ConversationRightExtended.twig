@@ -160,7 +160,7 @@
 <!-- add comment -->
 <div class="py-3 w-100 collapse" id="answer_ insideComment.Id "><form id="COMMENTinconversation_ insideComment.Id " method="post">
                                     <textarea id="new_comment_to_the_conversation_ insideComment.Id " class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
-                                              rows="2" style="background-color: unset" onkeypress="submitCommentToComment(comment,  insideComment.Id , true)"></textarea>
+                                              rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment',  insideComment.Id , '3')"></textarea>
         <input type="hidden" name="_token" value="{{ csrf_token("comment") }}">
         <input type="submit"
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"
@@ -177,7 +177,7 @@
 <!-- add comment -->
 <div class="py-3 w-100 collapse" id="answer_ Comment.Id "><form id="COMMENTinconversation_ Comment.Id " method="post">
                                     <textarea id="new_comment_to_the_conversation_ Comment.Id " class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
-                                              rows="2" style="background-color: unset" onkeypress="submitCommentToComment(comment,  Comment.Id , true)"></textarea>
+                                              rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment',  Comment.Id , '2')"></textarea>
         <input type="hidden" name="_token" value="{{ csrf_token("comment") }}">
         <input type="submit"
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"

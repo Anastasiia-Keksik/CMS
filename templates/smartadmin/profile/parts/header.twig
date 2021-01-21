@@ -10,6 +10,8 @@
                      height: 300px; top: 0;
              {% if profile.BackgroundFileName != '' and profile.BackgroundFileName is not null %}
                      background: url('{{ asset('/upload/gallery/'~profile.Username~'/'~profile.BackgroundFileName) }}');
+                     {% else %}
+                     background: lightskyblue;
              {% endif %}
                      background-size: cover;
                      background-position: 0% {{ profile.bgPosition }}%;
@@ -102,8 +104,7 @@
 
 </div>
 <div class="position-sticky shadow-5 text-dark d-flex"
-     style="top: 66px; height: 50px; background-color: white;
-                 margin-left: -32px; margin-right: -32px; z-index: 3; margin-top: -100px; margin-bottom: 30px">
+     style="top: 66px; height: 50px; background-color: #D21404; margin-left: -32px; margin-right: -32px; z-index: 3; margin-top: -100px; margin-bottom: 30px">
     <div class="mt-3" style="width: 75%"><span class="ml-6"><b>Time line | Forum | Zdjęcia | Kontakty (2344) | komiksy dropdown | Poezja | Scenariusze | Opowiadania | Książki | Informacje | Kursy |Więcej </b></span></div>
     <div class="mt-3 pl-6 text-center " style="width:25%;">TIP ME!</div>
 </div>

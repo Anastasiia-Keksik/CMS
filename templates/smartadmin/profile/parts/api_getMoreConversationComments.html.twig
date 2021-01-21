@@ -1,0 +1,47 @@
+<div class="slide-down" style="display: none">
+    {% for comment in Comments %}
+        <script>
+            conversationCommentContent['{{ comment.Id }}'] = '{{ comment.Content|replace({"'": "&apos;"}) }}'
+            conversationCommentAuthorFirstName['{{ comment.Id }}'] = '{{ comment.user.FirstName }}'
+            conversationCommentAuthorLastName['{{ comment.Id }}'] = '{{ comment.user.LastName }}'
+            conversationCommentAuthorUsername['{{ comment.Id }}'] = '{{ comment.user.Username }}'
+            conversationCommentAuthorVisibleName['{{ comment.Id }}'] = '{{ comment.user.VisibleName }}'
+            conversationCommentCreatedAt['{{ comment.Id }}'] = '{{ comment.createdAt|ago }}'
+            conversationCommentAvatarUrl['{{ comment.Id }}'] = '{{ asset('upload/avatars/'~comment.user.Username~'/'~comment.user.AvatarFileName)|imagine_filter('my_thumb') }}'
+        </script>
+        <div class="d-flex flex-row w-100 pt-4">
+            <div class="d-inline-block align-middle status status-sm status-success mr-3">
+                  <span class="profile-image profile-image-md {# rounded-circle #} d-block mt-1" style="border-radius: 5px; background-image:url('{{ asset('upload/avatars/'~comment.user.Username~'/'~comment.user.AvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
+            </div>
+            <div class="mb-0 flex-1 text-dark">
+                  <div class="d-flex">
+                          <a href="javascript:void(0);" class="text-dark fw-500">
+                              {{ comment.user.Username }}
+                          </a>
+                      <span class="text-muted fs-xs opacity-70 ml-auto">
+                            {{ comment.createdAt|ago }}
+                      </span>
+                      </div>
+                  <p class="mb-0">
+                      {{ comment.Content }}
+                  </p>
+                  <div class="d-flex justify-content-between small">
+                      <a href="javascript: addHeart('{{ comment.Id  }}');" class="d-inline-flex align-items-center text-dark">
+                          <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>
+                      </a>
+                      <a href="#answer_{{ comment.Id }}" data-toggle="collapse" aria-expanded="false" aria-controls="answer_{{ comment.Id }}'"> Answer <i class="far fa-caret-right"></i></a>
+                  </div>
+            </div>
+            <!-- right click conversation -->
+            <script>
+                letMeShowMore2['{{ comment.Id }}'] = true
+                CommentPageNr['{{ comment.Id }}'] = 1;
+            </script>
+            <div id="right-arrow-{{ comment.Id }}" class="rounded justify-content-center cursor-pointer d-flex align-items-center" style="width: 20px; height: 60px; background: rgba(255,255,255, 0.2); border: #505050;"
+                 onclick="getMoreCommentsRight('{{ comment.Id }}')">
+                <i class="fal fa-angle-left fa-2x" style=""></i> {# changed #}
+            </div>
+            <!-- end right click conversation -->
+        </div>
+    {% endfor %}
+</div>

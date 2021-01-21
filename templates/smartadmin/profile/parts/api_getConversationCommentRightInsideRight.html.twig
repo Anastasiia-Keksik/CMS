@@ -1,0 +1,114 @@
+{% set it0 = 0 %}
+{% set it1 = 1 %}
+<div id="ExtendedConversation-{{ ConversationId }}" class="position-absolute d-flex flex-row" style="left: 388px; top: -8px; z-index: 15">
+    {% for comment in Comments %}
+        <script>
+            //w dol
+            comments_to_update[{{ it0 }}] = '{{ comment.Id }}';
+            pagination['{{ comment.Id }}'] = 1;
+        </script>
+        <!-- Extended conversation comment -->
+        <div style="margin-right: 8px">
+            <div class="d-flex flex-column rounded mt-2 pt-0 px-0 pb-0" style="width: 380px; top: 0; left: calc(380px*{{ it1 }} + 8px*{{ it1 }}); z-index: 12;" {# onmousedown="mouseMover()" #}>
+                <div class="rounded m-0 p-0 d-flex flex-row pt-0" style="border: 1px black solid; width: 100%; background: #707070">
+                    <div class="d-flex flex-row rounded d-inline-block pt-1 align-middle bg-light w-100 pb-2 px-2" style="border-top: 0 black solid;">
+                        <div class="d-inline-block align-middle status status-sm status-success mr-3 text-center">
+                            <span class="ml-1 mt-1 profile-image profile-image-md rounded d-block mt-1" style="background-image: url('{{ comment.AuthorAvatarFileUrl }}'); background-size: cover;"></span>
+                            <span><i class="fal fa-angle-double-letgft"></i><i class="fal fa-angle-double-left"></i></span>
+                        </div>
+                        <div class="mb-0 flex-1 text-dark mr-1 ">
+                            <div class="d-flex">
+                                <a href="javascript:void(0);" class="text-dark fw-500">
+                                    {{ comment.user.Username }}
+                                </a><span class="text-muted fs-xs opacity-70 ml-auto">
+                                        {{ comment.createdAt|ago }}
+                                                            </span>
+                            </div>
+                            <p class="mb-0">
+                                {{ comment.Content }}
+                            </p>
+                            <div>
+                                <a href="javascript: addHeart('{{ comment.Id }}');" class="d-inline-flex align-items-center text-dark small">
+                                    <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>
+                                </a>
+
+
+                                <a href="#answer_ Comment.Id " data-toggle="collapse" aria-expanded="false" aria-controls="answer_Comment.Id " class="float-right">
+                                                        <span data-toggle="tooltip" data-original-title="Comment this Conversation" data-placement="top" class="small" onclick="toggleAnswer('{{ comment.Id }}')">
+                                                              Answer <i class="far fa-caret-down"></i>
+                                                        </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="TargetCommentForm-{{ comment.Id }}" method="post" style="display: none">
+                <textarea id="new_comment_to_the_conversation_{{ comment.Id }}" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
+                          rows="6" style="background-color: unset" onkeypress="submitCommentToComment('comment', '{{ comment.Id }}', '3')"></textarea>
+                    <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">
+                    <input type="submit"
+                           style="position: absolute; left: -9999px; width: 1px; height: 1px;"
+                           tabindex="-1" />
+                </form>
+                <div id="TargetForNewCommentsCollapse-{{ comment.Id }}" class="text-center" style="width: 380px; display: none;">
+                    <div class="rounded text-center cursor-pointer text-white-50" style="width: 380px; border: 0px black solid" onclick="toggleUnderComments('{{ comment.Id }}')">
+                        Show/Hide
+                    </div>
+                    {% if comment.count > 3 %}
+                        <script>
+                            comment_length['{{ comment.Id }}'] = {{ comment.count - 3 }};
+                        </script>
+                        <div id="ShowCommentsLengthTag_{{ comment.Id }}" class="rounded text-center cursor-pointer text-white-50" style="width: 380px; border: 0px black solid" onclick="getMoreCommentsToCommentRightInside('{{ comment.Id }}')">
+                            Show <span id="ShowCommentsLengthNumber_{{ comment.Id }}"></span> more comments
+                        </div>
+                    {% endif %}
+                    <div id="TargetForNewComments-{{ comment.Id }}" class="text-center text-white" style="width: 380px; border: 0px black solid;">
+
+                        {% for underComment in comment.CommentConversation %}
+                            <div id="comment-{{ underComment.Id }}" class="position-relative">
+                                <div class="d-flex flex-row rounded d-inline-block pt-1 align-middle w-100 pb-2 px-2" style="border-top: 0 black solid;">
+                                    <script>
+                                        letMeShowMore2['{{ underComment.Id }}'] = true
+                                    </script>
+                                    <div class="d-inline-block align-middle status status-sm status-success mr-3 text-center">
+                                        <span class="ml-1 mt-1 profile-image profile-image-md rounded d-block mt-1" style="background-image: url('{{ underComment.AuthorAvatarFileUrl }}'); background-size: cover;"></span>
+                                        <span class="cursor-pointer" onclick="getMoreCommentsToCommentRightInsideRight('{{ underComment.Id }}')"><big>>>></big></span>
+                                    </div>
+                                    <div class="mb-0 flex-1 mr-1 ">
+                                        <div class="d-flex">
+                                            <a href="javascript:void(0);" class="text-white fw-500">
+                                                {{ underComment.AuthorUsername }}
+                                            </a><span class=" fs-xs opacity-70 ml-auto">
+                                            {{ underComment.createdAt|ago }}
+                                                                </span>
+                                        </div>
+                                        <p class="mb-0 text-left">
+                                            {{ underComment.Content }}
+                                        </p>
+                                        <div class="d-flex justify-content-between">
+                                            <a href="javascript: addHeart('{{ underComment.Id }}');" class="d-inline-flex align-items-sm-center small">
+                                                <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span class="text-white">0 Likes</span>
+                                            </a>
+
+
+                                            <span data-toggle="modal" data-target=".answer-modal" class="float-right text-white">
+                                        <span class="small" onclick="setVariablesForInsideAnswer('{{ comment.Id }}', '{{ underComment.Id }}')">
+                                              Answer <i class="far fa-caret-down"></i>
+                                        </span>
+                                    </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="rounded text-center bg-light cursor-pointer text-black" style="width: 380px; border: 1px black solid" onclick="toggleUnderComments('{{ comment.Id }}')">
+                    Show/Hide - {{ comment.count }} comments
+                </div>
+            </div>
+        </div>
+        {% set it0 = it0+1 %}
+        {% set it1 = it1+1 %}
+    {% endfor %}
+</div>

@@ -65,7 +65,7 @@
                 <div id="loadCommentsTarget_{{ post.Id }}" class="d-flex flex-column w-100"></div>
                 {% for comment in post.Comments|slice(0, 3) %}
                     <!-- comment -->
-                    <div id="comment_{{ post.Id }}_{{ loop.index }}" class="d-flex flex-row w-100 pt-4 pb-4">
+                    <div id="comment_{{ post.Id }}_{{ loop.index }}" class="d-flex flex-row w-100 pt-4 pb-0"> {# pb-4 #}
                         <div class="d-inline-block align-middle status status-sm status-success mr-3">
                             <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url('{{ asset('upload/avatars/'~comment.AuthorUsername~'/'~comment.AuthorAvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
                         </div>
@@ -287,7 +287,7 @@
                     <div id="loadCommentsTarget2_{{ post.Id }}" class="d-flex flex-column w-100"></div>
                     {% for comment in post.Comments|slice(0, 3) %}
                         <!-- comment -->
-                        <div id="comment2_{{ post.Id }}_{{ loop.index }}" class="d-flex flex-row w-100 pt-4 pb-4">
+                        <div id="comment2_{{ post.Id }}_{{ loop.index }}" class="d-flex flex-row w-100 pt-4 pb-0"> {# pb-4 #}
                             <div class="d-inline-block align-middle status status-sm status-success mr-3">
                                 <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url('{{ asset('upload/avatars/'~comment.AuthorUsername~'/'~comment.AuthorAvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
                             </div>

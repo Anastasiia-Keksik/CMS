@@ -1,0 +1,32 @@
+<div class="slide-down" style="display: none">
+    {% for comment in Comments %}
+        <div class="d-flex flex-row rounded d-inline-block pt-1 align-middle w-100 pb-2 px-2" style="border-top: 0 black solid;">
+            <div class="d-inline-block align-middle status status-sm status-success mr-3 text-center">
+                <span class="ml-1 mt-1 profile-image profile-image-md rounded d-block mt-1" style="background-image: url('{{ comment.AuthorAvatarFileUrl }}'); background-size: cover;"></span>
+                <span class="cursor-pointer" onclick="getMoreCommentsToCommentRightInsideRight('{{ comment.Id }}')"><big>>>></big></span>
+            </div>
+            <div class="mb-0 flex-1 mr-1 ">
+                <div class="d-flex">
+                    <a href="javascript:void(0);" class="text-white fw-500">
+                        {{ comment.user.Username }}
+                    </a><span class=" fs-xs opacity-70 ml-auto">
+                                            {{ comment.createdAt|ago }}
+                                                                </span>
+                </div>
+                <p class="mb-0 text-left">
+                    {{ comment.Content }}
+                </p>
+                <div class="d-flex justify-content-between">
+                    <a href="javascript: addHeart('{{ comment.Id }}');" class="d-inline-flex align-items-sm-center small">
+                        <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span class="text-white">0 Likes</span>
+                    </a>
+                    <span data-toggle="modal" data-target=".answer-modal" class="float-right text-white" onclick="setVariablesForInsideAnswer('{{ comment.conversationId }}', '{{ comment.Id }}')">
+                    <span class="small">
+                          Answer <i class="far fa-caret-down"></i>
+                    </span>
+                </span>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

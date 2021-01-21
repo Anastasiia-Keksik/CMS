@@ -139,9 +139,7 @@ class SocialController extends AbstractController
         $token = $request->request->get('_token');
 
         if ($request->request->get('Content') == ""){
-            return new JsonResponse([
-                'status'=>'empty content'
-            ]);
+            return new Response('Empty content');
         } elseif (strlen($request->request->get('Content')) > $this->maxCommentLength){
             $content = substr($request->request->get('Content'), 0, $this->maxCommentLength);
         } else {
@@ -167,9 +165,9 @@ class SocialController extends AbstractController
         }else{
             //TODO: bad csrf
         }
-        return new JsonResponse([
+        return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_addCommentToPost.html.twig", [
             'status'=>'ok',
-            'Author'=>$this->getUser()->getUsername(),
+            'Author'=>$this->getUser(),
             'Content'=>$request->request->get('Content'),
             'CreatedAt'=> $data,
             'ConversationId'=>null,
@@ -185,9 +183,7 @@ class SocialController extends AbstractController
         $token = $request->request->get('_token');
 
         if ($request->request->get('Content') == ""){
-            return new JsonResponse([
-                'status'=>'empty content'
-            ]);
+            return new Response('Empty content');
         } elseif (strlen($request->request->get('Content')) > $this->maxCommentLength){
             $content = substr($request->request->get('Content'), 0, $this->maxCommentLength);
         } else {
@@ -213,22 +209,40 @@ class SocialController extends AbstractController
             //TODO: bad csrf
         }
 
-        if ($request->request->get('right') === "false"){
-            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_ConversationComment.html.twig" ,[
+        if ($request->request->get('right') === "1"){
+            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_addConversationComment.html.twig" ,[
                 'status'=>'ok',
                 'user'=>$this->getUser(),
                 'content'=>$request->request->get('Content'),
                 'CreatedAt'=> $data,
-                'conversationId'=>null,
+                'conversationId'=>$id->getId(),
                 'commentId'=>$newComment->getId(),
             ]);
-        } else {
-            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_ConversationCommentRight.html.twig" ,[
+        } else if ($request->request->get('right') === '2') {
+            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_addConversationCommentRight.html.twig" ,[
                 'status'=>'ok',
                 'user'=>$this->getUser(),
                 'content'=>$request->request->get('Content'),
                 'CreatedAt'=> $data,
-                'conversationId'=>null,
+                'conversationId'=>$id->getId(),
+                'commentId'=>$newComment->getId(),
+            ]);
+        } else if ($request->request->get('right') === '3'){
+            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_addConversationCommentRightInside.html.twig" ,[
+                'status'=>'ok',
+                'user'=>$this->getUser(),
+                'content'=>$request->request->get('Content'),
+                'CreatedAt'=> $data,
+                'conversationId'=>$id->getId(),
+                'commentId'=>$newComment->getId(),
+            ]);
+        } else if ($request->request->get('right') === '4'){
+            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_addConversationCommentRightInsideRight.html.twig" ,[
+                'status'=>'ok',
+                'user'=>$this->getUser(),
+                'content'=>$request->request->get('Content'),
+                'CreatedAt'=> $data,
+                'conversationId'=>$id->getId(),
                 'commentId'=>$newComment->getId(),
             ]);
         }
@@ -241,10 +255,10 @@ class SocialController extends AbstractController
      * @param $id
      * @param SocialPostCommentRepository $socialPostCommentRepository
      * @param CacheManager $cm
-     * @return JsonResponse
+     * @return Response
      */
     public function getMoreComments(Request $request, $id, SocialPostCommentRepository $socialPostCommentRepository,
-                                    CacheManager $cm){
+                                    CacheManager $cm):Response{
         $token = $request->request->get('_token');
         $pagination = $request->request->get('pagination');
 
@@ -253,13 +267,10 @@ class SocialController extends AbstractController
 
             $comments = $socialPostCommentRepository ->findCommentsBySomething('10', 'likes', 3, $pagination, $id);
 
-            //dd($comments);
             $commentary = [];
             if ($comments == [])
             {
-                return new JsonResponse([
-                    'status'=>'empty content',
-                ]);
+                return new Response('Empty content');
             }
             /** @var SocialPostComment $comment */
             $i=0;
@@ -298,135 +309,172 @@ class SocialController extends AbstractController
                 $i++;
             }
 
-            return new JsonResponse([
-                'status'=>'ok',
-                'comments'=>$commentary
+            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_getMoreCommentsToPost.html.twig", [
+                'Comments' => $commentary
             ]);
         }else{
             //TODO: bad csrf
-            return new JsonResponse([
-                'status'=>'empty content',
-            ]);
+            return new Response('Empty content');
         }
     }
-//TODO:  delete this
-//    /**
-//     * @Route("/api/getMoreConversationCommentsIframe/{id}", name="api_app_getMoreConversationComments-iframe")
-//     * @IsGranted("ROLE_USER")
-//     * @param Request $request
-//     * @param $id
-//     * @param SocialPostCommentRepository $socialPostCommentRepository
-//     * @param CacheManager $cm
-//     * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
-//     */
-//    public function getMoreConversationCommentsIframe(Request $request, $id, SocialPostCommentRepository $socialPostCommentRepository,
-//                                    CacheManager $cm){
-//        $token = $request->request->get('_token');
-//        $pagination = $request->request->get('pagination');
-//        $pagination = 1;
-//
-//
-//        if (true){
-//
-//            $comments = $socialPostCommentRepository ->findCommentConversationBySomething('10', 'likes', 0, $pagination, $id);
-//
-//            //dd($comments);
-//            $commentary = [];
-//            if ($comments == [])
-//            {
-//                return new JsonResponse([
-//                    'status'=>'empty content1',
-//                ]);
-//            }
-//            $i=0;
-//            foreach($comments as $comment)
-//            {
-//
-//                $commentConversationComments = $socialPostCommentRepository->findNewestCommentConversation(3, $comment->getId());
-//
-//                $commentary[$i]=[
-//                    'Id'=>$comment -> getId(),
-//                    'Content'=>$comment-> getContent(),
-//                    'Author'=>$comment-> getAuthor()->getId(),
-//                    'AuthorUsername'=>$comment->getAuthor()->getUsername(),
-//                    'AuthorFirstName'=>$comment->getAuthor()->getFirstName(),
-//                    'AuthorLastName'=>$comment->getAuthor()->getLastName(),
-//                    'AuthorAvatarFileUrl'=>$cm->getBrowserPath('/upload/avatars/'.$comment->getAuthor()->getUsername().'/'.$comment->getAuthor()->getAvatarFileName(), 'my_thumb'),
-//                    'createdAt'=>$comment->getCreatedAt() ? $comment->getCreatedAt()->format('Y-m-d H:i:s') : "",
-//                    'modifiedAt'=>$comment->getModifiedAt() ? $comment->getModifiedAt()->format('Y-m-d H:i:s') : "",
-//                    'CommentConversation'=>[]
-//                ];
-//                foreach ($commentConversationComments as $conversationComment){
-//                    array_push($commentary[$i]['CommentConversation'], [
-//                        'Id'=>$conversationComment -> getId(),
-//                        'Content'=>$conversationComment-> getContent(),
-//                        'Author'=>$conversationComment-> getAuthor()->getId(),
-//                        'AuthorUsername'=>$conversationComment->getAuthor()->getUsername(),
-//                        'AuthorFirstName'=>$conversationComment->getAuthor()->getFirstName(),
-//                        'AuthorLastName'=>$conversationComment->getAuthor()->getLastName(),
-//                        'AuthorAvatarFileUrl'=>$cm->getBrowserPath('/upload/avatars/'.$conversationComment->getAuthor()->getUsername().'/'.$conversationComment->getAuthor()->getAvatarFileName(), 'my_thumb'),
-//                        'createdAt'=>$conversationComment->getCreatedAt() ? $conversationComment->getCreatedAt()->format('Y-m-d H:i:s') : "",
-//                        'modifiedAt'=>$conversationComment->getModifiedAt() ? $conversationComment->getModifiedAt()->format('Y-m-d H:i:s') : "",
-//                    ]);
-//                }
-//                $i++;
-//            }
-//
-//            return $this->render($_SERVER['DEFAULT_TEMPLATE'] . "/conversation/ConversationRightExtended.twig",[
-//                'commentary' => $commentary
-//            ]);
-//        }else{
-//            //TODO: bad csrf
-//            return new JsonResponse([
-//                'status'=>'empty content2',
-//            ]);
-//        }
-//    }
 
     /**
-     * @Route("/api/getMoreConversationComments/{id}", name="api_app_getMoreConversationComments")
+     * @Route("/api/getMoreCommentsToCommentRightInside/{id}", name="api_app_getMoreCommentsToCommentRightInside")
      * @IsGranted("ROLE_USER")
      * @param Request $request
      * @param $id
      * @param SocialPostCommentRepository $socialPostCommentRepository
      * @param CacheManager $cm
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function getMoreConversationComments(Request $request, $id, SocialPostCommentRepository $socialPostCommentRepository,
-                                                CacheManager $cm){
+    public function getMoreCommentsToCommentRightInside(Request $request, $id, SocialPostCommentRepository $socialPostCommentRepository,
+                                             CacheManager $cm): Response
+    {
         $token = $request->request->get('_token');
         $pagination = $request->request->get('pagination');
-        $pagination = 1;
 
 
-        if (true){
+        if ($this->isCsrfTokenValid('getMoreComments', $token)){
 
-            $comments = $socialPostCommentRepository ->findCommentConversationBySomething('10', 'likes', 0, $pagination, $id);
+            $comments = $socialPostCommentRepository ->findCommentConversationBySomething('10', 'likes', 3, $pagination, $id);
 
-            //dd($comments);
             $commentary = [];
             if ($comments == [])
             {
-                return new Response('', 204);
+                return new Response('Empty content');
             }
+
+            /** @var SocialPostComment $comment */
             $i=0;
             foreach($comments as $comment)
             {
-
-                $commentConversationComments = $socialPostCommentRepository->findNewestCommentConversation(3, $comment->getId());
+                $count = $socialPostCommentRepository->countCommentsInConversation($comment->getId());
 
                 $commentary[$i]=[
                     'Id'=>$comment -> getId(),
                     'Content'=>$comment-> getContent(),
-                    'Author'=>$comment-> getAuthor()->getId(),
-                    'AuthorUsername'=>$comment->getAuthor()->getUsername(),
-                    'AuthorFirstName'=>$comment->getAuthor()->getFirstName(),
-                    'AuthorLastName'=>$comment->getAuthor()->getLastName(),
+                    'user'=>$comment->getAuthor(),
                     'AuthorAvatarFileUrl'=>$cm->getBrowserPath('/upload/avatars/'.$comment->getAuthor()->getUsername().'/'.$comment->getAuthor()->getAvatarFileName(), 'my_thumb'),
                     'createdAt'=>$comment->getCreatedAt() ? $comment->getCreatedAt()->format('Y-m-d H:i:s') : "",
                     'modifiedAt'=>$comment->getModifiedAt() ? $comment->getModifiedAt()->format('Y-m-d H:i:s') : "",
                     'CommentConversation'=>[],
                     'VisibleName' => $comment->getAuthor()->getVisibleName(),
+                    'count' => $count,
+                    'conversationId' => $id
+                ];
+                $i++;
+            }
+
+            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_getMoreCommentsToCommentRightInside.html.twig", [
+                'Comments' => $commentary
+            ]);
+
+        }else{
+            //TODO: bad csrf
+            return new Response('Empty content');
+        }
+    }
+
+    /**
+     * @Route("/api/getMoreCommentsToComment/{id}", name="api_app_getMoreCommentsToComment")
+     * @IsGranted("ROLE_USER")
+     * @param Request $request
+     * @param $id
+     * @param SocialPostCommentRepository $socialPostCommentRepository
+     * @param CacheManager $cm
+     */
+    public function getMoreCommentsToComment(Request $request, $id, SocialPostCommentRepository $socialPostCommentRepository,
+                                    CacheManager $cm){
+        $token = $request->request->get('_token');
+        $pagination = $request->request->get('pagination');
+
+
+        if ($this->isCsrfTokenValid('getMoreComments', $token)){
+
+            $comments = $socialPostCommentRepository ->findCommentConversationBySomething('10', 'likes', 3, $pagination, $id);
+
+            $commentary = [];
+            if ($comments == [])
+            {
+                return new Response('Empty content');
+            }
+
+            /** @var SocialPostComment $comment */
+            $i=0;
+            foreach($comments as $comment)
+            {
+                $count = $socialPostCommentRepository->countCommentsInConversation($comment->getId());
+
+                $commentary[$i]=[
+                    'Id'=>$comment -> getId(),
+                    'Content'=>$comment-> getContent(),
+                    'user'=>$comment->getAuthor(),
+                    'AuthorAvatarFileUrl'=>$cm->getBrowserPath('/upload/avatars/'.$comment->getAuthor()->getUsername().'/'.$comment->getAuthor()->getAvatarFileName(), 'my_thumb'),
+                    'createdAt'=>$comment->getCreatedAt() ? $comment->getCreatedAt()->format('Y-m-d H:i:s') : "",
+                    'modifiedAt'=>$comment->getModifiedAt() ? $comment->getModifiedAt()->format('Y-m-d H:i:s') : "",
+                    'CommentConversation'=>[],
+                    'VisibleName' => $comment->getAuthor()->getVisibleName(),
+                    'count' => $count
+                ];
+                $i++;
+            }
+
+            if ($request->request->get('main') == "true"){
+                return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_getMoreConversationComments.html.twig", [
+                    'Comments' => $commentary
+                ]);
+            }else{
+                return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_addConversationCommentRightInside.html.twig", [
+                    'Comments' => $commentary
+                ]);
+            }
+
+        }else{
+            //TODO: bad csrf
+            return new Response('Empty content');
+        }
+    }
+
+    /**
+     * @Route("/api/getCommentsToCommentRightInsideRight/{id}", name="api_app_getCommentsToCommentRightInsideRight")
+     * @IsGranted("ROLE_USER")
+     * @param Request $request
+     * @param $id
+     * @param SocialPostCommentRepository $socialPostCommentRepository
+     * @param CacheManager $cm
+     */
+    public function getCommentsToCommentRightInsideRight(Request $request, $id, SocialPostCommentRepository $socialPostCommentRepository,
+                                             CacheManager $cm){
+        $token = $request->request->get('_token');
+        $pagination = $request->request->get('pagination');
+
+
+        if ($this->isCsrfTokenValid('comments', $token)){
+
+            $comments = $socialPostCommentRepository ->findCommentConversationBySomething('10', 'likes', 3, $pagination, $id);
+
+            $commentary = [];
+            if ($comments == [])
+            {
+                return new Response('Empty content');
+            }
+
+            /** @var SocialPostComment $comment */
+            $i=0;
+            foreach($comments as $comment)
+            {
+                $count = $socialPostCommentRepository->countCommentsInConversation($comment->getId());
+                $commentConversationComments = $socialPostCommentRepository->findNewestCommentConversation(3, $comment->getId());
+
+                $commentary[$i]=[
+                    'Id'=>$comment -> getId(),
+                    'Content'=>$comment-> getContent(),
+                    'user'=>$comment->getAuthor(),
+                    'AuthorAvatarFileUrl'=>$cm->getBrowserPath('/upload/avatars/'.$comment->getAuthor()->getUsername().'/'.$comment->getAuthor()->getAvatarFileName(), 'my_thumb'),
+                    'createdAt'=>$comment->getCreatedAt() ? $comment->getCreatedAt()->format('Y-m-d H:i:s') : "",
+                    'modifiedAt'=>$comment->getModifiedAt() ? $comment->getModifiedAt()->format('Y-m-d H:i:s') : "",
+                    'CommentConversation'=>[],
+                    'VisibleName' => $comment->getAuthor()->getVisibleName(),
+                    'count' => $count
                 ];
                 foreach ($commentConversationComments as $conversationComment){
                     array_push($commentary[$i]['CommentConversation'], [
@@ -445,13 +493,90 @@ class SocialController extends AbstractController
                 $i++;
             }
 
+
+            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_getConversationCommentRightInsideRight.html.twig", [
+                'Comments' => $commentary,
+                'ConversationId' => $id
+            ]);
+
+
+        }else{
+            //TODO: bad csrf
+            return new Response('Empty content');
+        }
+    }
+
+    /**
+     * @Route("/api/getMoreConversationComments/{id}", name="api_app_getMoreConversationComments")
+     * @IsGranted("ROLE_USER")
+     * @param Request $request
+     * @param $id
+     * @param SocialPostCommentRepository $socialPostCommentRepository
+     * @param CacheManager $cm
+     */
+    public function getMoreConversationComments(Request $request, $id, SocialPostCommentRepository $socialPostCommentRepository,
+                                                CacheManager $cm){
+        $token = $request->request->get('_token');
+        $pagination = $request->request->get('pagination');
+
+        if ($this->isCsrfTokenValid('getMoreCommentsRight', $token)){
+
+            $comments = $socialPostCommentRepository ->findCommentConversationBySomething('10', 'likes', 0, $pagination, $id);
+
+
+            $commentary = [];
+            if ($comments == [])
+            {
+                return new Response('No content', 204);
+            }
+            $i=0;
+            foreach($comments as $comment)
+            {
+
+                $commentConversationComments = array_reverse($socialPostCommentRepository->findNewestCommentConversation(6, $comment->getId()));
+                $counts = $socialPostCommentRepository->countCommentsInConversation($comment->getId());
+
+                $commentary[$i]=[
+                    'Id'=>$comment -> getId(),
+                    'Content'=>$comment-> getContent(),
+                    'Author'=>$comment-> getAuthor()->getId(),
+                    'AuthorUsername'=>$comment->getAuthor()->getUsername(),
+                    'AuthorFirstName'=>$comment->getAuthor()->getFirstName(),
+                    'AuthorLastName'=>$comment->getAuthor()->getLastName(),
+                    'AuthorAvatarFileUrl'=>$cm->getBrowserPath('/upload/avatars/'.$comment->getAuthor()->getUsername().'/'.$comment->getAuthor()->getAvatarFileName(), 'my_thumb'),
+                    'createdAt'=>$comment->getCreatedAt() ? $comment->getCreatedAt()->format('Y-m-d H:i:s') : "",
+                    'modifiedAt'=>$comment->getModifiedAt() ? $comment->getModifiedAt()->format('Y-m-d H:i:s') : "",
+                    'CommentConversation'=>[],
+                    'VisibleName' => $comment->getAuthor()->getVisibleName(),
+                    'Counts'=> $counts
+                ];
+                foreach ($commentConversationComments as $conversationComment){
+                    $count = $socialPostCommentRepository->countCommentsInConversation($conversationComment->getId());
+                    array_push($commentary[$i]['CommentConversation'], [
+                        'Id'=>$conversationComment -> getId(),
+                        'Content'=>$conversationComment-> getContent(),
+                        'Author'=>$conversationComment-> getAuthor()->getId(),
+                        'AuthorUsername'=>$conversationComment->getAuthor()->getUsername(),
+                        'AuthorFirstName'=>$conversationComment->getAuthor()->getFirstName(),
+                        'AuthorLastName'=>$conversationComment->getAuthor()->getLastName(),
+                        'AuthorAvatarFileUrl'=>$cm->getBrowserPath('/upload/avatars/'.$conversationComment->getAuthor()->getUsername().'/'.$conversationComment->getAuthor()->getAvatarFileName(), 'my_thumb'),
+                        'createdAt'=>$conversationComment->getCreatedAt() ? $conversationComment->getCreatedAt()->format('Y-m-d H:i:s') : "",
+                        'modifiedAt'=>$conversationComment->getModifiedAt() ? $conversationComment->getModifiedAt()->format('Y-m-d H:i:s') : "",
+                        'VisibleName' => $conversationComment->getAuthor()->getVisibleName(),
+                        'conversationId' => $id
+                    ]);
+                }
+                $i++;
+            }
+
             return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_getCommentsRight.html.twig", [
                 'Comments' => $commentary
             ]);
 
         }else{
             //TODO: bad csrf
-            return new Response('', 204);
+            die('Bad CSRF');
+            return new Response('bad csrf', 204);
         }
     }
 
