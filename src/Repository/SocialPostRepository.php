@@ -21,6 +21,17 @@ class SocialPostRepository extends ServiceEntityRepository
         parent::__construct($registry, SocialPost::class);
     }
 
+    public function lastPost($userID)
+    {
+        return$this->createQueryBuilder('p')
+            ->where('p.Account = :val')
+            ->setParameter('val', $userID)
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getFirstResult();
+    }
+
     /**
      * @return SocialPost[] Returns an array of SocialPost objects
      */

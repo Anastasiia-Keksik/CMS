@@ -7,9 +7,9 @@
     conversationCommentCreatedAt['{{ commentId }}'] = '{{ CreatedAt|ago }}'
     conversationCommentAvatarUrl['{{ commentId }}'] = '{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}'
 </script>
-<div class="d-flex flex-row w-100 pt-4">
+<div class="d-flex flex-row w-100 pt-4 slide-down" style="display: none">
     <div class="d-inline-block align-middle status status-sm status-success mr-3">
-          <span class="profile-image profile-image-md {# rounded-circle #} d-block mt-1" style="border-radius: 5px; background-image:url('{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
+          <span class="profile-image profile-image-md rounded-circle d-block mt-1" style="background-image:url('{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}'); background-size: cover;"></span>
     </div>
     <div class="mb-0 flex-1 text-dark">
           <div class="d-flex">
@@ -42,3 +42,16 @@
     </div>
     <!-- end right click conversation -->
 </div>
+<!-- add comment -->
+<div class="w-100 collapse" id="answer_{{ commentId }}">
+    <form id="COMMENT_{{ commentId }}_POST" method="post">
+                                        <textarea id="new_comment_to_the_conversation_{{ commentId }}" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
+                                                  rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment', '{{ commentId }}', '2', true)"></textarea>
+        <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">
+        <input type="hidden" name="profile_name" value="{{ user.Username }}">
+        <input type="submit"
+               style="position: absolute; left: -9999px; width: 1px; height: 1px;"
+               tabindex="-1" />
+    </form>
+</div>
+<!-- add comment end -->

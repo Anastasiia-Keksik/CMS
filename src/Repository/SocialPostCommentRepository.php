@@ -19,6 +19,17 @@ class SocialPostCommentRepository extends ServiceEntityRepository
         parent::__construct($registry, SocialPostComment::class);
     }
 
+    public function lastComment($userID)
+    {
+        return$this->createQueryBuilder('c')
+            ->where('c.author = :val')
+            ->setParameter('val', $userID)
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery()
+            ->setMaxResults(1)
+            ->getSingleResult();
+    }
+
     /**
      * @return SocialPostComment[] Returns an array of SocialPostComment objects
      */

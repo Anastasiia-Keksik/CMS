@@ -328,7 +328,7 @@
                                     <div class="w-100 collapse" id="answer_{{ ConversationComment.Id }}">
                                         <form id="COMMENT_{{ ConversationComment.Id }}_POST" method="post">
                                         <textarea id="new_comment_to_the_conversation_{{ ConversationComment.Id }}" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
-                                          rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment', '{{ ConversationComment.Id }}', '2')"></textarea>
+                                          rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment', '{{ ConversationComment.Id }}', '2', true)"></textarea>
                                             <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">
                                             <input type="hidden" name="profile_name" value="{{ profile.Username }}">
                                             <input type="submit"
@@ -340,21 +340,21 @@
                                     <!-- add comment end -->
                                 {%endfor%}
                                 <div id="addComment-Target_{{ comment.Id }}" class="d-flex flex-column w-100"></div>
-                                <!-- add comment -->
-                                <div class="w-100 collapse" id="answer_{{ comment.Id }}">
-                                    <form id="COMMENT_{{ post.Id }}_POST" method="post">
-                                        <textarea id="new_comment_to_the_conversation_{{ comment.Id }}" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
-                                          rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment', '{{ comment.Id }}', '2')"></textarea>
-                                        <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">
-                                        <input type="hidden" name="profile_name" value="{{ profile.Username }}">
-                                        <input type="submit"
-                                               style="position: absolute; left: -9999px; width: 1px; height: 1px;"
-                                               tabindex="-1" />
-                                    </form>
-                                </div>
-                                <!-- add comment end -->
                             </div>
                         </div>
+                        <!-- add comment -->
+                        <div class="w-100 collapse" id="answer_{{ comment.Id }}">
+                            <form id="COMMENT_{{ post.Id }}_POST" method="post">
+                                        <textarea id="new_comment_to_the_conversation_{{ comment.Id }}" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
+                                                  rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment', '{{ comment.Id }}', '1')"></textarea>
+                                <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">
+                                <input type="hidden" name="profile_name" value="{{ profile.Username }}">
+                                <input type="submit"
+                                       style="position: absolute; left: -9999px; width: 1px; height: 1px;"
+                                       tabindex="-1" />
+                            </form>
+                        </div>
+                        <!-- add comment end -->
                     <!-- comment end -->
                     {% endfor %}
                     <div class="addCommentTarget_{{ post.Id }} d-flex flex-column w-100"></div>

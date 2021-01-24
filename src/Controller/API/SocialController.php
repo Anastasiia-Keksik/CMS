@@ -30,14 +30,6 @@ class SocialController extends AbstractController
     private $maxCommentLength = 600;
 
     /**
-     * @Route("/testowyurl")
-     *
-     */
-    public function testowe(){
-        Return new Response('test');
-    }
-
-    /**
      * @Route("/api/get_social_posts", name="api_app_getSocialPosts")
      * @IsGranted("ROLE_USER")
      */
@@ -135,116 +127,128 @@ class SocialController extends AbstractController
      * @Route("/api/addCommentToPost/{id}", name="api_app_addCommentToPost")
      * @IsGranted("ROLE_USER")
      */
-    public function addComment(Request $request, \App\Entity\SocialPost $id, EntityManagerInterface $em){
+    public function addComment(Request $request, \App\Entity\SocialPost $id, EntityManagerInterface $em,
+                               SocialPostCommentRepository $postCommentRepository){
         $token = $request->request->get('_token');
+        $data = new \DateTime('NOW');
 
-        if ($request->request->get('Content') == ""){
-            return new Response('Empty content');
-        } elseif (strlen($request->request->get('Content')) > $this->maxCommentLength){
-            $content = substr($request->request->get('Content'), 0, $this->maxCommentLength);
-        } else {
-            $content = $request->request->get('Content');
-        }
+        if ($data->getTimestamp() - $postCommentRepository->lastComment($this->getUser()->getId())->getCreatedAt()->getTimestamp() > 10){
 
-        $data = new \DateTime('now');
 
-        if ($this->isCsrfTokenValid('comment', $token)){
-            $newComment = new SocialPostComment();
-            $newComment -> setAuthor($this->getUser());
-            $newComment -> setContent($content);
-            $newComment -> setCreatedAt($data);
-            $newComment -> setSoftDelete('0');
-            $newComment -> setUnderAnotherComment(null);
-            $newComment -> setLikes(0);
+            if ($request->request->get('Content') == ""){
+                return new Response('Empty content');
+            } elseif (strlen($request->request->get('Content')) > $this->maxCommentLength){
+                $content = substr($request->request->get('Content'), 0, $this->maxCommentLength);
+            } else {
+                $content = $request->request->get('Content');
+            }
 
-            $id->addSocialPostComment($newComment);
+            if ($this->isCsrfTokenValid('comment', $token)){
+                $newComment = new SocialPostComment();
+                $newComment -> setAuthor($this->getUser());
+                $newComment -> setContent($content);
+                $newComment -> setCreatedAt($data);
+                $newComment -> setSoftDelete('0');
+                $newComment -> setUnderAnotherComment(null);
+                $newComment -> setLikes(0);
 
-            $em->persist($newComment);
-            $em->persist($id);
-            $em->flush();
+                $id->addSocialPostComment($newComment);
+
+                $em->persist($newComment);
+                $em->persist($id);
+                $em->flush();
+            }else{
+                //TODO: bad csrf
+            }
+            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_addCommentToPost.html.twig", [
+                'status'=>'ok',
+                'Author'=>$this->getUser(),
+                'Content'=>$request->request->get('Content'),
+                'CreatedAt'=> $data,
+                'ConversationId'=>null,
+                'commentId'=>$newComment->getId(),
+            ]);
         }else{
-            //TODO: bad csrf
+            return new Response('<span class="answer-wait-10">Wait at least 10 seconds until next answer</span>');
         }
-        return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_addCommentToPost.html.twig", [
-            'status'=>'ok',
-            'Author'=>$this->getUser(),
-            'Content'=>$request->request->get('Content'),
-            'CreatedAt'=> $data,
-            'ConversationId'=>null,
-            'commentId'=>$newComment->getId(),
-        ]);
     }
 
     /**
      * @Route("/api/addCommentToComment/{id}", name="api_app_addCommentToComment")
      * @IsGranted("ROLE_USER")
      */
-    public function addCommentToConversation(Request $request, \App\Entity\SocialPostComment $id, EntityManagerInterface $em){
+    public function addCommentToConversation(Request $request, \App\Entity\SocialPostComment $id, EntityManagerInterface $em,
+                                             SocialPostCommentRepository $postCommentRepository){
         $token = $request->request->get('_token');
-
-        if ($request->request->get('Content') == ""){
-            return new Response('Empty content');
-        } elseif (strlen($request->request->get('Content')) > $this->maxCommentLength){
-            $content = substr($request->request->get('Content'), 0, $this->maxCommentLength);
-        } else {
-            $content = $request->request->get('Content');
-        }
 
         $data = new \DateTime('now');
 
-        if ($this->isCsrfTokenValid('comment', $token)){
-            $newComment = new SocialPostComment();
-            $newComment -> setAuthor($this->getUser());
-            $newComment -> setContent($request->request->get('Content'));
-            $newComment -> setCreatedAt($data);
-            $newComment -> setSoftDelete('0');
-            $newComment -> setLikes(0);
+        if ($data->getTimestamp() - $postCommentRepository->lastComment($this->getUser()->getId())->getCreatedAt()->getTimestamp() > 10) {
 
-            $id->addSocialPostComment($newComment);
+            if ($request->request->get('Content') == "") {
+                return new Response('Empty content');
+            } elseif (strlen($request->request->get('Content')) > $this->maxCommentLength) {
+                $content = substr($request->request->get('Content'), 0, $this->maxCommentLength);
+            } else {
+                $content = $request->request->get('Content');
+            }
 
-            $em->persist($newComment);
-            $em->persist($id);
-            $em->flush();
+            if ($this->isCsrfTokenValid('comment', $token)) {
+                $newComment = new SocialPostComment();
+                $newComment->setAuthor($this->getUser());
+                $newComment->setContent($request->request->get('Content'));
+                $newComment->setCreatedAt($data);
+                $newComment->setSoftDelete('0');
+                $newComment->setLikes(0);
+
+                $id->addSocialPostComment($newComment);
+
+                $em->persist($newComment);
+                $em->persist($id);
+                $em->flush();
+            } else {
+                //TODO: bad csrf
+            }
+
+            if ($request->request->get('right') === "1") {
+                return $this->render($_SERVER['DEFAULT_TEMPLATE'] . "/profile/parts/api_addConversationComment.html.twig", [
+                    'status' => 'ok',
+                    'user' => $this->getUser(),
+                    'content' => $request->request->get('Content'),
+                    'CreatedAt' => $data,
+                    'conversationId' => $id->getId(),
+                    'commentId' => $newComment->getId(),
+                ]);
+            } else if ($request->request->get('right') === '2') {
+                return $this->render($_SERVER['DEFAULT_TEMPLATE'] . "/profile/parts/api_addConversationCommentRight.html.twig", [
+                    'status' => 'ok',
+                    'user' => $this->getUser(),
+                    'content' => $request->request->get('Content'),
+                    'CreatedAt' => $data,
+                    'conversationId' => $id->getId(),
+                    'commentId' => $newComment->getId(),
+                ]);
+            } else if ($request->request->get('right') === '3') {
+                return $this->render($_SERVER['DEFAULT_TEMPLATE'] . "/profile/parts/api_addConversationCommentRightInside.html.twig", [
+                    'status' => 'ok',
+                    'user' => $this->getUser(),
+                    'content' => $request->request->get('Content'),
+                    'CreatedAt' => $data,
+                    'conversationId' => $id->getId(),
+                    'commentId' => $newComment->getId(),
+                ]);
+            } else if ($request->request->get('right') === '4') {
+                return $this->render($_SERVER['DEFAULT_TEMPLATE'] . "/profile/parts/api_addConversationCommentRightInsideRight.html.twig", [
+                    'status' => 'ok',
+                    'user' => $this->getUser(),
+                    'content' => $request->request->get('Content'),
+                    'CreatedAt' => $data,
+                    'conversationId' => $id->getId(),
+                    'commentId' => $newComment->getId(),
+                ]);
+            }
         }else{
-            //TODO: bad csrf
-        }
-
-        if ($request->request->get('right') === "1"){
-            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_addConversationComment.html.twig" ,[
-                'status'=>'ok',
-                'user'=>$this->getUser(),
-                'content'=>$request->request->get('Content'),
-                'CreatedAt'=> $data,
-                'conversationId'=>$id->getId(),
-                'commentId'=>$newComment->getId(),
-            ]);
-        } else if ($request->request->get('right') === '2') {
-            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_addConversationCommentRight.html.twig" ,[
-                'status'=>'ok',
-                'user'=>$this->getUser(),
-                'content'=>$request->request->get('Content'),
-                'CreatedAt'=> $data,
-                'conversationId'=>$id->getId(),
-                'commentId'=>$newComment->getId(),
-            ]);
-        } else if ($request->request->get('right') === '3'){
-            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_addConversationCommentRightInside.html.twig" ,[
-                'status'=>'ok',
-                'user'=>$this->getUser(),
-                'content'=>$request->request->get('Content'),
-                'CreatedAt'=> $data,
-                'conversationId'=>$id->getId(),
-                'commentId'=>$newComment->getId(),
-            ]);
-        } else if ($request->request->get('right') === '4'){
-            return $this->render($_SERVER['DEFAULT_TEMPLATE']."/profile/parts/api_addConversationCommentRightInsideRight.html.twig" ,[
-                'status'=>'ok',
-                'user'=>$this->getUser(),
-                'content'=>$request->request->get('Content'),
-                'CreatedAt'=> $data,
-                'conversationId'=>$id->getId(),
-                'commentId'=>$newComment->getId(),
-            ]);
+            return new Response('<span class="answer-wait-10">Wait at least 10 seconds until next answer</span>');
         }
     }
 

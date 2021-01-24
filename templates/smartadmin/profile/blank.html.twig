@@ -2091,7 +2091,9 @@ Variables:
                         success: function (data) {
                             console.log(data);
                             if (data != "Empty content") {
+                                $('.answer-wait-10').remove()
                                 $('.addCommentTarget_' + id).append(data);
+                                $('.slide-down').slideDown('fast')
                             }
                         }
                     });
@@ -2103,7 +2105,7 @@ Variables:
 
         //TODO: DODAC ELSE IF zamiast ELSE by nie wysylalo niepotrzebnie ajaxa gdy i ten pedzie pusty - to samo wyzej
         //Conversation Comment CommentToComment Comment To Comment
-        function submitCommentToComment(entity, id, right='1') {
+        function submitCommentToComment(entity, id, right='1', fromMain = false) {
             console.log("RIGHT: " + right)
             if ((event.keyCode === 13 || event.which === '13') && !event.shiftKey) {
                 event.preventDefault();
@@ -2136,14 +2138,23 @@ Variables:
                         dataType: 'html',
 
                         success: function (data) {
+                            $('.answer-wait-10').remove()
                             console.log(data)
                             // do konwersacji
                             if (data !== "Empty content" && right === '1') {
                                 $('#addComment-Target_'+id).append(data)
+                                $('.slide-down').slideDown('fast')
                             } // dodajemy right
                             else if (data !== "Empty content" && right === '2'){
-                                $('#ExtendedConversation-Target').prepend(data)
-                                $('#ExtendedConversationMargin').css('margin-left', '0')
+                                if (fromMain === false){
+                                    $('#ExtendedConversation-Target').prepend(data)
+                                    $('#ExtendedConversationMargin').css('margin-left', '0')
+                                    $('.slide-down').slideDown('fast')
+                                }else{
+                                    if (data === '<span class="answer-wait-10">Wait at least 10 seconds until next answer</span>'){
+                                        $('#answer_'+id).prepend(data)
+                                    }
+                                }
                             } // dodawanie prawego w black boxie po dodanym komentarzu :D
                             else if (data !== "Empty content" && right === '3'){
                                 console.log(data)

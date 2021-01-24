@@ -104,7 +104,7 @@
                                                     class="form-control border-0 p-0" name="Comment_content"
                                                     placeholder="add a comment..."
                                                     rows="2" style="background-color: unset"
-                                                    onkeypress="submitCommentToComment('comment', '{{ comment.Id }}', true)"></textarea>
+                                                    onkeypress="submitCommentToComment('comment', '{{ comment.Id }}', '1')"></textarea>
                 <input type="hidden" name="_token" value="{{ csrf_token('comment') }}">
                 <input type="submit"
                        style="position: absolute; left: -9999px; width: 1px; height: 1px;"

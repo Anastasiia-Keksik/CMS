@@ -109,7 +109,9 @@ class SettingsController extends AbstractController
      */
     public function uploadAvatar(Request $request, PropertyAccessorInterface $propertyAccessor, AccountRepository $acc,
                                 EntityManagerInterface $em){
-        $file_content = base64_encode(file_get_contents($propertyAccessor->getValue($request->files->get('croppedImage'), 'linkTarget')));
+        //dd($request->files->get('croppedImage'), 'realPath');
+        //dd($propertyAccessor->getValue($request->files->get('croppedImage'), 'linkTarget'));
+        $file_content = base64_encode(file_get_contents($propertyAccessor->getValue($request->files->get('croppedImage'), 'realPath')));
 
         $imm = new ImageManager(array('driver' => 'gd'));
 
