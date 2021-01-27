@@ -270,7 +270,7 @@ Variables:
     {{ parent() }}
     <script>
         initApp.pushSettings("layout-composed", true);
-        initApp.pushSettings("nav-function-hidden", false);
+        layouts.hideNavigation('off')
 
         $('#thumbnail').change(function () {
             const file = this.files[0];

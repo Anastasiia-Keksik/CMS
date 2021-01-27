@@ -8,7 +8,6 @@
         </a>
         <div class="dropdown-menu dropdown-menu-animated dropdown-lg">
             {% if pageName == "Profile" and user.Username == profile.Username and bgopen != 'open' %}
-            <a href="#">
                 {% else %}
                 <a href="{{path('app_profile', {'profile':user.Username})}}">
                     {% endif %}
@@ -91,6 +90,5 @@
                     <span class="float-right fw-n d-none">{{ user.Username }}</span>
                 </a>
         </div>
-    </div>
     </div>
 {% endif %}

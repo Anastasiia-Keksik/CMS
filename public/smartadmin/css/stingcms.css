@@ -4,6 +4,10 @@
     margin: auto;
 }
 
+.present img {
+    pointer-events: none;
+}
+
 .absolute-right{
     -moz-transform: translateX(-100%);
     -ms-transform: translateX(-100%);

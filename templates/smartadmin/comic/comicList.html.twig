@@ -54,13 +54,15 @@
                 <div style="width: 803px; border-right: 1px #eeeeee solid">
                     <ul class="mt-3 mb-g" style="list-style-type: none; padding-left: 20px">
                         {% for episode in comicEpisodes %}
-                        <li id="episode_xx" class="hover-highlight fw-500 color-fusion-900 ">
-                            <img id="episode_xx_glimpse" src="{{ asset('upload/comics/id/e_id/glimpse.png') }}" width="77" height="73">
-                            <span style="display: inline-block; font-size: 17px; width:424px"> {{ episode.Title }} <sup><i class="fal fa-music"></i> <i class="fal fa-music-alt"></i></sup></span>
-                            <span style="display: inline-block; font-size: 14px; width:102px"> {{ episode.CreatedAt|ago }}</span>
-                            <span style="display: inline-block; font-size: 14px; width:76px"> {{ episode.Likes}} likeów</span>
-                            <span style="display: inline-block; font-size: 16px; width:59px"> {{ episode.Price }}$</span>
-                        </li>
+                            <a href="{{ path('omni_viewer', {'id':episode.id}) }}">
+                                <li id="episode_xx" class="hover-highlight fw-500 color-fusion-900 ">
+                                    <img id="episode_xx_glimpse" src="{{ asset('upload/comics/id/e_id/glimpse.png') }}" width="77" height="73">
+                                    <span style="display: inline-block; font-size: 17px; width:424px"> {{ episode.Title }} <sup><i class="fal fa-music"></i> <i class="fal fa-music-alt"></i></sup></span>
+                                    <span style="display: inline-block; font-size: 14px; width:102px"> {{ episode.CreatedAt|ago }}</span>
+                                    <span style="display: inline-block; font-size: 14px; width:76px"> {{ episode.Likes}} likeów</span>
+                                    <span style="display: inline-block; font-size: 16px; width:59px"> {{ episode.Price }}$</span>
+                                </li>
+                            </a>
                         {% endfor %}
                         <!--
                         <li id="episode_xx" class="hover-highlight fw-500 color-fusion-900 ">
@@ -221,102 +223,7 @@ Variables:
 {% endblock %}
 
 {% block header %}
-    <header class="page-header" role="banner" style="height: 50px">
-        <!-- we need this logo when user switches to nav-function-top -->
-        <div class="page-logo">
-            <a href="#" class="page-logo-link press-scale-down d-flex align-items-center position-relative" data-toggle="modal" data-target="#modal-shortcut">
-                <img src="{{ asset('default/ksiezyc.png') }}" alt="SmartAdmin WebApp" aria-roledescription="logo">
-                <span class="page-logo-text mr-1">SmartAdmin WebApp</span>
-                <span class="position-absolute text-white opacity-50 small pos-top pos-right mr-2 mt-n2"></span>
-                <i class="fal fa-angle-down d-inline-block ml-1 fs-lg color-primary-300"></i>
-            </a>
-        </div>
-        <div class="search">
-            <form class="app-forms hidden-xs-down" role="search" action="page_search.html" autocomplete="off">
-                <input type="text" id="search-field" placeholder="Search for anything" class="form-control" tabindex="1">
-                <a href="#" onclick="return false;" class="btn-danger btn-search-close js-waves-off d-none" data-action="toggle" data-class="mobile-search-on">
-                    <i class="fal fa-times"></i>
-                </a>
-            </form>
-        </div>
-        <div class="ml-auto d-flex">
-            <!-- activate app search icon (mobile) -->
-            <div class="hidden-sm-up">
-                <a href="#" class="header-icon" data-action="toggle" data-class="mobile-search-on" data-focus="search-field" title="Search">
-                    <i class="fal fa-search"></i>
-                </a>
-            </div>
-
-            <!-- app publish -->
-            {% include 'smartadmin/parts/publishDropdown.html.twig' %}
-            <!-- app message -->
-            {% include 'smartadmin/parts/message.html.twig' %}
-            <!-- app notification -->
-            {% include 'smartadmin/parts/notification.html.twig' %}
-            <!-- app shortcuts -->
-            {% include 'smartadmin/parts/shortcuts.html.twig' %}
-            <!-- app user menu -->
-            {% if is_granted("ROLE_USER") %}
-            <div>
-                <a href="#" data-toggle="dropdown" title="drlantern@gotbootstrap.com" class="header-icon d-flex align-items-center justify-content-center ml-2">
-                    <img src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}" class="profile-image mine-avatar rounded-circle" alt="Dr. Codex Lantern">
-                    <!-- you can also add username next to the avatar with the codes below:
-                    <span class="ml-1 mr-1 text-truncate text-truncate-header hidden-xs-down">Me</span>
-                    <i class="ni ni-chevron-down hidden-xs-down"></i> -->
-                </a>
-                <div class="dropdown-menu dropdown-menu-animated dropdown-lg">
-                    <a href="{{path('app_profile', {'profile':user.Username})}}">
-                        <div class="dropdown-header bg-trans-gradient d-flex flex-row py-4 rounded-top">
-                            <div class="d-flex flex-row align-items-center mt-1 mb-1 color-white">
-                                            <span class="mr-2">
-                                                <img src="{{ asset('upload/avatars/'~user.Username~'/'~user.AvatarFileName)|imagine_filter('my_thumb') }}" class="rounded-circle profile-image" alt="Dr. Codex Lantern">
-                                            </span>
-                                <div class="info-card-text">
-                                    <div class="fs-lg text-truncate text-truncate-lg">{{ user.Username }}</div>
-                                    <span class="text-truncate text-truncate-md opacity-80">{{ user.email }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                    <div class="dropdown-divider m-0"></div>
-                    <a href="#" class="dropdown-item" data-action="app-reset">
-                        <span data-i18n="drpdwn.reset_layout">Reset Layout</span>
-                    </a>
-                    <a href="#" class="dropdown-item" data-toggle="modal" data-target=".js-modal-settings">
-                        <span data-i18n="drpdwn.settings">Settings</span>
-                    </a>
-                    <div class="dropdown-divider m-0"></div>
-                    <a href="#" class="dropdown-item" data-action="app-fullscreen">
-                        <span data-i18n="drpdwn.fullscreen">Fullscreen</span>
-                        <i class="float-right text-muted fw-n">F11</i>
-                    </a>
-                    <a href="#" class="dropdown-item" data-action="app-print">
-                        <span data-i18n="drpdwn.print">Print</span>
-                        <i class="float-right text-muted fw-n">Ctrl + P</i>
-                    </a>
-                    <div class="dropdown-multilevel dropdown-multilevel-left">
-                        <div class="dropdown-item">
-                            Language
-                        </div>
-                        <div class="dropdown-menu">
-                            <a href="#?lang=fr" class="dropdown-item" data-action="lang" data-lang="fr">Français</a>
-                            <a href="#?lang=en" class="dropdown-item active" data-action="lang" data-lang="en">English (US)</a>
-                            <a href="#?lang=es" class="dropdown-item" data-action="lang" data-lang="es">Español</a>
-                            <a href="#?lang=ru" class="dropdown-item" data-action="lang" data-lang="ru">Русский язык</a>
-                            <a href="#?lang=jp" class="dropdown-item" data-action="lang" data-lang="jp">日本語</a>
-                            <a href="#?lang=ch" class="dropdown-item" data-action="lang" data-lang="ch">中文</a>
-                        </div>
-                    </div>
-                    <div class="dropdown-divider m-0"></div>
-                    <a class="dropdown-item fw-500 pt-3 pb-3" href="{{ path('app_logout') }}">
-                        <span data-i18n="drpdwn.page-logout">Logout</span>
-                        <span class="float-right fw-n d-none">{{ user.Username }}</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-    </header>
+    {% include 'smartadmin/parts/header.html.twig' %}
 {% endblock %}
 
 {% block footer %}
@@ -337,6 +244,6 @@ Variables:
     {{ parent() }}
     <script>
         initApp.pushSettings("layout-composed", true);
-        initApp.pushSettings("nav-function-hidden", false);
+        layouts.hideNavigation('off')
     </script>
 {% endblock %}

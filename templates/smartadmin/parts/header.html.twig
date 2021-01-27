@@ -1,64 +1,61 @@
-<header class="page-header" role="banner">
-    <!-- we need this logo when user switches to nav-function-top -->
-    <div class="page-logo">
-        <a href="#" class="page-logo-link press-scale-down d-flex align-items-center position-relative" data-toggle="modal" data-target="#modal-shortcut">
-            <img src="{{ asset('default/ksiezyc.png') }}" alt="SmartAdmin WebApp" aria-roledescription="logo">
-            <span class="page-logo-text mr-1">SmartAdmin WebApp</span>
-            <span class="position-absolute text-white opacity-50 small pos-top pos-right mr-2 mt-n2"></span>
-            <i class="fal fa-angle-down d-inline-block ml-1 fs-lg color-primary-300"></i>
-        </a>
-    </div>
-    <!-- DOC: nav menu layout change shortcut -->
-    <div class="hidden-md-down dropdown-icon-menu position-relative">
-        <a href="#" class="header-btn btn js-waves-off" data-action="toggle" data-class="nav-function-hidden" title="Hide Navigation">
-            <i class="ni ni-menu"></i>
-        </a>
-        <ul>
-            <li>
-                <a href="#" class="btn js-waves-off" data-action="toggle" data-class="nav-function-minify" title="Minify Navigation">
-                    <i class="ni ni-minify-nav"></i>
-                </a>
-            </li>
-            <li>
-                <a href="#" class="btn js-waves-off" data-action="toggle" data-class="nav-function-fixed" title="Lock Navigation">
-                    <i class="ni ni-lock-nav"></i>
-                </a>
-            </li>
-        </ul>
-    </div>
-    <!-- DOC: mobile button appears during mobile width -->
-    <div class="hidden-lg-up">
-        <a href="#" class="header-btn btn press-scale-down" data-action="toggle" data-class="mobile-nav-on">
-            <i class="ni ni-menu"></i>
-        </a>
-    </div>
-    <div class="search">
-        <form class="app-forms hidden-xs-down" role="search" action="page_search.html" autocomplete="off">
-            <input type="text" id="search-field" placeholder="Search for anything" class="form-control" tabindex="1">
-            <a href="#" onclick="return false;" class="btn-danger btn-search-close js-waves-off d-none" data-action="toggle" data-class="mobile-search-on">
-                <i class="fal fa-times"></i>
-            </a>
-        </form>
-    </div>
-    <div class="ml-auto d-flex">
-        <!-- activate app search icon (mobile) -->
-        <div class="hidden-sm-up">
-            <a href="#" class="header-icon" data-action="toggle" data-class="mobile-search-on" data-focus="search-field" title="Search">
-                <i class="fal fa-search"></i>
-            </a>
+<div {% if pageName == "OmniViewer" %}onmouseleave="hideHeader()" onmouseenter="showHeader()"{% endif %} style="height: 66px; width: 100%; position: fixed; z-index: 9999">
+    <header class="page-header page-header-target bg-brand-gradient shadow-lg" role="banner" style="background: #0F1128">
+
+        <div class="w-100 d-flex">
+            <div class="" style="width: 40%">
+                <div class="search" style="max-width: 300px; margin-top: 12px">
+                    <form class="app-forms hidden-xs-down" role="search" action="page_search.html" autocomplete="off">
+                        <input type="text" id="search-field" placeholder="Search for anything" class="form-control" tabindex="1">
+                        <a href="#" onclick="return false;" class="btn-danger btn-search-close js-waves-off d-none" data-action="toggle" data-class="mobile-search-on">
+                            <i class="fal fa-times"></i>
+                        </a>
+                    </form>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center" style="width: 20%">
+                {% if pageName == "OmniViewer" %}
+                    <div id="" class="btn-group position-absolute" style="margin-top: 22px">
+                        {% if previousEpisode is not null %}<a href="{{ path('omni_viewer', {'id':previousEpisode}) }}"><i class="fas fa-arrow-alt-left fa-2x text-white"></i></a>{% else %}<i class="fas fa-arrow-alt-left text-muted fa-2x "></i>{% endif %}
+                        <a href="{{ path('app_komiks', {'comicid':episode.Comic.Id}) }}"><span class="text-white" style="font-size: 18px">&nbsp;&nbsp;&nbsp;&nbsp;#{{ episode.OrderNumber }}&nbsp;&nbsp;&nbsp;&nbsp;</span></a>
+                        {% if nextEpisode is not null %}<a href="{{ path('omni_viewer', {'id':nextEpisode}) }}"><i class="fas fa-arrow-alt-right fa-2x text-white"></i></a>{% else %}<i class="fas fa-arrow-alt-right text-muted fa-2x "></i>{% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="pr-0" style="width: 40%">
+                {% if is_granted("ROLE_USER") %}
+                    <div class="ml-auto d-flex  float-right">
+                        <!-- activate app search icon (mobile) -->
+                        <div class="hidden-sm-up">
+                            <a href="#" class="header-icon" data-action="toggle" data-class="mobile-search-on" data-focus="search-field" title="Search">
+                                <i class="fal fa-search"></i>
+                            </a>
+                        </div>
+                        <div class="hidden-sm-down d-flex float-right">
+                            <!-- app settings -->
+                            {% include 'smartadmin/parts/settings.html.twig' %}
+                            <!-- app shortcuts -->
+                            {% include 'smartadmin/parts/shortcuts.html.twig' %}
+                            <!-- app message -->
+                            {% include 'smartadmin/parts/message.html.twig' %}
+                            <!-- app notification -->
+                            {% include 'smartadmin/parts/notification.html.twig' %}
+                        </div>
+                        <!-- app publish -->
+                        {% include 'smartadmin/parts/publishDropdown.html.twig' %}
+                        <!-- app user menu -->
+                        {% include 'smartadmin/parts/appUserMenu.twig' %}
+                    </div>
+                {% else %}
+                    <div class="float-right" style="margin-top: 16px">
+                        <a href="{{ path('app_register') }}" class="btn-link text-white ml-auto">
+                            Create Account
+                        </a>
+                        <a href="{{ path('app_login') }}" class="ml-3 btn-link text-white">
+                            Login
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-        <div class="hidden-sm-down d-flex">
-        <!-- app settings -->
-        {% include 'smartadmin/parts/settings.html.twig' %}
-        <!-- app shortcuts -->
-        {% include 'smartadmin/parts/shortcuts.html.twig' %}
-        <!-- app message -->
-        {% include 'smartadmin/parts/message.html.twig' %}
-        <!-- app notification -->
-        {% include 'smartadmin/parts/notification.html.twig' %}
-        </div>
-        <!-- app publish -->
-        {% include 'smartadmin/parts/publishDropdown.html.twig' %}
-        <!-- app user menu -->
-        {% include 'smartadmin/parts/appUserMenu.twig' %}
 </header>
+</div>

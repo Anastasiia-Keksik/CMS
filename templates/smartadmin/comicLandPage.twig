@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="{{  lang  }}">
+<head>
+    <meta charset="utf-8">
+    <title>
+        {{  title  }}
+    </title>
+    <meta name="description" content="Login">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui">
+    <!-- Call App Mode on ios devices -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- Remove Tap Highlight on Windows Phone IE -->
+    <meta name="msapplication-tap-highlight" content="no">
+    <!-- base css -->
+    <link id="vendorsbundle" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/vendors.bundle.css') }}">
+    <link id="appbundle" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/app.bundle.css') }}">
+    <link id="mytheme" rel="stylesheet" media="screen, print" href="#">
+    <link id="myskin" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/skins/skin-master.css') }}">
+    <!-- Place favicon.ico in the root directory -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('smartadmin/img/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('smartadmin/img/favicon/favicon-32x32.png') }}">
+    <link rel="mask-icon" href="{{ asset('smartadmin/img/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-brands.css') }}">
+    <style>
+        img {
+            pointer-events: none;
+        }
+    </style>
+</head>
+<!-- BEGIN Body -->
+<body>
+<!-- DOC: script to save and load page settings -->
+<div class="page-wrapper auth">
+    <div class="page-inner ">
+        <div class="page-content-wrapper  m-0">
+            {% include 'smartadmin/parts/header.html.twig' %}
+{#            <div class="height-10 w-100 shadow-lg px-4 bg-brand-gradient" style="background-color: #0F1128">#}
+{#                <div class="d-flex align-items-center container p-0">#}
+{#                    <div class="page-logo width-mobile-auto m-0 align-items-center justify-content-center p-0 bg-transparent bg-img-none shadow-0 height-9 border-0">#}
+{#                        <a href="javascript:void(0)" class="page-logo-link press-scale-down d-flex align-items-center">#}
+{#                            <img src="{{ asset('default/ksiezyc.png') }}" alt="SmartAdmin WebApp" aria-roledescription="logo">#}
+{#                            <span class="page-logo-text mr-1">SmartAdmin WebApp</span>#}
+{#                        </a>#}
+{#                    </div>#}
+{#                    <a href="{{ path('app_register') }}" class="btn-link text-white ml-auto">#}
+{#                        Create Account#}
+{#                    </a>#}
+{#                </div>#}
+{#            </div>#}
+            <main id="js-page-content" role="main" class="page-content">
+             <div class="flex-1">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 p-0" style="background: #0aafbd; height: 485px">
+                            <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-ride="carousel">
+                                <ol class="carousel-indicators" style="margin-left: -500px; top: 385px">
+                                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                                    <li data-target="#carouselExampleIndicators" data-slide-to="1" class=""></li>
+                                    <li data-target="#carouselExampleIndicators" data-slide-to="2" class=""></li>
+                                </ol>
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active" data-interval="45000">
+                                        <img class="d-block w-100" style="max-width: 1920px" height="485" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22800%22%20height%3D%22400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20400%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_17735ff17b8%20text%20%7B%20fill%3A%23ffffff%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A40pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_17735ff17b8%22%3E%3Crect%20width%3D%22800%22%20height%3D%22400%22%20fill%3D%22%2337e2d0%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22273.5390625%22%20y%3D%22217.7%22%3EFirst%20slide%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" data-src="holder.js/800x400?auto=yes&amp;bg=37e2d0&amp;fg=ffffff&amp;text=First slide" alt="First slide [800x400]" data-holder-rendered="true">
+                                    </div>
+                                    <div class="carousel-item" data-interval="45000">
+                                        <img class="d-block w-100" style="max-width: 1920px" height="485" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22800%22%20height%3D%22400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20400%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_17735ff179f%20text%20%7B%20fill%3A%23ffffff%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A40pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_17735ff179f%22%3E%3Crect%20width%3D%22800%22%20height%3D%22400%22%20fill%3D%22%2321dfcb%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22234.9609375%22%20y%3D%22217.7%22%3ESecond%20slide%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" data-src="holder.js/800x400?auto=yes&amp;bg=21dfcb&amp;fg=ffffff&amp;text=Second slide" alt="Second slide [800x400]" data-holder-rendered="true">
+                                    </div>
+                                    <div class="carousel-item" data-interval="45000">
+                                        <img class="d-block w-100" style="max-width: 1920px" height="485" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22800%22%20height%3D%22400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20400%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_17735ff17a9%20text%20%7B%20fill%3A%23ffffff%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A40pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_17735ff17a9%22%3E%3Crect%20width%3D%22800%22%20height%3D%22400%22%20fill%3D%22%231dc9b7%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22264.671875%22%20y%3D%22217.7%22%3EThird%20slide%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" data-src="holder.js/800x400?auto=yes&amp;bg=1dc9b7&amp;fg=ffffff&amp;text=Third slide" alt="Third slide [800x400]" data-holder-rendered="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 p-0">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 p-0">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 p-0">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </main>
+        </div>
+    </div>
+</div>
+<!-- BEGIN Color profile -->
+<!-- this area is hidden and will not be seen on screens or screen readers -->
+<!-- we use this only for CSS color refernce for JS stuff -->
+<p id="js-color-profile" class="d-none">
+    <span class="color-primary-50"></span>
+    <span class="color-primary-100"></span>
+    <span class="color-primary-200"></span>
+    <span class="color-primary-300"></span>
+    <span class="color-primary-400"></span>
+    <span class="color-primary-500"></span>
+    <span class="color-primary-600"></span>
+    <span class="color-primary-700"></span>
+    <span class="color-primary-800"></span>
+    <span class="color-primary-900"></span>
+    <span class="color-info-50"></span>
+    <span class="color-info-100"></span>
+    <span class="color-info-200"></span>
+    <span class="color-info-300"></span>
+    <span class="color-info-400"></span>
+    <span class="color-info-500"></span>
+    <span class="color-info-600"></span>
+    <span class="color-info-700"></span>
+    <span class="color-info-800"></span>
+    <span class="color-info-900"></span>
+    <span class="color-danger-50"></span>
+    <span class="color-danger-100"></span>
+    <span class="color-danger-200"></span>
+    <span class="color-danger-300"></span>
+    <span class="color-danger-400"></span>
+    <span class="color-danger-500"></span>
+    <span class="color-danger-600"></span>
+    <span class="color-danger-700"></span>
+    <span class="color-danger-800"></span>
+    <span class="color-danger-900"></span>
+    <span class="color-warning-50"></span>
+    <span class="color-warning-100"></span>
+    <span class="color-warning-200"></span>
+    <span class="color-warning-300"></span>
+    <span class="color-warning-400"></span>
+    <span class="color-warning-500"></span>
+    <span class="color-warning-600"></span>
+    <span class="color-warning-700"></span>
+    <span class="color-warning-800"></span>
+    <span class="color-warning-900"></span>
+    <span class="color-success-50"></span>
+    <span class="color-success-100"></span>
+    <span class="color-success-200"></span>
+    <span class="color-success-300"></span>
+    <span class="color-success-400"></span>
+    <span class="color-success-500"></span>
+    <span class="color-success-600"></span>
+    <span class="color-success-700"></span>
+    <span class="color-success-800"></span>
+    <span class="color-success-900"></span>
+    <span class="color-fusion-50"></span>
+    <span class="color-fusion-100"></span>
+    <span class="color-fusion-200"></span>
+    <span class="color-fusion-300"></span>
+    <span class="color-fusion-400"></span>
+    <span class="color-fusion-500"></span>
+    <span class="color-fusion-600"></span>
+    <span class="color-fusion-700"></span>
+    <span class="color-fusion-800"></span>
+    <span class="color-fusion-900"></span>
+</p>
+<!-- END Color profile -->
+<script src="{{ asset('smartadmin/js/vendors.bundle.js') }}"></script>
+<script src="{{ asset('smartadmin/js/app.bundle.js') }}"></script>
+<script>
+    initApp.pushSettings("layout-composed", false);
+    layouts.hideNavigation('off')
+</script>
+</body>
+</html>

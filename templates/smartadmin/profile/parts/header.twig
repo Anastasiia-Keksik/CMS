@@ -67,9 +67,9 @@
                 </div>
             </div>
         </div>
-        <div class="rounded position-absolute" style="border: 0 white dashed; right: 30%; left: 70%; margin-left: -75px; bottom: 40px; z-index:4; height: 150px; width: 150px; z-index: 6">
+        <div class="rounded position-absolute" style="border: 0 white dashed; right: 30%; left: 70%; margin-left: -75px; bottom: 26px; height: 200px; width: 200px; z-index: 6">
             <div class="position-relative">
-                <button type="button" class="btn btn-icon position-absolute" style="color:white; mix-blend-mode: difference ;background: rgba(0,0,0, 0); right:-25px; top: -25px; z-index: 6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button type="button" class="btn btn-icon position-absolute" style="color:white; mix-blend-mode: difference ;background: rgba(0,0,0, 0); right: 0; top: -25px; z-index: 6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-2x fa-camera-alt"></i> {# background #}
                 </button>
                 <div id="bg-dropdown" class="dropdown-menu fadeinright" style="">
@@ -82,12 +82,15 @@
                     <div id="bg-3" class="dropdown-divider m-0"></div>
                     <button id="bg-2" class="dropdown-item" type="button" style="color: darkred" onclick="deleteBg()"><i class="fal fa-trash"></i> Usuń</button>
                 </div>
-                <a href="{{ path('app_profile', {'tab': 'settings', 'avatar':'true', 'profile':user.Username}) }}" class="btn position-absolute btn-icon" style="color:white; mix-blend-mode: difference; background: rgba(0,0,0, 0); left:-25px; top: -25px;">
+                <a href="{{ path('app_profile', {'tab': 'settings', 'avatar':'true', 'profile':user.Username}) }}" class="btn position-absolute btn-icon" style="color:white; mix-blend-mode: difference; background: rgba(0,0,0, 0); left:0; top: -25px;">
                     <i class="fas fa-user-circle fa-2x"></i>{# avatar #}
                 </a>
                 <img src="{{ asset('upload/avatars/'~profile.Username~'/'~profile.AvatarFileName)|imagine_filter('my_thumb_even_larger') }}"
-                     class="rounded-circle shadow-5 img-thumbnail mine-avatar" alt=""
-                     style="height: 150px; width: 150px;z-index:4">
+                     class="{# rounded-circle #} shadow-5 mine-avatar" alt=""
+                     style="z-index:4; width: 200px; height: 200px; -webkit-mask-image: url({{ absolute_url(asset('media/avatar-mask2.svg')) }});
+                             -webkit-mask-repeat: no-repeat;
+                             -webkit-mask-size: 200px 200px;
+                             ">
             </div>
         </div>
     </div>

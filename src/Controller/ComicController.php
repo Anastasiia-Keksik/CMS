@@ -2,29 +2,30 @@
 
 namespace App\Controller;
 
+use App\Entity\Account;
+use App\Entity\Bans;
 use App\Entity\Comic;
 use App\Entity\ComicEpisode;
 use App\Entity\ProfileUserConnection;
 use App\Entity\Project;
 use App\Entity\ProjectUserConnection;
 use App\Entity\SocialPost;
+use App\Entity\UserPrintScreens;
+use App\Repository\BansRepository;
 use App\Repository\ComicCategoriesRepository;
 use App\Repository\ComicEpisodeRepository;
 use App\Repository\ComicRepository;
+use App\Repository\UserPrintScreensRepository;
 use App\Services\MainMenuService;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Intervention\Image\ImageManager;
-use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Asset\Package;
-use Symfony\Component\Asset\PackageInterface;
 use Symfony\Component\Asset\VersionStrategy\StaticVersionStrategy;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -94,29 +95,66 @@ class ComicController extends AbstractController
     }
 
     /**
-     * @Route("/OmniViewer", name="omni_viewer")
+     * @Route("/OmniViewer/{id}", name="omni_viewer")
+     * @param MainMenuService $mainMenuService
+     * @param ComicEpisode $episode
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function omniViewer(MainMenuService $mainMenuService)
+    public function omniViewer(MainMenuService $mainMenuService, ComicEpisode $episode, BansRepository $bansRepository,
+                               ComicRepository $comicRepo, ComicEpisodeRepository $comicEpisodeRepository)
     {
-
+        /** @var Account $user */
         $user = $this->getUser();
         $profile = $user;
+        $data = new \DateTime('NOW');
+
+        if ($this->isGranted("ROLE_USER"))
+        {
+            /** @var Bans $checkForBan */
+            $checkForBan = $bansRepository->getBan($user->getId());
+
+            if ($checkForBan and $checkForBan->getEndAt()>$data){
+                return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/banWindow.twig', [
+                    'banned' => $checkForBan->getEndAt()
+                ]);
+            }
+        } else {
+            //search for IP ban
+        }
+
+        $previousEpisode = $comicEpisodeRepository->getOrderedByNumber($episode->getOrderNumber()-1, $episode->getComic()->getId());
+        if ($previousEpisode){
+            $previousEpisodeid = $previousEpisode->getId();
+        }else{
+            $previousEpisodeid = null;
+        }
+        $nextEpisode = $comicEpisodeRepository->getOrderedByNumber($episode->getOrderNumber()+1, $episode->getComic()->getId());
+        if($nextEpisode){
+            $nextEpisodeid = $nextEpisode->getId();
+        }else{
+            $nextEpisodeid = null;
+        }
+        $comics = $comicRepo->findMineComics($user->getId());
 
         $mainMenu = $mainMenuService->getMenu();
 
-        return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/comic/omniViewer.html.twig', [
+        return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/comic/omniViewerWorm.twig', [
             'title'=>'Komiks - '.$_SERVER['APP_NAME'], // tytul komiksu
             'lang'=>'pl',
             'APP_NAME'=>$_SERVER['APP_NAME'],
             'logoSite'=>$_SERVER['SHOW_LOGO'],
             'navFooter'=>$_SERVER['NAV_FOOTER'],
             'footer'=>$_SERVER['FOOTER'],
-            'pageName'=>"Forum",
+            'pageName'=>"OmniViewer",
             'MainMenu' => $mainMenu,
             'theme' => $this->theme,
             'profile' => $profile,
             'user' => $user,
-            'NotComposed' => true
+            'NotComposed' => true,
+            'episode' => $episode,
+            'comics'=>$comics,
+            'previousEpisode' => $previousEpisodeid,
+            'nextEpisode' => $nextEpisodeid,
         ]);
     }
 
@@ -507,7 +545,7 @@ class ComicController extends AbstractController
             $uniqid = uniqid();
 
             $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'_'.$uniqid.'.'.$file->guessExtension();
-            $filenamethumb = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'_'.$uniqid.'_thumb.'.$file->guessExtension();
+            $filenamethumb = pathinfo('thumb_'.$file->getClientOriginalName(), PATHINFO_FILENAME).'_'.$uniqid.'.'.$file->guessExtension();
 
             $destination = $this->getParameter('kernel.project_dir')."/public/upload/comics/$comicid/$episodeid/";
 
@@ -523,7 +561,9 @@ class ComicController extends AbstractController
 
             $img = $imm->make($destination.$filename);
 
-            $img -> fit(120);
+            $img->resize(120, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
 
             $img -> save($this->getParameter('kernel.project_dir')."/public/upload/comics/$comicid/$episodeid/$filenamethumb");
 
@@ -544,18 +584,138 @@ class ComicController extends AbstractController
      * @Route("publishEpisode/{episode}", name="publish_Episode")
      * @Security("is_granted('ROLE_USER')")
      */
-    public function publishEpisode(ComicEpisode $episode, Request $request, EntityManagerInterface $em){
+    public function publishEpisode(ComicEpisode $episode, ComicEpisodeRepository $comicEpisodeRepository,
+                                   Request $request, EntityManagerInterface $em){
         if ($episode->getComic()->getAuthor() == $this->getUser()){
             if ($request->request->get('_token')){
                 if ($this->isCsrfTokenValid('publishEpisode', $request->request->get('_token'))){
+                    $lastEp = $comicEpisodeRepository->getLastOne($episode->getComic()->getId());
+                    $episode->setOrderNumber(($lastEp)?$lastEp->getOrderNumber()+1:1);
                     $episode->setPublished(1);
+                    $episode->setPublishedAt(new \DateTime('NOW'));
 
                     $em->persist($episode);
                     $em->flush();
 
-                    return new RedirectResponse($this->generateUrl('app_main_profile'));
+                    $this->addFlash('success', 'Episode Published');
+
+                    //TODO: ustawic tutaj redirect do epizodu, do viewera
+                    return new RedirectResponse($this->generateUrl('app_project', ['id'=>$episode->getProject()->getId()]));
                 }
             }
+        }
+    }
+
+    /**
+     * @Route("unpublishEpisode/{episode}", name="unpublish_Episode")
+     * @Security("is_granted('ROLE_USER')")
+     */
+    public function unpublishEpisode(ComicEpisode $episode, Request $request, EntityManagerInterface $em){
+        if ($episode->getComic()->getAuthor() == $this->getUser()){
+            if ($request->request->get('_token')){
+                if ($this->isCsrfTokenValid('publishEpisode', $request->request->get('_token'))){
+                    $episode->setPublished(0);
+                    $episode->setPublishedAt(NULL);
+                    $episode->setOrderNumber(NULL);
+
+                    $em->persist($episode);
+                    $em->flush();
+
+                    $this->addFlash('unpublished', "Episode unpublished!");
+
+                    return new RedirectResponse($this->generateUrl('app_project', ['id'=>$episode->getProject()->getId()]));
+                }
+            }
+        }
+    }
+
+    /**
+     * @Route("/printCheckout", name="stop_print")
+     */
+    public function banUserByPrint(UserPrintScreensRepository $userPrintScreensRepository, EntityManagerInterface $em)
+    {
+        if ($this->isGranted("ROLE_USER")){
+            /** @var Account $user */
+            $user = $this->getUser();
+            $date = new \DateTime('now');
+
+            foreach ($user->getComics() as $comic){
+                foreach ($comic->getComicEpisodes() as $episode){
+                    foreach ($episode->getProject()->getAccount() as $author){
+                        if ($author->getUser()->getId() == $user->getId()){
+                            return new Response('As Author you wont be banned for printscreens');
+                        }
+                    }
+                }
+            }
+                /** @var UserPrintScreens $print */
+                $print = $userPrintScreensRepository->findUserPrintTry($user->getId());
+
+                if (!$print){
+                    $print = new UserPrintScreens();
+                    $print->setUser($user);
+                    $print->setLastPrintAt($date);
+                    $print->setNrOfPrints(1);
+
+                    $em->persist($print);
+                    $em->flush();
+
+                    return new Response("you have been added to watch list");
+                }else{
+                    if ($print->getNrOfPrints() <= 2){
+                        if ($date->getTimestamp() - $print->getLastPrintAt()->getTimestamp() < 604800){
+                            $print->setLastPrintAt($date);
+                            $print->setNrOfPrints($print->getNrOfPrints()+1);
+
+                            $em->persist($print);
+                            $em->flush();
+
+                            $endDate = new \DateTime();
+                            $endDate->setTimestamp($date->getTimestamp()+900);
+
+                            $ban = new Bans();
+                            $ban->setUser($user);
+                            $ban->setStartAt($date);
+                            $ban->setEndAt($endDate);
+
+                            $em->persist($ban);
+                            $em->flush();
+                        }else{
+                            $print->setLastPrintAt($date);
+                            $print->setNrOfPrints($print->getNrOfPrints()+1);
+
+                            $em->persist($print);
+                            $em->flush();
+                        }
+                    } else if ($print->getNrOfPrints() >= 3){
+                        if ($date->getTimestamp() - $print->getLastPrintAt()->getTimestamp() < 604800) {
+                            $print->setLastPrintAt($date);
+                            $print->setNrOfPrints($print->getNrOfPrints()+1);
+
+                            $em->persist($print);
+                            $em->flush();
+
+                            $endDate = new \DateTime();
+                            $endDate->setTimestamp($date->getTimestamp()+259200);
+
+                            $ban = new Bans();
+                            $ban->setUser($user);
+                            $ban->setStartAt($date);
+                            $ban->setEndAt($endDate);
+
+                            $em->persist($ban);
+                            $em->flush();
+                        } else {
+                            $print->setLastPrintAt($date);
+                            $print->setNrOfPrints($print->getNrOfPrints()+1);
+
+                            $em->persist($print);
+                            $em->flush();
+                        }
+                    }
+                }
+        }else{
+            // ip ban
         }
     }
 }

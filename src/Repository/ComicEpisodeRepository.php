@@ -31,7 +31,7 @@ class ComicEpisodeRepository extends ServiceEntityRepository
             ->andWhere('c.comic = :id')
             ->andWhere('c.published = 1')
             ->setParameter('id', $comicid)
-            ->orderBy('c.createdAt', 'DESC')
+            ->orderBy('c.publishedAt', 'DESC')
             ->setMaxResults(10)
             ->setFirstResult($offset)
             ->getQuery()
@@ -51,15 +51,33 @@ class ComicEpisodeRepository extends ServiceEntityRepository
             ;
     }
 
-    /*
-    public function findOneBySomeField($value): ?ComicEpisode
+
+    public function getLastOne($comic): ?ComicEpisode
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('c.comic = :com')
+            ->andWhere('c.published = 1')
+            ->setParameter('com', $comic)
+            ->orderBy('c.publishedAt', 'DESC')
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
-    */
+
+    public function getOrderedByNumber($orderNumber, $comic): ?ComicEpisode
+    {
+        return $this->createQueryBuilder('c')
+
+            ->andWhere('c.comic = :com')
+            ->andWhere('c.orderNumber = :order')
+            ->andWhere('c.published = 1')
+            ->setParameter('com', $comic)
+            ->setParameter('order', $orderNumber)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
 }

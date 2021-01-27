@@ -381,6 +381,21 @@ class Account implements UserInterface
      */
     private $circles;
 
+    /**
+     * @ORM\OneToMany(targetEntity=LastRead::class, mappedBy="User", orphanRemoval=true)
+     */
+    private $lastReads;
+
+    /**
+     * @ORM\OneToMany(targetEntity=UserPrintScreens::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $yes;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Bans::class, mappedBy="User")
+     */
+    private $bans;
+
     public function __construct()
     {
         $this->mainMenuCategories = new ArrayCollection();
@@ -411,6 +426,9 @@ class Account implements UserInterface
         $this->invitationRequests = new ArrayCollection();
         $this->invitationRequiestsReceived = new ArrayCollection();
         $this->circles = new ArrayCollection();
+        $this->lastReads = new ArrayCollection();
+        $this->yes = new ArrayCollection();
+        $this->bans = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -1726,6 +1744,96 @@ class Account implements UserInterface
             // set the owning side to null (unless already changed)
             if ($circle->getUser() === $this) {
                 $circle->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LastRead[]
+     */
+    public function getLastReads(): Collection
+    {
+        return $this->lastReads;
+    }
+
+    public function addLastRead(LastRead $lastRead): self
+    {
+        if (!$this->lastReads->contains($lastRead)) {
+            $this->lastReads[] = $lastRead;
+            $lastRead->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLastRead(LastRead $lastRead): self
+    {
+        if ($this->lastReads->removeElement($lastRead)) {
+            // set the owning side to null (unless already changed)
+            if ($lastRead->getUser() === $this) {
+                $lastRead->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserPrintScreens[]
+     */
+    public function getYes(): Collection
+    {
+        return $this->yes;
+    }
+
+    public function addYe(UserPrintScreens $ye): self
+    {
+        if (!$this->yes->contains($ye)) {
+            $this->yes[] = $ye;
+            $ye->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeYe(UserPrintScreens $ye): self
+    {
+        if ($this->yes->removeElement($ye)) {
+            // set the owning side to null (unless already changed)
+            if ($ye->getUser() === $this) {
+                $ye->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Bans[]
+     */
+    public function getBans(): Collection
+    {
+        return $this->bans;
+    }
+
+    public function addBan(Bans $ban): self
+    {
+        if (!$this->bans->contains($ban)) {
+            $this->bans[] = $ban;
+            $ban->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBan(Bans $ban): self
+    {
+        if ($this->bans->removeElement($ban)) {
+            // set the owning side to null (unless already changed)
+            if ($ban->getUser() === $this) {
+                $ban->setUser(null);
             }
         }
 

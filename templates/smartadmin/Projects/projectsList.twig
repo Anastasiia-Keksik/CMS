@@ -3,10 +3,30 @@
 {% block content %}
     <!-- BEGIN Page Content -->
     <!-- the #js-page-content id is needed for some plugins to initialize -->
-    <div class="container" style="min-height: calc(100% - 45px)">
-        <main id="js-page-content" role="main" class="page-content">
-        <div class="row">
-        <div class="col-12">
+    <div class="" style="min-height: calc(100% - 45px)">
+        <main id="js-page-content" role="main" class="page-content p-0">
+            <div class="">
+                <div class="w-100 d-flex justify-content-center">
+                    <div class="w-100 bg-fusion-50"
+                         style="
+                                 height: 321px;
+                                 background: url('{{ asset('upload/comics/id/BG_FHD.jpg') }}');
+                                 background-repeat: repeat-x">
+
+                    </div>
+                </div>
+            </div>
+        <div class="row" style="margin-top: -321px">
+            <div class="container">
+                <div class="d-flex position-relative justify-content-center align-middle w-100" style="height: 80px">
+                    <div class="position-absolute" style="height: 50px; border: 0px solid red; bottom: 0px; right: 0px;">
+
+                    </div>
+                    <div id="info" class="text-center m-auto">
+                        <p class="d-block" style="font-size: 20px"></p>
+                    </div>
+                </div>
+                <div class="col-12">
             <div id="panel-1" class="panel">
                 <div>
                     <ul class="nav nav-tabs nav-tabs-clean" role="tablist">
@@ -152,6 +172,7 @@
                 </div>
             </div>
         </div>
+            </div>
     </div>
     </main>
     </div>

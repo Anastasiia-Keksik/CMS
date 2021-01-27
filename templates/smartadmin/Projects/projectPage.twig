@@ -42,6 +42,20 @@
                                 <div class="panel-container">
                                     <div class="panel-content">
                                         <div class="row">
+                                            <div class="col-12">
+                                                {% for message in app.flashes('success')|raw %}
+                                                    <div class="alert alert-success text-center">
+                                                        {{ message|raw }}
+                                                    </div>
+                                                {% endfor %}
+                                                {% for message in app.flashes('unpublished')|raw %}
+                                                    <div class="alert alert-info text-center">
+                                                        {{ message|raw }}
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="row">
                                             <div class="col-8">
                                                 {% if project.Type == 1 %}
                                                     <h1>{{ project.Comic.Title }}</h1>
@@ -101,6 +115,29 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            {% elseif project.Type == 2 %}
+                                                {% if project.ComicEpisode.published == 0 %}
+                                                    <div class="col-4">
+                                                        <form action="{{ path('publish_Episode', {'episode':project.ComicEpisode.id}) }}" method="post" enctype="multipart/form-data">
+                                                            <input type="hidden" required name="_token" value="{{ csrf_token('publishEpisode') }}">
+                                                            <div class="form-group float-right">
+                                                                <a href="{{ path('omni_viewer', {'id':project.ComicEpisode.Id}) }}" class="btn btn-outline-default">View</a>
+                                                                <button class="btn btn-outline-default" style="width: 200px;">Publish</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="col-4">
+
+                                                        <form action="{{ path('unpublish_Episode', {'episode':project.ComicEpisode.id}) }}" method="post" enctype="multipart/form-data">
+                                                            <input type="hidden" required name="_token" value="{{ csrf_token('publishEpisode') }}">
+                                                            <div class="form-group float-right">
+                                                                <a href="{{ path('omni_viewer', {'id':project.ComicEpisode.Id}) }}" class="btn btn-outline-default">View</a>
+                                                                <button class="btn btn-outline-default" style="width: 200px;">unPublish</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    {% endif %}
                                             {% endif %}
                                         </div>
                                         {% if project.Type == 2 %}
@@ -108,7 +145,7 @@
                                                 <div class="col-xs-12 col-md-6 order-md-2">
                                                     <label>Coordination Notes</label>
                                                     <form>
-                                                        <textarea class="form-control" rows="12" placeholder="This part of your project is called Coordination Note. If you are creating project with a team, where for example one person is responsible for sketch, other one for line art and two more for coloring. You can paste links to third party fileshare systems with packages of already done pages, and in this place coordinate the work on entire Project. You can also leave here a comments, to your work and work of your team colegues. Use it well, good luck.">{{ project.CoordinationNote }}</textarea>
+                                                        <textarea class="form-control" rows="12" placeholder="This part of your project is called Coordination Note. If you are creating project with a team, where for example one person is responsible for sketch, other one for line art and two more for coloring. You can paste links to third party fileshare systems with packages of already done pages, and in this place coordinate the work on entire Project. You can also leave here messages to your team workers. Use it well, good luck.">{{ project.CoordinationNote }}</textarea>
                                                         <button class="btn btn-outline-info w-100">Save</button>
                                                     </form>
                                                 </div>
@@ -136,7 +173,7 @@
                                                         <label class="form-label">Already uploaded pages:</label>
                                                         <div class="row mx-0 shadow-5 mb-g rounded pb-3"  style="background-color: rgba(25,25,25,0.2)" >
                                                             {% for image in project.ComicEpisode.images %}
-                                                                <div id="{{ image }}" class="col-3 text-center mt-3"><img src="{{ asset('upload/comics/'~project.ComicEpisode.Comic.id~'/'~project.ComicEpisode.id~'/'~image) }}" alt="image" width="100%" class="rounded"
+                                                                <div id="{{ image }}" class="col-2 text-center mt-3"><img src="{{ asset('upload/comics/'~project.ComicEpisode.Comic.id~'/'~project.ComicEpisode.id~'/thumb_'~image) }}" alt="image" width="150px" class="rounded"
                                                                                                                           data-toggle="tooltip" data-placement="auto" title="" data-original-title="{{ image }}"><br><a href="javascript: deleteImage('{{ image }}')">Delete</a><br></div>
                                                             {% endfor %}
                                                         </div>
@@ -167,8 +204,8 @@
 
                                                     {% for episode in projectEpisodes %}
                                                         <tr {% if episode.IsMine == false %}style="color: #cccccc; background-color: #eeeeee"{% endif %}>
-                                                            <td>{{ episode.Published }}</td>
-                                                            <td>
+                                                            <td>{% if episode.Published == true %}1{% else %}0{% endif %}</td>
+                                                            <td>{{ episode.Published }}
                                                                 {% if episode.IsMine == true %}
                                                                     <a href="{{ path('app_project', {'id' : episode.Project.Id}) }}" class="fs-lg text-dark">{{ episode.Title }}</a>
                                                                     <br>
@@ -378,43 +415,13 @@
                                     0:
                                         {
                                             'title': 'Pending',
-                                            'class': 'badge-warning'
+                                            'class': 'badge-danger'
                                         },
                                     1:
                                         {
-                                            'title': 'Delivered',
-                                            'class': 'badge-success'
-                                        },
-                                    2:
-                                        {
-                                            'title': 'Canceled',
-                                            'class': 'badge-secondary'
-                                        },
-                                    3:
-                                        {
-                                            'title': 'Attempt #1',
-                                            'class': 'bg-danger-100 text-white'
-                                        },
-                                    4:
-                                        {
-                                            'title': 'Attempt #2',
-                                            'class': 'bg-danger-300 text-white'
-                                        },
-                                    5:
-                                        {
-                                            'title': 'Overdue',
-                                            'class': 'badge-danger'
-                                        },
-                                    6:
-                                        {
-                                            'title': 'Attention!',
+                                            'title': 'Published',
                                             'class': 'badge-primary'
-                                        },
-                                    7:
-                                        {
-                                            'title': 'In Progress',
-                                            'class': 'badge-success'
-                                        },
+                                        }
                                 };
                                 if (typeof badge[data] === 'undefined')
                                 {
@@ -487,6 +494,7 @@
     </script>
         <script>
             initApp.pushSettings("layout-composed", true);
+            layouts.hideNavigation('off')
         </script>
     {% endif %}
 {% endblock %}

@@ -274,6 +274,8 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
     <script src="{{ asset('smartadmin/js/app.bundle.js') }}"></script>
     <script src="{{ asset('smartadmin/js/time/jquery.timeago.js') }}"></script>
     <script>
+        layouts.hideNavigation('off')
+
          function usunModal()
         {
 
@@ -345,6 +347,7 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
             }, 500, 'easeOutQuad');
         });
     </script>
+    {% if is_granted("ROLE_USER") %}
     <script>
         let conversations = new Array();
         let activeConversation;
@@ -1025,6 +1028,7 @@ License: You must have a valid license purchased only from wrapbootstrap.com (li
             }
         }
     </script>
+    {% endif %}
 {% endblock %}
 <!--This page contains the basic JS and CSS files to get started on your project. If you need aditional addon's or plugins please see scripts located at the bottom of each page in order to find out which JS/CSS files to add.-->
 </body>

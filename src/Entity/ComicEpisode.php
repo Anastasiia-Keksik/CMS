@@ -82,6 +82,16 @@ class ComicEpisode
 
     private $income;
 
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private $orderNumber;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $publishedAt;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4();
@@ -286,6 +296,30 @@ class ComicEpisode
         }
 
         $this->project = $project;
+
+        return $this;
+    }
+
+    public function getOrderNumber(): ?int
+    {
+        return $this->orderNumber;
+    }
+
+    public function setOrderNumber(?int $orderNumber): self
+    {
+        $this->orderNumber = $orderNumber;
+
+        return $this;
+    }
+
+    public function getPublishedAt(): ?\DateTimeInterface
+    {
+        return $this->publishedAt;
+    }
+
+    public function setPublishedAt(?\DateTimeInterface $publishedAt): self
+    {
+        $this->publishedAt = $publishedAt;
 
         return $this;
     }

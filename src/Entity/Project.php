@@ -54,9 +54,15 @@ class Project
      */
     private $CoordinationNote;
 
+    /**
+     * @ORM\OneToMany(targetEntity=LastRead::class, mappedBy="Project")
+     */
+    private $lastReads;
+
     public function __construct()
     {
         $this->Account = new ArrayCollection();
+        $this->lastReads = new ArrayCollection();
     }
 
 
@@ -163,6 +169,36 @@ class Project
     public function setCoordinationNote(?string $CoordinationNote): self
     {
         $this->CoordinationNote = $CoordinationNote;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LastRead[]
+     */
+    public function getLastReads(): Collection
+    {
+        return $this->lastReads;
+    }
+
+    public function addLastRead(LastRead $lastRead): self
+    {
+        if (!$this->lastReads->contains($lastRead)) {
+            $this->lastReads[] = $lastRead;
+            $lastRead->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLastRead(LastRead $lastRead): self
+    {
+        if ($this->lastReads->removeElement($lastRead)) {
+            // set the owning side to null (unless already changed)
+            if ($lastRead->getProject() === $this) {
+                $lastRead->setProject(null);
+            }
+        }
 
         return $this;
     }

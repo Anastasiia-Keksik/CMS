@@ -27,7 +27,7 @@ class SocialPostCommentRepository extends ServiceEntityRepository
             ->orderBy('c.createdAt', 'DESC')
             ->getQuery()
             ->setMaxResults(1)
-            ->getSingleResult();
+            ->getOneOrNullResult();
     }
 
     /**

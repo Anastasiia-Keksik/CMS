@@ -9,6 +9,7 @@ use App\Entity\Circles;
 use App\Entity\InvitationRequest;
 use App\Repository\AccountRepository;
 use App\Repository\CirclesRepository;
+use App\Repository\ComicRepository;
 use App\Repository\ContactRepository;
 use App\Repository\InvitationRequestRepository;
 use App\Services\MainMenuService;
@@ -29,7 +30,43 @@ class IndexController extends AbstractController
     /**
      * @Route("/", name="app_home")
      */
-    public function homepage(MainMenuService $mainMenuService, AuthenticationUtils $authenticationUtils, Request $request)
+    public function comicslistHomepage(MainMenuService $mainMenuService, AuthenticationUtils $authenticationUtils,
+                                       ComicRepository $comicRepo)
+    {
+
+        $user=$this->getUser();
+        $mainMenu = $mainMenuService->getMenu();
+
+        if ($this->isGranted("ROLE_USER")) {
+            $comics = $comicRepo->findMineComics($user->getId());
+        }else{
+            $comics = null;
+        }
+
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
+
+        return $this->render($_SERVER['DEFAULT_TEMPLATE'] . "/comicLandPage.twig", [
+            'last_username' => $lastUsername,
+            'title' => 'title',
+            'lang' => 'pl',
+            'APP_NAME' => $_SERVER['APP_NAME'],
+            'logoSite' => $_SERVER['SHOW_LOGO'],
+            'navFooter' => $_SERVER['NAV_FOOTER'],
+            'footer' => $_SERVER['FOOTER'],
+            'pageName' => "ComicLandingPage",
+            'MainMenu' => $mainMenu,
+            'comics'=>$comics,
+            'user'=>$user
+        ]);
+    }
+
+    /**
+     * @Route("/presentation", name="app_present")
+     */
+    public function loginAlt(MainMenuService $mainMenuService, AuthenticationUtils $authenticationUtils, Request $request)
     {
         $mainMenu = $mainMenuService->getMenu();
 
