@@ -396,6 +396,11 @@ class Account implements UserInterface
      */
     private $bans;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserToAObjMTM::class, mappedBy="User")
+     */
+    private $userToAObjMTMs;
+
     public function __construct()
     {
         $this->mainMenuCategories = new ArrayCollection();
@@ -429,6 +434,7 @@ class Account implements UserInterface
         $this->lastReads = new ArrayCollection();
         $this->yes = new ArrayCollection();
         $this->bans = new ArrayCollection();
+        $this->userToAObjMTMs = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -1834,6 +1840,36 @@ class Account implements UserInterface
             // set the owning side to null (unless already changed)
             if ($ban->getUser() === $this) {
                 $ban->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserToAObjMTM[]
+     */
+    public function getUserToAObjMTM(): Collection
+    {
+        return $this->userToAObjMTMs;
+    }
+
+    public function addUserToAObjMTM(UserToAObjMTM $userToAObjMTM): self
+    {
+        if (!$this->userToAObjMTMs->contains($userToAObjMTM)) {
+            $this->userToAObjMTMs[] = $userToAObjMTM;
+            $userToAObjMTM->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserToAObjMTM(UserToAObjMTM $userToAObjMTM): self
+    {
+        if ($this->userToAObjMTMs->removeElement($userToAObjMTM)) {
+            // set the owning side to null (unless already changed)
+            if ($userToAObjMTM->getUser() === $this) {
+                $userToAObjMTM->setUser(null);
             }
         }
 

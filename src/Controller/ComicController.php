@@ -3,18 +3,25 @@
 namespace App\Controller;
 
 use App\Entity\Account;
+use App\Entity\ArtObject;
 use App\Entity\Bans;
 use App\Entity\Comic;
 use App\Entity\ComicEpisode;
+use App\Entity\EpisodeImage;
+use App\Entity\EpisodeScrollTime;
+use App\Entity\EpisodeSounds;
 use App\Entity\ProfileUserConnection;
 use App\Entity\Project;
 use App\Entity\ProjectUserConnection;
 use App\Entity\SocialPost;
 use App\Entity\UserPrintScreens;
+use App\Entity\UserToAObjMTM;
 use App\Repository\BansRepository;
 use App\Repository\ComicCategoriesRepository;
 use App\Repository\ComicEpisodeRepository;
 use App\Repository\ComicRepository;
+use App\Repository\EpisodeScrollTimeRepository;
+use App\Repository\EpisodeSoundsRepository;
 use App\Repository\UserPrintScreensRepository;
 use App\Services\MainMenuService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -101,7 +108,8 @@ class ComicController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function omniViewer(MainMenuService $mainMenuService, ComicEpisode $episode, BansRepository $bansRepository,
-                               ComicRepository $comicRepo, ComicEpisodeRepository $comicEpisodeRepository)
+                               ComicRepository $comicRepo, ComicEpisodeRepository $comicEpisodeRepository,
+                               EpisodeScrollTimeRepository $episodeScrollTimeRepository)
     {
         /** @var Account $user */
         $user = $this->getUser();
@@ -121,6 +129,15 @@ class ComicController extends AbstractController
         } else {
             //search for IP ban
         }
+
+        if ($episode->getComic()->getAuthor() == $user){
+            $mine = true;
+        } else {
+            $mine = false;
+        }
+
+        $scrollTimes = $episodeScrollTimeRepository->getEpisodeScrollTimes($episode);
+
 
         $previousEpisode = $comicEpisodeRepository->getOrderedByNumber($episode->getOrderNumber()-1, $episode->getComic()->getId());
         if ($previousEpisode){
@@ -155,6 +172,8 @@ class ComicController extends AbstractController
             'comics'=>$comics,
             'previousEpisode' => $previousEpisodeid,
             'nextEpisode' => $nextEpisodeid,
+            'mine' => $mine,
+            'scrollTimes' => $scrollTimes
         ]);
     }
 
@@ -456,13 +475,13 @@ class ComicController extends AbstractController
 
                     if (file_exists($this->getParameter('kernel.project_dir')."/public/upload/comics/".$episode->getComic()->getId()."/".$episode->getId()."/".$image)){
                         unlink($this->getParameter('kernel.project_dir')."/public/upload/comics/".$episode->getComic()->getId()."/".$episode->getId()."/".$image);
-                        $nameA = explode('.', $image);
-                        $last_element = $nameA[count($nameA)-1];
-                        array_pop($nameA);
-                        $nameA[count($nameA)-1] = $nameA[count($nameA)-1].'_thumb';
-                        array_push($nameA, $last_element);
-                        $name = implode('.', $nameA);
-                        unlink($this->getParameter('kernel.project_dir')."/public/upload/comics/".$episode->getComic()->getId()."/".$episode->getId()."/".$name);
+//                        $nameA = explode('.', $image);
+//                        $last_element = $nameA[count($nameA)-1];
+//                        array_pop($nameA);
+//                        $nameA[count($nameA)-1] = $nameA[count($nameA)-1].'_thumb';
+//                        array_push($nameA, $last_element);
+//                        $name = implode('.', $nameA);
+                        unlink($this->getParameter('kernel.project_dir')."/public/upload/comics/".$episode->getComic()->getId()."/".$episode->getId()."/thumb_".$image);
                     }
 
                     $episode->setImages($array);
@@ -538,40 +557,68 @@ class ComicController extends AbstractController
 
         if ($length < 101){
             if ($file->getClientOriginalExtension() !== 'jpg' and $file->getClientOriginalExtension() !== 'gif'
-                and $file->getClientOriginalExtension() !== 'png' and $file->getClientOriginalExtension() !== 'jpeg'){
+                and $file->getClientOriginalExtension() !== 'png' and $file->getClientOriginalExtension() !== 'jpeg'
+                and $file->getClientOriginalExtension() !== 'mp3'){
                 Die('wrong format: .'.$file->getClientOriginalExtension());
             }
 
-            $uniqid = uniqid();
+            if ($file->getClientOriginalExtension() !== 'mp3'){
+                $uniqid = uniqid();
 
-            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'_'.$uniqid.'.'.$file->guessExtension();
-            $filenamethumb = pathinfo('thumb_'.$file->getClientOriginalName(), PATHINFO_FILENAME).'_'.$uniqid.'.'.$file->guessExtension();
+                $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'_'.$uniqid.'.'.$file->guessExtension();
+                $filenamethumb = pathinfo('thumb_'.$file->getClientOriginalName(), PATHINFO_FILENAME).'_'.$uniqid.'.'.$file->guessExtension();
 
-            $destination = $this->getParameter('kernel.project_dir')."/public/upload/comics/$comicid/$episodeid/";
+                $destination = $this->getParameter('kernel.project_dir')."/public/upload/comics/$comicid/$episodeid/";
 
-            $file -> move($destination, $filename);
+                $file -> move($destination, $filename);
 
-            array_push($valuesArray, $filename);
+                array_push($valuesArray, $filename);
 
-            natcasesort($valuesArray);
+                natcasesort($valuesArray);
 
-            $comicEpisode->setImages($valuesArray);
+                $comicEpisode->setImages($valuesArray);
 
-            $imm = new ImageManager(array('driver'=>'gd'));
+                $imm = new ImageManager(array('driver'=>'gd'));
 
-            $img = $imm->make($destination.$filename);
+                $img = $imm->make($destination.$filename);
 
-            $img->resize(120, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
+                $img->resize(120, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
 
-            $img -> save($this->getParameter('kernel.project_dir')."/public/upload/comics/$comicid/$episodeid/$filenamethumb");
+                $img -> save($this->getParameter('kernel.project_dir')."/public/upload/comics/$comicid/$episodeid/$filenamethumb");
 
-            $src = "/upload/comics/$comicid/$episodeid/".$filenamethumb;
+                $src = "/upload/comics/$comicid/$episodeid/".$filenamethumb;
 
-            $em->persist($comicEpisode);
-            $em->flush();
-            return new JsonResponse(['imagefilename'=>$filename,'src'=>$src]);
+//                $episodeImage = new EpisodeImage();
+//                $episodeImage->setEpisode($comicEpisode);
+//                $episodeImage->setFileName($filename);
+//                $episodeImage->setShowHide(1);
+
+                $obj =
+
+//                $em->persist($episodeImage);
+                $em->persist($comicEpisode);
+                $em->flush();
+
+
+                return new JsonResponse(['imagefilename'=>$filename,'src'=>$src, 'type'=>'image']);
+            }else{
+                $uniqid = uniqid();
+
+                $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'_'.$uniqid.'.'.$file->guessExtension();
+                $destination = $this->getParameter('kernel.project_dir')."/public/upload/comics/$comicid/$episodeid/dubbing/";
+
+                $file -> move($destination, $filename);
+
+                $DB = new EpisodeSounds();
+                $DB -> setComicEpisode($comicEpisode);
+                $DB -> setFileName($filename);
+
+                $em->persist($DB);
+                $em->flush();
+                return new JsonResponse(['sound'=>$filename, 'uploaded' => 'success', 'type'=>'mp3']);
+            }
 
         }else{
 
@@ -627,6 +674,7 @@ class ComicController extends AbstractController
                 }
             }
         }
+        return new Response('some mandatory return');
     }
 
     /**
@@ -639,6 +687,7 @@ class ComicController extends AbstractController
             $user = $this->getUser();
             $date = new \DateTime('now');
 
+            //TODO: Do totalnej poprawki!!!
             foreach ($user->getComics() as $comic){
                 foreach ($comic->getComicEpisodes() as $episode){
                     foreach ($episode->getProject()->getAccount() as $author){
@@ -717,5 +766,272 @@ class ComicController extends AbstractController
         }else{
             // ip ban
         }
+        return new Response('some mandatory return');
+    }
+
+    /**
+     * @Route("/setHeight", name="set_sound_height", methods={"POST"})
+     * @Security ("is_granted('ROLE_USER')")
+     */
+    public function setSoundHeight(EpisodeSoundsRepository $repository, EntityManagerInterface $em, Request $request)
+    {
+        $soundID = $request->request->get('soundID');
+        $scrlPos = $request->request->get('height');
+        $episode = $request->request->get('episode');
+
+        $ExistingPosition = $repository->checkForUsedStartPointPosition($episode, $scrlPos);
+
+        if ($ExistingPosition == 0){
+            $sound = $repository->find($soundID);
+
+            $sound->setStartPoint($scrlPos);
+
+            $em->persist($sound);
+            $em->flush();
+
+            return new Response('Position setled');
+        }else {
+            return new Response('Position already in use');
+        }
+    }
+
+    /**
+     * @Route("/unsetHeight", name="unset_sound_height", methods={"POST"})
+     * @Security ("is_granted('ROLE_USER')")
+     */
+    public function unsetSoundHeight(EpisodeSoundsRepository $repository, EntityManagerInterface $em, Request $request)
+    {
+        $soundID = $request->request->get('soundID');
+        $sound = $repository->find($soundID);
+
+        $sound->setStartPoint(null);
+
+        $em->persist($sound);
+        $em->flush();
+
+        return new Response('nosad');
+    }
+
+    /**
+     * @Route("/setEndHeight", name="set_sound_EndHeight", methods={"POST"})
+     * @Security ("is_granted('ROLE_USER')")
+     */
+    public function setSoundEndHeight(EpisodeSoundsRepository $repository, EntityManagerInterface $em, Request $request)
+    {
+        $soundID = $request->request->get('soundID');
+        $scrlPos = $request->request->get('height');
+
+        $sound = $repository->find($soundID);
+
+        $sound->setEndPoint(null);
+
+        $em->persist($sound);
+        $em->flush();
+
+        return new Response('Position setled');
+
+    }
+
+    /**
+     * @Route("/unsetEndHeight", name="unset_sound_EndHeight", methods={"POST"})
+     * @Security ("is_granted('ROLE_USER')")
+     */
+    public function unsetSoundEndHeight(EpisodeSoundsRepository $repository, EntityManagerInterface $em, Request $request)
+    {
+        //TODO: sprawdzanie autorstwa (wyzej tez)
+        $soundID = $request->request->get('soundID');
+        $sound = $repository->find($soundID);
+
+        $sound->setEndPoint(null);
+
+        $em->persist($sound);
+        $em->flush();
+
+        return new Response('nosad');
+    }
+
+    /**
+     * @Route("/setTimeScroll", name="set_timeScroll", methods={"POST"})
+     * @Security ("is_granted('ROLE_USER')")
+     */
+    public function setTimeScroll(ComicEpisodeRepository $episodeRepository,
+                                  EntityManagerInterface $em, Request $request, EpisodeScrollTimeRepository $scrollTimeRepository)
+    {
+        //TODO: sprawdzanie autorstwa
+        $episodeID = $request->request->get('episodeID');
+        $position = $request->request->get('position');
+        $ExpectedPosition = $request->request->get('ExpectedPosition');
+        $wait_time = $request->request->get('wait-time');
+        $speed = $request->request->get('speed');
+        $previousOrder = ''; //later ajax sent request
+
+        $TimeScroll = new EpisodeScrollTime();
+
+        $episode = $episodeRepository->find($episodeID);
+
+        $lastScroll = $scrollTimeRepository->getLast($episode);
+
+        if ($lastScroll){
+            $lastScroll = $lastScroll->getOrderNbr()+1;
+        }else{
+            $lastScroll = 1;
+        }
+
+        $TimeScroll->setEpisode($episode);
+        $TimeScroll->setHeight($position);
+        $TimeScroll->setSpeed(($speed == '')?0:$speed);
+        $TimeScroll->setTime(($wait_time == '')?0:$wait_time);
+        $TimeScroll->setExpectedPosition($ExpectedPosition);
+        $TimeScroll->setOrderNbr($lastScroll);
+
+        $em->persist($TimeScroll);
+        $em->flush();
+
+        return new Response('Time Scroll added');
+    }
+
+    /**
+     * @Route("/deleteTimeScroll", name="delete_timeScroll", methods={"POST"})
+     * @Security ("is_granted('ROLE_USER')")
+     */
+    public function deleteTimeScroll(EpisodeScrollTimeRepository $repository, EntityManagerInterface $em, Request $request)
+    {
+        $timeID = $request->request->get('timeID');
+        $timeScrl = $repository->find($timeID);
+
+        $em->remove($timeScrl);
+        $em->flush();
+
+        return new Response('erased');
+    }
+
+    /**
+     * @Route("/setNewValueFor", name="set_newValueFor", methods={"POST"})
+     * @Security ("is_granted('ROLE_USER')")
+     */
+    public function setNewValueFor(EpisodeScrollTimeRepository $repository, EntityManagerInterface $em, Request $request)
+    {
+        $timeID = $request->request->get('scrollTimeID');
+        $type = $request->request->get('type');
+        $timeScrl = $repository->find($timeID);
+
+        if($type === 'time'){
+            $timeScrl->setTime($request->request->get('time'));
+        }else if($type === 'speed'){
+            $timeScrl->setSpeed($request->request->get('speed'));
+        }
+
+        $em->persist($timeScrl);
+        $em->flush();
+
+        return new Response('changed');
+    }
+
+    /**
+     * @Route("/OmniSceneEditor", name="omni_scene_editor")
+     * @param MainMenuService $mainMenuService
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function omniSceneEditor(MainMenuService $mainMenuService, BansRepository $bansRepository,
+                               ComicRepository $comicRepo, ComicEpisodeRepository $comicEpisodeRepository,
+                               EpisodeScrollTimeRepository $episodeScrollTimeRepository)
+    {
+        /** @var Account $user */
+        $user = $this->getUser();
+        $profile = $user;
+        $data = new \DateTime('NOW');
+
+        $comics = $comicRepo->findMineComics($user->getId());
+
+        $mainMenu = $mainMenuService->getMenu();
+
+        return $this->render($_SERVER['DEFAULT_TEMPLATE'].'/comic/omniSceneEditor.twig', [
+            'title'=>'Komiks - '.$_SERVER['APP_NAME'], // tytul komiksu
+            'lang'=>'pl',
+            'APP_NAME'=>$_SERVER['APP_NAME'],
+            'logoSite'=>$_SERVER['SHOW_LOGO'],
+            'navFooter'=>$_SERVER['NAV_FOOTER'],
+            'footer'=>$_SERVER['FOOTER'],
+            'pageName'=>"OmniEditor",
+            'MainMenu' => $mainMenu,
+            'theme' => $this->theme,
+            'profile' => $profile,
+            'user' => $user,
+            'NotComposed' => true,
+            'comics'=>$comics
+        ]);
+    }
+
+    /**
+     * @Route("uploadObj/", name="upload_Obj")
+     * @Security("is_granted('ROLE_USER')")
+     */
+    public function uploadObject(Request $request, EntityManagerInterface $em){
+
+
+        $file = $request->files->get('page');
+
+        if ($file->getClientOriginalExtension() !== 'jpg' and $file->getClientOriginalExtension() !== 'gif'
+            and $file->getClientOriginalExtension() !== 'png' and $file->getClientOriginalExtension() !== 'jpeg'
+            and $file->getClientOriginalExtension() !== 'mp3'){
+            Die('wrong format: .'.$file->getClientOriginalExtension());
+        }
+
+        if ($file->getClientOriginalExtension() !== 'mp3'){
+            $uniqid = uniqid();
+
+            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'_'.$uniqid.'.'.$file->guessExtension();
+
+            $destination = $this->getParameter('kernel.project_dir')."/public/upload/object/image/";
+
+            $file -> move($destination, $filename);
+
+            $imm = new ImageManager(array('driver'=>'gd'));
+
+            $img = $imm->make($destination.$filename);
+
+            $img->resize(120, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+
+            $img -> save($this->getParameter('kernel.project_dir')."/public/upload/object/image/thumb/$filename");
+
+            $srcThumb = "/upload/object/image/thumb/".$filename;
+            $src = "/upload/object/image/".$filename;
+
+            $obj = new ArtObject();
+            $obj->setFileName($filename);
+            $obj->setType(1);
+                //1 - image
+
+            $objMTM = new UserToAObjMTM();
+            $objMTM->setUser($this->getUser());
+            $objMTM->setObj($obj);
+
+            $em->persist($obj);
+            $em->persist($objMTM);
+            $em->flush();
+
+
+            return new JsonResponse(['imagefilename'=>$filename,'srcThumb'=>$srcThumb, 'src'=>$src, 'type'=>'image']);
+        }else{
+            $uniqid = uniqid();
+
+            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'_'.$uniqid.'.'.$file->guessExtension();
+            $destination = $this->getParameter('kernel.project_dir')."/public/upload/object/sound/";
+
+            $file -> move($destination, $filename);
+
+            $obj = new ArtObject();
+            $obj->setFileName($filename);
+            $obj->setType(1);
+            //1 - image
+
+            $em->persist();
+            $em->flush();
+
+            return new JsonResponse(['sound'=>$filename, 'uploaded' => 'success', 'type'=>'mp3']);
+        }
+
     }
 }

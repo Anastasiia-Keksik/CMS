@@ -2187,17 +2187,18 @@ $(window).on("blur focus", function(e) {
 
                 if (myapp_config.debugState)
                 console.log("blur");
-
-				$('#js-page-content').prepend('<div class="text-center cenzor" style="width: 100%; height: 100vh; background: rgba(0,0,0, 0.9); z-index: 9999; position: fixed; left: 0; top: 0"></div>');
-            
+					// if (toggleCenzor === true){
+					// 	$('#js-page-content').prepend('<div class="text-center cenzor" style="width: 100%; height: 100vh; background: rgba(0,0,0, 0.9); z-index: 9999; position: fixed; left: 0; top: 0"></div>');
+					// }
                 break;
             case "focus":
                 myapp_config.root_.toggleClass("blur")
                 if (myapp_config.debugState)
+				console.log("focused");
 
-                console.log("focused");
-
-                $('.cenzor').remove();
+					// if (toggleCenzor === true){
+					// 	$('.cenzor').remove();
+					// }
 
                 break;
         }

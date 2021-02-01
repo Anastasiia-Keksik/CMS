@@ -1,18 +1,37 @@
-{% extends 'smartadmin/base.html.twig' %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<h1 onclick="clic3k()">CLICK 7</h1>
 
-{% block content %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/Dell Latitude/PhpstormProjects/CMS/src/Controller/TestController.php'|file_link(0) }}">src/Controller/TestController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/Dell Latitude/PhpstormProjects/CMS/templates/test/index.html.twig'|file_link(0) }}">templates/test/index.html.twig</a></code></li>
-    </ul>
-</div>
-{% endblock %}
+<img src="/upload/comics/94ffff1b-8e39-4a68-bec5-b67394c5e96e/4dbfa12f-d2de-4578-a05b-3353cd6bfc75/73e9667ee2f1573ab4b96363f31beb82_601328d9ca1cf.jpeg" width="800">
+<img src="/upload/comics/94ffff1b-8e39-4a68-bec5-b67394c5e96e/4dbfa12f-d2de-4578-a05b-3353cd6bfc75/97c072e90ba5efec608e5b78f296f543_601328d8ca16e.jpeg" width="800">
+<img src="/upload/comics/94ffff1b-8e39-4a68-bec5-b67394c5e96e/4dbfa12f-d2de-4578-a05b-3353cd6bfc75/1878bff3d5eaa7827e6e9b3af273f5c5_601328dab80fa.jpeg" width="800">
+<img src="/upload/comics/94ffff1b-8e39-4a68-bec5-b67394c5e96e/4dbfa12f-d2de-4578-a05b-3353cd6bfc75/149960a29ea1413622e5686de8ed8462_601328db9bd88.jpeg" width="800">
+<img src="/upload/comics/94ffff1b-8e39-4a68-bec5-b67394c5e96e/4dbfa12f-d2de-4578-a05b-3353cd6bfc75/746371f9e1f50ab2a4b394f8067d7c27_601328dc817ad.jpeg" width="800">
+<img src="/upload/comics/94ffff1b-8e39-4a68-bec5-b67394c5e96e/4dbfa12f-d2de-4578-a05b-3353cd6bfc75/43482666_1877539595668224_7130749101343244288_o_601328dd5d4ab.jpeg" width="800">
+<img src="/upload/comics/94ffff1b-8e39-4a68-bec5-b67394c5e96e/4dbfa12f-d2de-4578-a05b-3353cd6bfc75/48421320_1770082429764035_1976990072167202816_n_601328de6857f.jpeg" width="800">
+<img src="/upload/comics/94ffff1b-8e39-4a68-bec5-b67394c5e96e/4dbfa12f-d2de-4578-a05b-3353cd6bfc75/119708598_3255674871175431_1564602841154096138_o_601328df51d0b.jpeg" width="800">
+<img src="/upload/comics/94ffff1b-8e39-4a68-bec5-b67394c5e96e/4dbfa12f-d2de-4578-a05b-3353cd6bfc75/131120880_3738901399494567_9048465032922518744_o_601328e0361a9.jpeg" width="800">
+<script src="{{ asset('smartadmin/js/vendors.bundle.js') }}"></script>
+<script src="{{ asset('smartadmin/js/app.bundle.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/ScrollToPlugin.min.js"></script>
+<script>
+    function clic3k(){
+        // $('html, body').animate({
+        //     'scrollTop': '1600px'
+        // }, 5000)
+        gsap.to(window, {duration: 4, scrollTo: 3450});
+        console.log('click');
+    }
+</script>
+</body>
+</html>

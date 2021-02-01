@@ -92,10 +92,34 @@ class ComicEpisode
      */
     private $publishedAt;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EpisodeSounds::class, mappedBy="ComicEpisode")
+     */
+    private $episodeSounds;
+
+    /**
+     * @ORM\OneToMany(targetEntity=EpisodeScrollTime::class, mappedBy="Episode")
+     */
+    private $yes;
+
+    /**
+     * @ORM\OneToMany(targetEntity=EpisodeImage::class, mappedBy="Episode")
+     */
+    private $episodeImages;
+
+    /**
+     * @ORM\OneToMany(targetEntity=EpisodeToArtSceneMTM::class, mappedBy="Episode", orphanRemoval=true)
+     */
+    private $episodeToArtSceneMTMs;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4();
         $this->favourites = new ArrayCollection();
+        $this->episodeSounds = new ArrayCollection();
+        $this->yes = new ArrayCollection();
+        $this->episodeImages = new ArrayCollection();
+        $this->episodeToArtSceneMTMs = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -320,6 +344,126 @@ class ComicEpisode
     public function setPublishedAt(?\DateTimeInterface $publishedAt): self
     {
         $this->publishedAt = $publishedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EpisodeSounds[]
+     */
+    public function getEpisodeSounds(): Collection
+    {
+        return $this->episodeSounds;
+    }
+
+    public function addEpisodeSound(EpisodeSounds $episodeSound): self
+    {
+        if (!$this->episodeSounds->contains($episodeSound)) {
+            $this->episodeSounds[] = $episodeSound;
+            $episodeSound->setComicEpisode($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEpisodeSound(EpisodeSounds $episodeSound): self
+    {
+        if ($this->episodeSounds->removeElement($episodeSound)) {
+            // set the owning side to null (unless already changed)
+            if ($episodeSound->getComicEpisode() === $this) {
+                $episodeSound->setComicEpisode(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EpisodeScrollTime[]
+     */
+    public function getScrollTimes(): Collection
+    {
+        return $this->yes;
+    }
+
+    public function addScrollTime(EpisodeScrollTime $ye): self
+    {
+        if (!$this->yes->contains($ye)) {
+            $this->yes[] = $ye;
+            $ye->setEpisode($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScrollTime(EpisodeScrollTime $ye): self
+    {
+        if ($this->yes->removeElement($ye)) {
+            // set the owning side to null (unless already changed)
+            if ($ye->getEpisode() === $this) {
+                $ye->setEpisode(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EpisodeImage[]
+     */
+    public function getEpisodeImages(): Collection
+    {
+        return $this->episodeImages;
+    }
+
+    public function addEpisodeImage(EpisodeImage $episodeImage): self
+    {
+        if (!$this->episodeImages->contains($episodeImage)) {
+            $this->episodeImages[] = $episodeImage;
+            $episodeImage->setEpisode($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEpisodeImage(EpisodeImage $episodeImage): self
+    {
+        if ($this->episodeImages->removeElement($episodeImage)) {
+            // set the owning side to null (unless already changed)
+            if ($episodeImage->getEpisode() === $this) {
+                $episodeImage->setEpisode(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EpisodeToArtSceneMTM[]
+     */
+    public function getEpisodeToArtSceneMTMs(): Collection
+    {
+        return $this->episodeToArtSceneMTMs;
+    }
+
+    public function addEpisodeToArtSceneMTM(EpisodeToArtSceneMTM $episodeToArtSceneMTM): self
+    {
+        if (!$this->episodeToArtSceneMTMs->contains($episodeToArtSceneMTM)) {
+            $this->episodeToArtSceneMTMs[] = $episodeToArtSceneMTM;
+            $episodeToArtSceneMTM->setEpisode($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEpisodeToArtSceneMTM(EpisodeToArtSceneMTM $episodeToArtSceneMTM): self
+    {
+        if ($this->episodeToArtSceneMTMs->removeElement($episodeToArtSceneMTM)) {
+            // set the owning side to null (unless already changed)
+            if ($episodeToArtSceneMTM->getEpisode() === $this) {
+                $episodeToArtSceneMTM->setEpisode(null);
+            }
+        }
 
         return $this;
     }

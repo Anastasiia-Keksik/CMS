@@ -1,0 +1,290 @@
+/* app search */
+.search {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1; }
+.search .app-forms {
+    padding: 0; }
+.search .app-forms.has-length {
+    position: relative; }
+.search .app-forms:before {
+    content: none; }
+
+.hidden-xs-up {
+    display: none !important; }
+
+@media (max-width: 575.98px) {
+    .hidden-xs-down {
+        display: none !important; } }
+
+@media (min-width: 576px) {
+    .hidden-sm-up {
+        display: none !important; } }
+
+@media (max-width: 767.98px) {
+    .hidden-sm-down {
+        display: none !important; } }
+
+@media (min-width: 768px) {
+    .hidden-md-up {
+        display: none !important; } }
+
+@media (max-width: 991.98px) {
+    .hidden-md-down {
+        display: none !important; } }
+
+@media (min-width: 992px) {
+    .hidden-lg-up {
+        display: none !important; } }
+
+@media (max-width: 1398.98px) {
+    .hidden-lg-down {
+        display: none !important; } }
+
+@media (min-width: 1399px) {
+    .hidden-xl-up {
+        display: none !important; } }
+
+.hidden-xl-down {
+    display: none !important; }
+
+.page-header {
+    background-color: #fff;
+    -webkit-box-shadow: 0px 0px 28px 0px rgba(86, 61, 124, 0.13);
+    box-shadow: 0px 0px 28px 0px rgba(86, 61, 124, 0.13);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 4.125rem;
+    position: relative;
+    z-index: 1000;
+    -webkit-box-ordinal-group: 2;
+    -ms-flex-order: 1;
+    order: 1; }
+.page-header .page-logo {
+    display: none; }
+.page-header .badge-icon {
+    left: 1.5625rem;
+    top: 1.09375rem; }
+.page-header .badge-icon:only-child {
+    position: relative;
+    left: auto;
+    right: auto;
+    font-size: 14px;
+    height: 26px;
+    width: 26px;
+    line-height: 21px;
+    top: 20px;
+    margin: 0 auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center; }
+
+
+#search-field {
+    max-width: 21.875rem;
+    height: 2.625rem;
+    line-height: normal;
+    border-radius: 4px;
+    background: transparent;
+    border: 1px solid transparent;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    font-size: 0.9375rem;
+    padding: 0.38rem; }
+
+
+/* app header */
+.header-icon {
+    color: #666666;
+    height: 4.125rem;
+    display: block;
+    line-height: 4.125rem;
+    text-decoration: none;
+    position: relative; }
+.header-icon:not(.btn) {
+    min-width: 3.125rem;
+    text-align: center;
+    overflow: visible; }
+.header-icon:not(.btn) > [class*='fa-']:first-child,
+.header-icon:not(.btn) > .ni:first-child {
+    color: #886ab5;
+    vertical-align: middle; }
+.header-icon:not(.btn) > [class*='fa-']:first-child {
+    font-size: 21px; }
+.header-icon:not(.btn) > .ni:first-child {
+    font-size: 21px; }
+.header-icon:not(.btn):hover > [class*='fa-']:only-child,
+.header-icon:not(.btn):hover > .ni {
+    color: #404040; }
+.header-icon:not(.btn)[data-toggle="dropdown"] {
+    /* header dropdowns */
+    /* note: important rules to override popper's inline classes */
+    /* end header dropdowns */ }
+.header-icon:not(.btn)[data-toggle="dropdown"][data-toggle="dropdown"]:after {
+    content: " ";
+    width: 1.5rem;
+    height: 1.5rem;
+    position: absolute;
+    background: #dae1e8;
+    border-radius: 50%;
+    top: 1.3125rem;
+    z-index: -1;
+    left: 0.9375rem;
+    opacity: 0;
+    -webkit-transition: all 100ms ease-in;
+    transition: all 100ms ease-in; }
+.header-icon:not(.btn)[data-toggle="dropdown"][aria-expanded="true"] {
+    color: #404040;
+    /* new lines for arrow visibility */
+    position: relative;
+    z-index: 1001;
+    font-weight: 500; }
+.header-icon:not(.btn)[data-toggle="dropdown"][aria-expanded="true"]:after {
+    content: " ";
+    width: 2.5rem;
+    height: 2.5rem;
+    top: 0.8125rem;
+    z-index: -1;
+    left: 0.3125rem;
+    opacity: 1; }
+.header-icon:not(.btn)[data-toggle="dropdown"][aria-expanded="true"] > [class*='fa-']:first-child,
+.header-icon:not(.btn)[data-toggle="dropdown"][aria-expanded="true"] > .ni:first-child {
+    color: #404040 !important;
+    -webkit-background-clip: initial;
+    -webkit-text-fill-color: initial;
+    background: none; }
+.header-icon:not(.btn)[data-toggle="dropdown"] + .dropdown-menu {
+    position: absolute;
+    border: 0px solid #ccc;
+    right: 2rem;
+    top: 4.0625rem !important;
+    left: auto !important;
+    padding: 0;
+    margin: 0; }
+.header-icon:not(.btn) .profile-image {
+    width: 2rem;
+    height: auto; }
+.header-icon:hover {
+    cursor: default;
+    color: #404040; }
+
+.rounded-top {
+    border-radius: 4px 4px 0 0; }
+
+.custom-scroll,
+.custom-scrollbar {
+    overflow: hidden;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch; }
+.custom-scroll::-webkit-scrollbar-track-piece,
+.custom-scrollbar::-webkit-scrollbar-track-piece {
+    background-color: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb:vertical,
+.custom-scrollbar::-webkit-scrollbar-thumb:vertical {
+    background-color: #666; }
+.custom-scroll::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar {
+    height: 4px;
+    width: 4px; }
+.custom-scroll::-webkit-scrollbar-corner,
+.custom-scrollbar::-webkit-scrollbar-corner {
+    width: 40px; }
+.custom-scroll::-webkit-scrollbar-thumb:vertical,
+.custom-scrollbar::-webkit-scrollbar-thumb:vertical {
+    background-color: #666; }
+
+.panel {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    position: relative;
+    background-color: #fff;
+    -webkit-box-shadow: 0px 0px 13px 0px rgba(62, 44, 90, 0.08);
+    box-shadow: 0px 0px 13px 0px rgba(62, 44, 90, 0.08);
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.09);
+    border-bottom: 1px solid #e0e0e0;
+    -webkit-transition: border 500ms ease-out;
+    transition: border 500ms ease-out;
+  }
+
+.modal-transparent .modal-content {
+       -webkit-box-shadow: 0 1px 15px 1px rgba(86, 61, 124, 0.3);
+       box-shadow: 0 1px 15px 1px rgba(86, 61, 124, 0.3); }
+
+.modal-transparent .modal-content {
+    background: rgba(40, 36, 47, 0.85); }
+
+.cursor-pointer {
+    cursor: pointer !important;
+    /* had to insert important since bootstrap has some peculiar classes */ }
+
+.btn-pills {
+    border-radius: 15px; }
+
+.dropup .dropdown-toggle:after {
+    content: "\f106" !important; }
+
+.dropright .dropdown-toggle:after {
+    content: "\f105" !important; }
+
+.dropleft .dropdown-toggle:before {
+    content: "\f104" !important; }
+
+.nav-item .dropdown-toggle:after {
+    font-size: 0.90em; }
+
+/* remove arrow */
+.dropdown-toggle.no-arrow:before, .dropdown-toggle.no-arrow:after {
+    display: none !important; }
+/* removes dotted lines for focus */
+a, a:active, a:focus,
+button, button:focus, button:active,
+.btn, .btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn.focus:active, .btn.active.focus {
+    outline: none;
+    outline: 0; }
+.btn:active {
+    -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) inset !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) inset !important; }
+
+.sortable-placeholder {
+    width: 100%
+}
+
+/* text area */
+.form-content-editable[contenteditable="true"] {
+    overflow: auto;
+    -webkit-user-modify: read-write-plaintext-only;
+    line-height: normal; }
+.form-content-editable[contenteditable="true"]:focus {
+    outline: 0; }
+.form-content-editable[contenteditable="true"]:empty:not(:focus):before {
+    content: attr(data-placeholder);
+    color: #909090; }
+.form-content-editable[contenteditable="true"]::-moz-selection {
+    background: rgba(0, 132, 255, 0.2);
+    color: #000; }
+.form-content-editable[contenteditable="true"]::selection {
+    background: rgba(0, 132, 255, 0.2);
+    color: #000; }
+.form-content-editable[contenteditable="true"]::-moz-selection {
+    background: rgba(0, 132, 255, 0.2);
+    color: #000; }

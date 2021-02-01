@@ -165,6 +165,43 @@
                                                     </div>
                                                     <small>Files will be displayed alphabetically - take care of the proper naming. Use only english letters and numbers. Using other language letters might results with wrong sorting!</small>
                                                     <br>
+                                                    <small>Upload mp3 files for add dialogue into episode.</small>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <button class="btn btn-success" data-toggle="modal" data-target="#create-scene">Create Scene</button>
+                                                    <label>Scenes</label>
+                                                    <div>
+                                                        Scene
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <label>Dubbing and sound effects</label>
+                                                    <table style="width: 100%; border: 1px black solid">
+                                                        <thead>
+                                                            <tr>
+                                                                <td style="width: 80px">#ID</td>
+                                                                <td>fileName</td>
+                                                                <td style="width: 80px">used?</td>
+                                                                <td style="width: 80px">BG?</td>
+                                                                <td style="width: 80px">delete</td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for sound in project.ComicEpisode.EpisodeSounds %}
+                                                            <tr>
+                                                                <td>{{ sound.Id }}</td>
+                                                                <td>{{ sound.FileName }}</td>
+                                                                <td>{% if sound.StartPoint is not null %}YES{% else %}no{% endif %}</td>
+                                                                <td>{% if sound.Background is not null and sound.Background == true %}suure{% endif %}</td>
+                                                                <td>delete</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -358,7 +395,7 @@
 {% block stylesheets %}
     {{ parent() }}
     {% if project.Type == 2 %}
-    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/formplugins/dropzone/dropzone.css') }}">
+        <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/formplugins/dropzone/dropzone.css') }}">
     {% endif %}
     <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/datagrid/datatables/datatables.bundle.css') }}">
 {% endblock %}
@@ -437,9 +474,9 @@
     <script src="{{ asset('smartadmin/js/formplugins/dropzone/dropzone.js') }}"></script>
     <script>
         $('.dropzone').dropzone({
-            acceptedFiles: "image/jpg,image/jpeg,image/gif,image/png",
+            acceptedFiles: "image/jpg,image/jpeg,image/gif,image/png,audio/mpeg",
             paramName: "page", // The name that will be used to transfer the file
-            maxFilesize: 2, // MB
+            maxFilesize: 5, // MB
             maxFiles: 100,// zobaczymy, trzba zrobic jeszcze albumy
             init: function() {
                 9
@@ -453,8 +490,10 @@
             success: function( file, response ) {
                 console.log(response);
 
-                file.previewElement.querySelector("img").src = response.src;
-                file.previewElement.querySelector("img").alt = response.imagefilename;
+                if(response.type=='image'){
+                    file.previewElement.querySelector("img").src = response.src;
+                    file.previewElement.querySelector("img").alt = response.imagefilename;
+                }
                 file.propername = response.imagefilename;
             },
             addRemoveLinks: true,

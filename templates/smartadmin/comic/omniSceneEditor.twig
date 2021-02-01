@@ -1,0 +1,208 @@
+{% extends 'smartadmin/base.html.twig' %}
+
+{% block content %}
+    <!-- BEGIN Page Content -->
+    <!-- the #js-page-content id is needed for some plugins to initialize -->
+    <main id="js-page-content" role="main" class="page-content">
+        <!-- Your main content goes below here: -->
+        <div class="row" style="margin-top: 66px; margin-right: 0; margin-left: 0;">
+            <div id="shock-wrapper" class="m-auto" style="width: 800px; height: 600px; border: 1px black dashed; z-index: 1">
+                <div id="shock-wave" class="zoom" style="width: inherit; height: inherit">
+                    <canvas id="canvas" width="800" height="600">
+
+                    </canvas>
+                </div>
+            </div>
+
+        </div>
+            <!-- images all -->
+            <div id="images-Panel" class="position-absolute clearfix d-inline-flex align-items-end" style="top: 66px; z-index: 2">
+                <div class="panel float-left mb-0 p-2 rounded-left-0" style="width: 300px; height: calc(100vh - 66px)">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="btn-group mb-3 w-100">
+                                <a href="#" class="btn btn-danger" style="width: 25%">RESET</a>
+                                <a href="#" class="btn btn-success" style="width: 75%">SAVE</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin: 0; max-height: calc(100vh - 66px - 80px); overflow-y: auto">
+                        {% for img in user.UserToAObjMTM  %}
+                            {% if img.Obj.type == 1 %}
+                                <div class="col-6 mb-2" >
+                                    <img width="100%" class="image-drag" data-imagename="{{ asset('upload/object/image/'~img.Obj.FileName) }}" data-usertoobjconid="{{ img.id }}" src="{{ asset('upload/object/image/thumb/'~img.Obj.FileName) }}">
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="row" style="bottom: 0; margin:0">
+                        <div class="col-12 p-0">
+                            <button class="btn-success btn btn-sm w-100" data-toggle="modal" data-target="#upload-objects">Upload Objects</button>
+                        </div>
+                        <div class="col-12 pt-2 px-0" style="border-top: 1px #333 solid">
+                            <i class="far fa-search-plus" onclick="zoom('in')" style="z-index: 4"></i>
+                            <i class="far fa-search-minus" onclick="zoom('out')" style="z-index:4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- images all end -->
+
+
+            <!-- layers -->
+
+            <div id="layers-Panel" class="position-absolute" style="right: 0; top: 66px; z-index: 1">
+                <div class="panel mb-0 p-2 rounded-right-0" style="width: 300px; height: 100%">
+                    <div class="row" style="margin-right: 0">
+                        <div class="col-12 p-0">
+                            <ol id="layer-window" class="overflow-hidden">
+                                <li>sdfs</li>
+                                <li>sdfs</li>
+                                <li>sdfs</li>
+                                <li>sdfs</li>
+                                <li>sdfs</li>
+                                <li>sdfs</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end of layers -->
+
+
+        <!-- upload object images -->
+        <div class="modal fade" id="upload-objects" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="panel-container mb-2">
+                            <label>Upload episode files:</label>
+                            <form action="{{ path('upload_Obj') }}" id="uploadComic" class="dropzone needsclick upload" style="min-height: 7rem;" >
+                                <div class="dz-message needsclick">
+                                    <i class="fal fa-cloud-upload text-muted mb-3"></i> <br>
+                                    <span class="text-uppercase">Drop files here or click to upload.</span>
+                                    <br>
+                                </div>
+{#                                <input type="hidden" name="_token" value="{{ csrf_token('image_upload') }}">#}
+{#                                <input type="hidden" name="cid" value="{{ project.ComicEpisode.Comic.id }}">#}
+{#                                <input type="hidden" name="eid" value="{{ project.ComicEpisode.id }}">#}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end of upload objects -->
+    </main>
+    <!-- this overlay is activated only when mobile menu is triggered -->
+    <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->
+{% endblock %}
+
+{% block stylesheets %}
+    <link id="vendorsbundle" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/vendors.bundle.css') }}">
+    <link id="myskin" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/skins/skin-master.css') }}">
+    <link id="stingcss" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/stingcms.css') }}">
+    <link id="mytheme" rel="stylesheet" media="screen, print" href="{{ asset(theme) }}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-solid.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/omniViewer.app.bundle.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/formplugins/dropzone/dropzone.css') }}">
+    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css"/>
+{% endblock %}
+
+{#
+Variables:
+- navFooter (if enabled and Not false shows Navigation Footer (chat logs, support chat and make a call)
+#}
+{%  block leftMenu %}
+{#    {% include 'smartadmin/parts/leftMenu.html.twig' %}#}
+{% endblock %}
+
+{% block header %}
+    {% include 'smartadmin/parts/comicHeader.html.twig' %}
+{% endblock %}
+
+{% block footer %}
+{#    {% include 'smartadmin/parts/footer.twig' %}#}
+{%  endblock %}
+
+{% block quickmenu %}
+{% endblock %}
+
+{% block messenger %}
+{#    {% include 'smartadmin/parts/chat.twig' %}#}
+{% endblock %}
+
+{% block pagesettings %}
+    {% include 'smartadmin/parts/pagesettings.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        initApp.pushSettings("layout-composed", true);
+        layouts.hideNavigation('off')
+        layouts.fixedHeader('on')
+    </script>
+    <script src="{{ asset('smartadmin/js/Omni/fabric.js') }}"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/ScrollToPlugin.min.js"></script>
+    <script src="{{ asset('smartadmin/js/scroll/scrollSpeed.js') }}"></script>
+    <script src="{{ asset('smartadmin/js/Omni/OmniSceneEditor.js') }}"></script>
+    <script src="{{ asset('smartadmin/js/formplugins/dropzone/dropzone.js') }}"></script>
+    <script>
+        let canvas = new fabric.Canvas('canvas')
+        $('.dropzone').dropzone({
+            acceptedFiles: "image/jpg,image/jpeg,image/gif,image/png,audio/mpeg",
+            paramName: "page", // The name that will be used to transfer the file
+            maxFilesize: 5, // MB
+            maxFiles: 100,// zobaczymy, trzba zrobic jeszcze albumy
+            init: function() {
+                9
+                this.on("maxfilesexceeded", function(file) {
+                    //alert("You are not allowed to chose more than 10 files at once!");
+                    this.removeFile(file);
+
+                });
+
+            },
+            success: function( file, response ) {
+                console.log(response);
+                if(response.type=='image'){
+                    file.previewElement.querySelector("img").src = response.srcThumb;
+                    file.previewElement.querySelector("img").alt = response.imagefilename;
+                    $('.sort-images').prepend('' +
+                        '<div class="col-6 mb-2" data-image="">'+
+                            '<img width="100%" class="image-drag" src="'+response.src+'">'+
+                        '</div>')
+                }
+                file.propername = response.imagefilename;
+                $('.image-drag').draggable({
+                    connectToSortable: "#shock-wave",
+                    helper: "clone",
+                    drop: function( event, ui ) {
+                        console.log($(this))
+                    }
+                }).disableSelection()
+            },
+            addRemoveLinks: true,
+            removedfile: function(file) {
+                let fileName = file.propername;
+
+                {#$.ajax({#}
+                {#    type: 'POST',#}
+                {#    url: '/deleteImage/'+fileName+'/{{ project.ComicEpisode.id }}',#}
+                {#    data: {'_token': '{{ csrf_token('delete_image_episode') }}'},#}
+                {#    sucess: function(data){#}
+                {#        console.log('success: ' + data);#}
+                {#    }#}
+                {#});#}
+
+                var _ref;
+                return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
+            }
+        });
+    </script>
+{% endblock %}

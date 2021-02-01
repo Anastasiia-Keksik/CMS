@@ -5,23 +5,151 @@
     <!-- the #js-page-content id is needed for some plugins to initialize -->
     <main id="js-page-content" role="main" class="page-content">
         <!-- Your main content goes below here: -->
-        <div class="row">
-            <div class="shadow-5 m-auto present" style="width: 800px">
+        <div class="row" style="margin-top: 66px;">
+            <div id="shock-wave" class="shadow-5 m-auto image-drop sortable-main zoom" style="width: 800px; min-height: 100vh; background: lightskyblue; z-index: 1">
                 {% for image in episode.images %}
-                    <img src="{{ asset('upload/comics/'~episode.comic.id~'/'~episode.id~'/'~image) }}" width="800">
+                    <img src="{{ asset('upload/comics/'~episode.comic.id~'/'~episode.id~'/'~image) }}" class="image-drag-inside zoom" style="width: 100%">
                 {% endfor %}
             </div>
         </div>
+        {% if mine == true and episode.published != 1%}
+            <!-- images all -->
+            <div id="images-Panel" class="position-absolute clearfix d-inline-flex align-items-end" style="top: 66px; z-index: 2">
+                <div class="panel float-left mb-0 p-2 rounded-left-0" style="width: 300px; height: 100%">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="btn-group mb-3 w-100">
+                                <a href="#" class="btn btn-danger" style="width: 25%">RESET</a>
+                                <a href="#" class="btn btn-success" style="width: 75%">SAVE</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row sort-images">
+                        {% for img in episode.EpisodeImages  %}
+                            <div class="col-6 mb-2" data-image="{{ asset('upload/comics/'~episode.comic.id~'/'~episode.id~'/'~img.FileName) }}">
+                                <img width="100%" class="image-drag" src="{{ asset('upload/comics/'~episode.comic.id~'/'~episode.id~'/'~img.FileName) }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="row" style="bottom: 0; margin:0">
+                        <div class="col-12 pt-2 px-0" style="border-top: 1px #333 solid">
+                            <i class="far fa-search-plus" onclick="zoom('in')" style="z-index: 4"></i>
+                            <i class="far fa-search-minus" onclick="zoom('out')" style="z-index:4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- images all end -->
+            <!-- edit left side modal dubbing add -->
+            <div id="soundPanel" class="position-absolute clearfix d-inline-flex align-items-end" style="top: 66px; margin-left: -440px">
+                <div class="panel float-left mb-0 p-2 rounded-left-0" style="width: 440px; min-height: 400px">
+                    <div class="panel-tag mb-2">Set your desireable scrool height, and set this value as the sound play point.</div>
+                    <div id="setled-error-target" class="text-center" style="width: 100%; color: red"></div>
+                    <div id="height-target" class="mb-2"></div>
+                    <div id="soundSortList" class="shadow-inset-3 rounded" style="width: 100%">
+                        {% for sound in episode.EpisodeSounds  %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex" style="width: 100%; border-bottom: 1px lightgrey solid; height: 35px">
+                                    <div class="p-2" style="width: 200px; overflow: hidden" data-toggle="tooltip" data-original-title="{{ sound.FileName }}" data-placement="bottom">{{ sound.FileName }}</div>
+                                    <div class="p-2" style="width: 20px; overflow: hidden" data-toggle="tooltip" data-original-title="loop" data-placement="bottom">x</div>
+                                    <div class="p-2 cursor-pointer text-right" id="sound-position-target-{{ sound.id }}" style="width: 100px" onclick="setHeight('{{ sound.Id }}')">{% if sound.StartPoint is null %}SET START{% else %}<span data-toggle="tooltip" data-original-title="Click to UNSET" data-placement="bottom">{{ sound.StartPoint }}</span>{% endif %}</div>
+                                    <div class="p-2 cursor-pointer" id="sound-EndPosition-target-{{ sound.id }}" style="width: 100px" onclick="setEndPoint('{{ sound.Id }}')">{% if sound.EndPoint is null %}SET END{% else %}<span data-toggle="tooltip" data-original-title="Click to UNSET" data-placement="bottom">{{ sound.EndPoint }}</span>{% endif %}</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <small>x for loop</small>
+                </div>
+                <div class="float-left" id="soundArrow" style="width: 40px; height: 40px; margin-bottom: 30px">
+                    <i class="far fa-arrow-alt-to-left fa-3x text-black-50 cursor-pointer" onclick="setMusice()"></i>
+                </div>
+            </div>
+            <!-- end of dubbing -->
+            <!-- edit left side modal time scroller add -->
+            <div id="timeScrollerPanel" class="position-fixed clearfix d-inline-flex align-items-end" style="top: 66px; right: 0">
+                <div id="timeScrollerArrow" class="float-left" style="width: 40px; height: 40px; margin-bottom: 30px">
+                    <i class="far fa-arrow-alt-to-right fa-3x text-black-50 cursor-pointer" onclick="setTimeScroller()"></i>
+                </div>
+                <div class="panel position-relative float-right mb-0 p-2 rounded-right-0" style="width: 440px; min-height: 400px">
+                    <div class="panel-tag mb-2">Set moment for the scroll to scroll down in the music rythm if soo you need.</div>
+                    <div class="shadow-inset-3 rounded" style="width: 100%; height: 260px; overflow-y: auto; overflow-x: hidden">
+                        {% for scrollTime in scrollTimes  %}
+                            <div id="ScrlTime-{{ scrollTime.Id }}" class="row">
+                                <div class="col-12">
+                                    <div class="d-flex" style="width: 100%; border-bottom: 1px lightgrey solid; height: 35px">
+                                        <div class="p-2" style="width: 20px" onclick="playScroll({{ scrollTime.id }})">P</div>
+                                        <div class="p-2" style="width: 100px" onclick="scrollTo2(-1, {{ scrollTime.Height }}, 0, 1)">Strt: {{ scrollTime.Height }}</div>
+                                        <div class="p-2" style="width: 100px" onclick="scrollTo2(-1, {{ scrollTime.ExpectedPosition }}, 0, 0)">End: {{ scrollTime.ExpectedPosition }}</div>
+                                        <div class="p-2" style="width: 100px">time: <span  data-toggle="modal" data-target=".change-value" onclick="setVariables('setTime', '{{ scrollTime.id }}', '{{ scrollTime.Time }}')">{{ scrollTime.Time }}</span></div>
+                                        <div class="p-2" style="width: 100px">spd: <span  data-toggle="modal" data-target=".change-value" onclick="setVariables('setSpeed', '{{ scrollTime.id }}', '{{ scrollTime.Speed }}')">{{ scrollTime.Speed }}</span></div>
+                                        <div class="p-2 cursor-pointer" style="width: 20px" onclick="delete2('{{ scrollTime.Id }}')"><span style="color: red">X</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="position-absolute" style="bottom: 0">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex form-group py-2 pr-2 mb-0">
+                                    <input type="number" class="form-control" id="from-position-target" value="" onclick="lockPosition('pos1')" placeholder="From" data-toggle="tooltip" data-original-title="CLICK TO LOCK POSITION" data-placement="left">
+                                    <input type="number" class="form-control" id="wait-time-target" name="wait-time" value="" placeholder="Wait" data-toggle="tooltip" data-original-title="Wait time until start scrolling in miliseconds" data-placement="left">
+                                    <input type="number" class="form-control" id="expected-position-target" value="" onclick="lockPosition('pos2')" placeholder="TO" data-toggle="tooltip" data-original-title="CLICK TO LOCK POSITION" data-placement="left">
+                                    <input type="number" class="form-control" id="speed-target" name="speed" value="" placeholder="Speed" data-toggle="tooltip" data-original-title="Speed time in miliseconds!" data-placement="left">
+                                </div>
+                                <div class="d-flex">
+                                    <small>Wait time is triggered before scrolling. Wait time and speed is given with miliseconds (1s = 1000 ms) </small>
+                                    <button id="formBtn" class="btn btn-outline-default mb-2 mr-2 ml-1 btn-sm pl-2" onclick="sendTimeScrollForm()">send</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end of time scroller -->
+            <!-- MODAL -->
+            <div class="modal fade change-value" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-transparent" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title text-white">
+                                Basic Modals
+                                <small class="m-0 text-white opacity-70">
+                                    Below is a static modal example
+                                </small>
+                            </h4>
+                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="fal fa-times"></i></span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <label>New Value</label>
+                            <input type="number" id="setNewValueFor-target" value="">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="sendNewValue()">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </main>
     <!-- this overlay is activated only when mobile menu is triggered -->
     <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->
 {% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
+    <link id="vendorsbundle" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/vendors.bundle.css') }}">
+    <link id="myskin" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/skins/skin-master.css') }}">
+    <link id="stingcss" rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/stingcms.css') }}">
+    <link id="mytheme" rel="stylesheet" media="screen, print" href="{{ asset(theme) }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
     <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/fa-solid.css') }}">
+    <link rel="stylesheet" media="screen, print" href="{{ asset('smartadmin/css/omniViewer.app.bundle.css') }}">
 {% endblock %}
 
 {#
@@ -33,7 +161,7 @@ Variables:
 {% endblock %}
 
 {% block header %}
-    {% include 'smartadmin/parts/header.html.twig' %}
+    {% include 'smartadmin/parts/comicHeader.html.twig' %}
 {% endblock %}
 
 {% block footer %}
@@ -44,6 +172,7 @@ Variables:
 {% endblock %}
 
 {% block messenger %}
+{#    {% include 'smartadmin/parts/chat.twig' %}#}
 {% endblock %}
 
 {% block pagesettings %}
@@ -52,10 +181,18 @@ Variables:
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/ScrollToPlugin.min.js"></script>
+    <script src="{{ asset('smartadmin/js/scroll/scrollSpeed.js') }}"></script>
+    <script src="{{ asset('smartadmin/js/Omni/OmniEditor.js') }}"></script>
     <script>
         initApp.pushSettings("layout-composed", true);
         layouts.hideNavigation('off')
         layouts.fixedHeader('on')
+        $( document ).ready(function() {
+            toggleCenzor = true;
+        });
 
         window.addEventListener("keyup", function(e) {
             if (e.keyCode == 44) {
@@ -63,7 +200,10 @@ Variables:
                     '<h1 style="margin-top: 45vh; color: hotpink">Please Don\'t Steal!</h1>' +
                     '</div>')
                 $.ajax('{{ path('stop_print') }}', {
-                    method: "POST"
+                    method: "GET",
+                    data: {
+                        'id': '{{ episode.id }}'
+                    }
                 });
             }
         });
@@ -127,6 +267,358 @@ Variables:
                     hidden = false;
                 }
             }
+            height = $(window).scrollTop()
+
+             //PLAYING CONTROLS INPUT SECTOR
+            {% for sound in episode.EpisodeSounds  %}
+                {% if sound.StartPoint is not null %}
+                    if (
+                        {% if sound.EndPoint is null %}
+                            (height >= {{ sound.startPoint }} && height <= {{ sound.startPoint }}+200)
+                        {% else %}
+                            (height >= {{ sound.startPoint }} && height <= {{ sound.EndPoint }})
+                        {% endif %}
+                        && soundID['{{ sound.id }}']['playing'] === false && soundID['{{ sound.id }}']['ended'] === false && play === true){
+                        soundID['{{ sound.id }}'].play();
+                        soundID['{{ sound.id }}']['playing'] = true;
+                    }
+                    if (height < {{ sound.StartPoint }} && soundID['{{ sound.id }}']['playing'] === true){
+                        soundID['{{ sound.id }}'].pause();
+                        soundID['{{ sound.id }}']['playing'] = false;
+                    }
+            {% if sound.EndPoint is not null %}
+                if (height > {{ sound.EndPoint }} && soundID['{{ sound.id }}']['playing'] === true){
+                    soundID['{{ sound.id }}'].pause();
+                    soundID['{{ sound.id }}']['playing'] = false;
+                    soundID['{{ sound.id }}']['ended'] = true;
+                }
+            {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            $('#height-target').text('position: '+$(window).scrollTop())
+
+        })
+
+        let height = 0;
+
+        {% if episode.published != 1 %}
+        let setNewValueFor;
+        let setNewValueType;
+
+        function setVariables(type, id, value){
+                setNewValueFor = id
+                setNewValueType = type
+                $('#setNewValueFor-target').val(value)
+        }
+
+        function sendNewValue(){
+            console.log(setNewValueType)
+            if (setNewValueType === 'setTime'){
+                $.ajax('{{ path('set_newValueFor') }}', {
+                    method: "POST",
+                    data: {
+                        'scrollTimeID': setNewValueFor,
+                        'type': 'time',
+                        'time': $('#setNewValueFor-target').val(),
+                        '_token': '{{ csrf_token('setNewValue') }}'
+                    },
+                    success: function (data) {
+
+                    }
+                });
+            }else if(setNewValueType === 'setSpeed'){
+                $.ajax('{{ path('set_newValueFor') }}', {
+                    method: "POST",
+                    data: {
+                        'scrollTimeID': setNewValueFor,
+                        'type': 'speed',
+                        'speed': $('#setNewValueFor-target').val(),
+                        '_token': '{{ csrf_token('setNewValue') }}'
+                    },
+                    success: function (data) {
+
+                    }
+                });
+            }
+        }
+
+        function setHeight(soundID){
+            if ( sound_StartPoint[soundID] == 'UNSET'){
+                $.ajax('{{ path('set_sound_height') }}', {
+                    method: "POST",
+                    data: {
+                        'soundID': soundID,
+                        'height': height,
+                        'episode': '{{ episode.id }}',
+                        '_token': '{{ csrf_token('setUnsetHeight') }}'
+                    },
+                    success: function (data) {
+                        if (data === 'Position setled'){
+                            $('#sound-position-target-'+soundID).html('<span data-toggle="tooltip" data-original-title="Click to UNSET" data-placement="bottom">'+height+'</span>')
+                            sound_StartPoint[soundID] = "SET"
+                        } else if ('Position already in use'){
+                            $('#setled-error-target').show();
+                            $('#setled-error-target').text(data)
+                            setTimeout(fade_out, 3000);
+
+                            function fade_out() {
+                                $("#setled-error-target").fadeOut();
+                            }
+                        }
+                    }
+                });
+            } else {
+                $.ajax('{{ path('unset_sound_height') }}', {
+                    method: "POST",
+                    data: {
+                        'soundID': soundID,
+                        '_token': '{{ csrf_token('setUnsetHeight') }}'
+                    },
+                    success: function () {
+                        $('#sound-position-target-'+soundID).html('SET START')
+                        sound_StartPoint[soundID] = 'UNSET'
+                    }
+                });
+            }
+        }
+
+        function setEndPoint(soundID){
+            if ( sound_EndPoint[soundID] === 'UNSET'){
+                $.ajax('{{ path('set_sound_EndHeight') }}', {
+                    method: "POST",
+                    data: {
+                        'soundID': soundID,
+                        'height': height,
+                        '_token': '{{ csrf_token('setUnsetHeight') }}'
+                    },
+                    success: function (data) {
+                        $('#sound-EndPosition-target-'+soundID).html('<span data-toggle="tooltip" data-original-title="Click to UNSET" data-placement="bottom">'+height+'</span>')
+                        sound_EndPoint[soundID] = "SET"
+                    }
+                });
+            } else {
+                $.ajax('{{ path('unset_sound_EndHeight') }}', {
+                    method: "POST",
+                    data: {
+                        'soundID': soundID,
+                        '_token': '{{ csrf_token('setUnsetHeight') }}'
+                    },
+                    success: function () {
+                        $('#sound-EntPosition-target-'+soundID).html('SET END')
+                        sound_EndPoint[soundID] = 'UNSET'
+                    }
+                });
+            }
+        }
+
+        let Musice = false
+        function setMusice(){
+            if (Musice === true){
+                $('#soundPanel').animate({
+                    'marginLeft': '-440px'
+                },150)
+                $('#soundArrow').html('<i class="far fa-arrow-alt-right fa-3x text-black-50 cursor-pointer" onclick="setMusice()"></i>')
+                Musice = false
+            }else{
+                $('#soundPanel').animate({
+                    'marginLeft': '0'
+                }, 150)
+                $('#soundArrow').html('<i class="far fa-arrow-alt-to-left fa-3x text-black-50 cursor-pointer" onclick="setMusice()"></i>')
+                Musice = true
+            }
+        }
+        {% endif %}
+
+        let sound_StartPoint = [];
+        let sound_EndPoint = [];
+        let soundID=[];
+
+        {% for sound in episode.EpisodeSounds  %}
+        {% if sound.StartPoint is not null %}
+            soundID['{{ sound.id }}'] = new Audio('{{ asset('/upload/comics/'~episode.comic.id~'/'~episode.id~'/dubbing/'~sound.FileName) }}');
+            soundID['{{ sound.id }}']['playing'] = false;
+            soundID['{{ sound.id }}']['ended'] = false;
+
+            soundID['{{ sound.id }}'].onended = function (){
+                soundID['{{ sound.id }}']['ended'] = true;
+                soundID['{{ sound.id }}']['playing'] = false;
+            }
+        {% endif %}
+
+        {% if sound.StartPoint is not null %}
+        sound_StartPoint['{{ sound.id }}'] = 'SET'
+        {% else %}
+        sound_StartPoint['{{ sound.id }}'] = 'UNSET'
+        {% endif %}
+        {% if sound.EndPoint is not null %}
+        sound_EndPoint['{{ sound.id }}'] = 'SET'
+        {% else %}
+        sound_EndPoint['{{ sound.id }}'] = 'UNSET'
+        {% endif %}
+
+        {% endfor %}
+
+        let play = false;
+        function PlayPause(){
+            // NOW PLAY
+            if(play === false){
+                $('#PlayPauseButton').html('&nbsp;<i class="far fa-pause fa-2x"></i>&nbsp;')
+                play = true;
+
+                $.each(Object.keys(soundID), function (ID, val){
+                    if (soundID[val]['playing'] === true && soundID[val]['ended'] === false){
+                        soundID[val].play()
+                    }
+                })
+
+                {% for sound in episode.EpisodeSounds  %}
+                {% if sound.StartPoint is not null %}
+                    if (
+                        {% if sound.EndPoint is null %}
+                            (height >= {{ sound.startPoint }} && height <= {{ sound.startPoint }}+200)
+                        {% else %}
+                            (height >= {{ sound.startPoint }} && height <= {{ sound.EndPoint }})
+                        {% endif %}
+                            && soundID['{{ sound.id }}']['playing'] === false && soundID['{{ sound.id }}']['ended'] === false && play === true){
+                            soundID['{{ sound.id }}'].play();
+                            soundID['{{ sound.id }}']['playing'] = true;
+                    }
+                {% endif %}
+                {% endfor %}
+            // NOW PAUSE
+            }else{
+                $('#PlayPauseButton').html('&nbsp;<i class="far fa-play fa-2x"></i>&nbsp;')
+                play = false;
+
+                $.each(Object.keys(soundID), function (ID, val){
+                    if (soundID[val]['playing'] === true){
+                        soundID[val].pause()
+                    }
+                })
+            }
+        }
+        function stop(){
+            $('#PlayPauseButton').html('&nbsp;<i class="far fa-play fa-2x"></i>&nbsp;')
+            play = false;
+
+            $.each(Object.keys(soundID), function (ID, val){
+                soundID[val].load()
+                soundID[val]['playing'] = false;
+                soundID[val]['ended'] = false;
+            })
+        }
+    </script>
+    <script>
+        let TimeScrollerPanel = true
+        function setTimeScroller(){
+            if (TimeScrollerPanel === true){
+                $('#timeScrollerPanel').animate({
+                    'marginRight': '-400px'
+                },150)
+                $('#timeScrollerArrow').html('<i class="far fa-arrow-alt-left fa-3x text-black-50 cursor-pointer" onclick="setTimeScroller()"></i>')
+                TimeScrollerPanel = false
+            }else{
+                $('#timeScrollerPanel').animate({
+                    'marginRight': '0'
+                }, 150)
+                $('#timeScrollerArrow').html('<i class="far fa-arrow-alt-to-right fa-3x text-black-50 cursor-pointer" onclick="setTimeScroller()"></i>')
+                TimeScrollerPanel = true
+            }
+        }
+
+        function sendTimeScrollForm(){
+            $.ajax('{{ path('set_timeScroll') }}', {
+                method: "POST",
+                data: {
+                    'episodeID': '{{ episode.id }}',
+                    'position': $('#from-position-target').val(),
+                    'ExpectedPosition': $('#expected-position-target').val(),
+                    'wait-time': $('#wait-time-target').val(),
+                    'speed': $('#speed-target').val(),
+                    '_token': '{{ csrf_token('setTimeScroll') }}'
+                },
+                success: function () {
+
+                }
+            });
+        }
+
+        let rocketVAR = false;
+        let rocketPAUSED = false;
+        //rocket - HERE IS THE MAGIC
+        let tl = gsap.timeline();
+
+        function playScroll(id){
+
+        }
+
+        function rocket(){
+            PlayPause();
+
+            if (rocketVAR === false){
+                {% for timeScroll in scrollTimes %}
+                tl.to(window, {delay: {{ timeScroll.Time }}/1000, duration: {{ timeScroll.Speed }}/1000, scrollTo: {{ timeScroll.ExpectedPosition }}});
+                {% endfor %}
+                rocketVAR = true;
+            } else {
+                if(rocketVAR === true && rocketPAUSED === false){
+                    tl.pause();
+                    rocketPAUSED = true;
+                } else if (rocketVAR === true && rocketPAUSED === true){
+                    tl.resume();
+                    rocketPAUSED = false;
+                }
+            }
+        }
+
+        function lockPosition(pos){
+            if (pos === 'pos1'){
+                $('#from-position-target').val(height)
+            } else if (pos === 'pos2'){
+                $('#expected-position-target').val(height)
+            }
+        }
+
+        function scrollTo2(from, to, time, speed){
+            gsap.killTweensOf(window)
+            if (from === -1){
+                gsap.to(window, {duration: speed, scrollTo: to});
+            }else{
+                if ($(window).scrollTop() !== from){
+                    gsap.to(window, {duration: 0, scrollTo: from})
+                }
+                if (time === 0){
+                    gsap.to(window, {duration: speed/1000, scrollTo: to})
+                }else{
+                    gsap.to(window, {delay: time/1000, duration: speed/1000, scrollTo: to})
+                }
+            }
+        }
+
+        function delete2(id){
+            $.ajax('{{ path('delete_timeScroll') }}', {
+                method: "POST",
+                data: {
+                    'timeID': id,
+                    '_token': '{{ csrf_token('setTimeScroll') }}'
+                },
+                success: function (data) {
+                    if (data === "erased"){
+                        $('#ScrlTime-'+id).remove();
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('scroll', function(e) {
+            {% for scrollTime in scrollTimes  %}
+                if (height >= {{ scrollTime.Height }} && height <= {{  scrollTime.ExpectedPosition }}){
+                    $('#ScrlTime-{{ scrollTime.id }}').css('background-color', 'yellow')
+                }else{
+                    $('#ScrlTime-{{ scrollTime.id }}').css('background-color', 'transparent')
+                }
+            {% endfor %}
         })
     </script>
 {% endblock %}
