@@ -1,12 +1,17 @@
 {% extends 'smartadmin/base.html.twig' %}
 
 {% block content %}
+    <style>
+        #layer-window .ui-selecting { background: lightcyan; }
+        #layer-window .ui-selected { background: aliceblue; color: black; }
+        #layer-window div { margin-left: 16px; height: 42px}
+    </style>
     <!-- BEGIN Page Content -->
     <!-- the #js-page-content id is needed for some plugins to initialize -->
     <main id="js-page-content" role="main" class="page-content">
         <!-- Your main content goes below here: -->
         <div class="row" style="margin-top: 66px; margin-right: 0; margin-left: 0;">
-            <div id="shock-wrapper" class="m-auto" style="width: 800px; height: 600px; border: 1px black dashed; z-index: 1">
+            <div id="shock-wrapper" class="m-auto" style="width: 800px; height: 600px; outline: 1px solid black; border-bottom: 1px black solid; z-index: 1">
                 <div id="shock-wave" class="zoom" style="width: inherit; height: inherit">
                     <canvas id="canvas" width="800" height="600">
 
@@ -16,8 +21,8 @@
 
         </div>
             <!-- images all -->
-            <div id="images-Panel" class="position-absolute clearfix d-inline-flex align-items-end" style="top: 66px; z-index: 2">
-                <div class="panel float-left mb-0 p-2 rounded-left-0" style="width: 300px; height: calc(100vh - 66px)">
+            <div id="images-Panel" class="position-absolute clearfix d-inline-flex align-items-end" style="top: 66px; z-index: 2; margin-left: 0px">
+                <div class="panel float-left mb-0 p-2 rounded-0" style="width: 300px; height: calc(100vh - 66px)">
                     <div class="row">
                         <div class="col-12">
                             <div class="btn-group mb-3 w-100">
@@ -29,8 +34,8 @@
                     <div class="row" style="margin: 0; max-height: calc(100vh - 66px - 80px); overflow-y: auto">
                         {% for img in user.UserToAObjMTM  %}
                             {% if img.Obj.type == 1 %}
-                                <div class="col-6 mb-2" >
-                                    <img width="100%" class="image-drag" data-imagename="{{ asset('upload/object/image/'~img.Obj.FileName) }}" data-usertoobjconid="{{ img.id }}" src="{{ asset('upload/object/image/thumb/'~img.Obj.FileName) }}">
+                                <div class="col-6 mb-2 px-0" >
+                                    <img width="100%" class="image-drag draggable rounded" data-imagename="{{ asset('upload/object/image/'~img.Obj.FileName) }}" data-usertoobjconid="{{ img.id }}" src="{{ asset('upload/object/image/thumb/'~img.Obj.FileName) }}">
                                 </div>
                             {% endif %}
                         {% endfor %}
@@ -52,17 +57,12 @@
             <!-- layers -->
 
             <div id="layers-Panel" class="position-absolute" style="right: 0; top: 66px; z-index: 1">
-                <div class="panel mb-0 p-2 rounded-right-0" style="width: 300px; height: 100%">
+                <div class="panel mb-0 p-2 rounded-right-0 rounded-top-left-0" style="width: 300px; height: 100%">
                     <div class="row" style="margin-right: 0">
                         <div class="col-12 p-0">
-                            <ol id="layer-window" class="overflow-hidden">
-                                <li>sdfs</li>
-                                <li>sdfs</li>
-                                <li>sdfs</li>
-                                <li>sdfs</li>
-                                <li>sdfs</li>
-                                <li>sdfs</li>
-                            </ol>
+                            <div id="layer-window" class="overflow-hidden">
+
+                            </div>
                         </div>
                     </div>
                 </div>

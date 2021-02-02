@@ -336,6 +336,10 @@
     border-top-right-radius: 0 !important;
 }
 
+.rounded-top-left-0 {
+    border-top-left-radius: 0 !important;
+}
+
 .rounded-bottom-right-0 {
     border-bottom-right-radius: 0 !important;
 }
