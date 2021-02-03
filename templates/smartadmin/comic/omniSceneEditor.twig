@@ -34,9 +34,16 @@
                     <div class="row" style="margin: 0; max-height: calc(100vh - 66px - 80px); overflow-y: auto">
                         {% for img in user.UserToAObjMTM  %}
                             {% if img.Obj.type == 1 %}
-                                <div class="col-6 mb-2 px-0" >
-                                    <img width="100%" class="image-drag draggable rounded" data-imagename="{{ asset('upload/object/image/'~img.Obj.FileName) }}" data-usertoobjconid="{{ img.id }}" src="{{ asset('upload/object/image/thumb/'~img.Obj.FileName) }}">
-                                </div>
+                                {% if loop.index is even %}
+                                    <div class="col-6 mb-2 pr-0 pl-1" >
+                                        <img width="100%" class="image-drag draggable rounded" data-imagename="{{ asset('upload/object/image/'~img.Obj.FileName) }}" data-usertoobjconid="{{ img.id }}" src="{{ asset('upload/object/image/thumb/'~img.Obj.FileName) }}">
+                                    </div>
+                                        {% else %}
+                                    <div class="col-6 mb-2 pl-0 pr-1" >
+                                        <img width="100%" class="image-drag draggable rounded" data-imagename="{{ asset('upload/object/image/'~img.Obj.FileName) }}" data-usertoobjconid="{{ img.id }}" src="{{ asset('upload/object/image/thumb/'~img.Obj.FileName) }}">
+                                    </div>
+
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     </div>
@@ -153,7 +160,7 @@ Variables:
     <script src="{{ asset('smartadmin/js/Omni/OmniSceneEditor.js') }}"></script>
     <script src="{{ asset('smartadmin/js/formplugins/dropzone/dropzone.js') }}"></script>
     <script>
-        let canvas = new fabric.Canvas('canvas')
+        let canvas = new fabric.Canvas('canvas', { preserveObjectStacking: true })
         $('.dropzone').dropzone({
             acceptedFiles: "image/jpg,image/jpeg,image/gif,image/png,audio/mpeg",
             paramName: "page", // The name that will be used to transfer the file

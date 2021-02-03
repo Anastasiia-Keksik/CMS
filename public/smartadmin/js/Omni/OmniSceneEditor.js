@@ -25,29 +25,35 @@ function newImage(image, id){
                 }
                 it0++
             })
-        }).on('selected', function () {
-            let it0 = 0;
-            layers.forEach(function (layer) {
-                if (layer.id === img.nameid){
-                    let tmp_layer = layers[it0]
-                    layers.splice(it0, 1)
-                    layers.push(tmp_layer)
-                    prependLayers()
-                    console.log(layers)
-                }
-                it0++
-            })
         })
+            // .on('selected', function () {
+            // let it0 = 0;
+            // layers.forEach(function (layer) {
+            //     if (layer.id === img.nameid){
+            //         let tmp_layer = layers[it0]
+            //         layers.splice(it0, 1)
+            //         layers.push(tmp_layer)
+            //         prependLayers()
+            //         console.log(layers)
+            //     }
+            //     it0++
+            // })
+            // })
     })
 }
 
 $(document).ready(function (){
     $('#layer-window').sortable({
-        handle: ".handle"
-    }).selectable({
-        filter: "div", cancel: ".handle",
-        selected: function( event, ui ) {
-            console.log(ui)
+        handle: ".handle",
+        stop: function ( event, ui){
+            let it0 = 0;
+            canvas.getObjects().forEach(function (elm) {
+                if (elm.nameid == ui.item.attr('id')){
+                    canvas.item(it0).moveTo($('#layer-window .wers').length - 1 - ui.item.index())
+                }
+                it0++
+            })
+            canvas.renderAll();
         }
     })
 
@@ -122,6 +128,7 @@ function prependLayers(){
         $("#layer-window").prepend('<div id="'+elm.id+'" class="ui-widget-content wers d-flex position-relative" style="padding: 10px">' +
             '<div class="handle" style="position: absolute; top: 0; left: 0; height: 42px; width: 42px; margin-left: 0; margin-right: 8px; background-image: url(\''+elm.thumbUrl+'\'); background-repeat: no-repeat; background-size: cover;"></div>'+
             '<span id="edit_'+elm.id+'"  style="min-width: 60px; color: black; margin-left: 48px" contenteditable="true" data-toggle="tooltip" data-placement="auto" title="Right click to name change">Warstwa '+it1+'</span>' +
+            '<span class="position-absolute" style="top: 10px; right: 8px">rv</span>'+
             '</div>')
 
         $('#'+elm.id).bind("keypress", function(e) {

@@ -931,6 +931,7 @@ class ComicController extends AbstractController
      * @Route("/OmniSceneEditor", name="omni_scene_editor")
      * @param MainMenuService $mainMenuService
      * @return \Symfony\Component\HttpFoundation\Response
+     * @Security ("is_granted('ROLE_USER')")
      */
     public function omniSceneEditor(MainMenuService $mainMenuService, BansRepository $bansRepository,
                                ComicRepository $comicRepo, ComicEpisodeRepository $comicEpisodeRepository,
