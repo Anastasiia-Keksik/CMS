@@ -59,6 +59,16 @@ class ArtSceneToAObjMTM
      */
     private $Name;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $opacity;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $speed;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -156,6 +166,30 @@ class ArtSceneToAObjMTM
     public function setName(?string $Name): self
     {
         $this->Name = $Name;
+
+        return $this;
+    }
+
+    public function getOpacity(): ?float
+    {
+        return $this->opacity;
+    }
+
+    public function setOpacity(?float $opacity): self
+    {
+        $this->opacity = $opacity;
+
+        return $this;
+    }
+
+    public function getSpeed(): ?float
+    {
+        return $this->speed;
+    }
+
+    public function setSpeed(?float $speed): self
+    {
+        $this->speed = $speed;
 
         return $this;
     }

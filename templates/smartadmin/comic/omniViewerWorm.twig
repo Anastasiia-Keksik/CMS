@@ -6,7 +6,7 @@
     <main id="js-page-content" role="main" class="page-content">
         <!-- Your main content goes below here: -->
         <div class="row" style="margin-top: 66px;">
-            <div id="shock-wave" class="shadow-5 m-auto image-drop sortable-main zoom" style="width: 800px; min-height: 100vh; background: lightskyblue; z-index: 1">
+            <div id="shock-wave" class="shadow-5 m-auto image-drop sortable-main zoom" style="width: 1800px; min-height: 100vh; background: lightskyblue;">
                 {% for image in episode.images %}
                     <img src="{{ asset('upload/comics/'~episode.comic.id~'/'~episode.id~'/'~image) }}" class="image-drag-inside zoom" style="width: 100%">
                 {% endfor %}

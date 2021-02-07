@@ -27,7 +27,7 @@
                         <div class="col-12">
                             <div class="btn-group mb-3 w-100">
                                 <a href="#" class="btn btn-danger" style="width: 25%">RESET</a>
-                                <a href="#" class="btn btn-success" style="width: 75%">SAVE</a>
+                                <a href="javascript:saveObject()" class="btn btn-success" style="width: 75%" >SAVE</a>
                             </div>
                         </div>
                     </div>
@@ -36,11 +36,11 @@
                             {% if img.Obj.type == 1 %}
                                 {% if loop.index is even %}
                                     <div class="col-6 mb-2 pr-0 pl-1" >
-                                        <img width="100%" class="image-drag draggable rounded" data-imagename="{{ asset('upload/object/image/'~img.Obj.FileName) }}" data-usertoobjconid="{{ img.id }}" src="{{ asset('upload/object/image/thumb/'~img.Obj.FileName) }}">
+                                        <img width="100%" class="image-drag draggable rounded" data-imagename="{{ absolute_url(asset('upload/object/image/'~img.Obj.FileName)) }}" data-usertoobjconid="{{ img.id }}" data-objid="{{ img.Obj.id }}" src="{{ asset('upload/object/image/thumb/'~img.Obj.FileName) }}">
                                     </div>
                                         {% else %}
                                     <div class="col-6 mb-2 pl-0 pr-1" >
-                                        <img width="100%" class="image-drag draggable rounded" data-imagename="{{ asset('upload/object/image/'~img.Obj.FileName) }}" data-usertoobjconid="{{ img.id }}" src="{{ asset('upload/object/image/thumb/'~img.Obj.FileName) }}">
+                                        <img width="100%" class="image-drag draggable rounded" data-imagename="{{ absolute_url(asset('upload/object/image/'~img.Obj.FileName)) }}" data-usertoobjconid="{{ img.id }}" data-objid="{{ img.Obj.id }}" src="{{ asset('upload/object/image/thumb/'~img.Obj.FileName) }}">
                                     </div>
 
                                 {% endif %}
@@ -51,10 +51,10 @@
                         <div class="col-12 p-0">
                             <button class="btn-success btn btn-sm w-100" data-toggle="modal" data-target="#upload-objects">Upload Objects</button>
                         </div>
-                        <div class="col-12 pt-2 px-0" style="border-top: 1px #333 solid">
-                            <i class="far fa-search-plus" onclick="zoom('in')" style="z-index: 4"></i>
-                            <i class="far fa-search-minus" onclick="zoom('out')" style="z-index:4"></i>
-                        </div>
+{#                        <div class="col-12 pt-2 px-0" style="border-top: 1px #333 solid">#}
+{#                            <i class="far fa-search-plus" onclick="zoom('in')" style="z-index: 4"></i>#}
+{#                            <i class="far fa-search-minus" onclick="zoom('out')" style="z-index:4"></i>#}
+{#                        </div>#}
                     </div>
                 </div>
             </div>
@@ -64,12 +64,65 @@
             <!-- layers -->
 
             <div id="layers-Panel" class="position-absolute" style="right: 0; top: 66px; z-index: 1">
-                <div class="panel mb-0 p-2 rounded-right-0 rounded-top-left-0" style="width: 300px; height: 100%">
+                <div class="panel mb-0 p-2 rounded-0" style="min-width: 300px; min-height: 56px">
                     <div class="row" style="margin-right: 0">
                         <div class="col-12 p-0">
-                            <div id="layer-window" class="overflow-hidden">
+                            <div id="layer-window">
 
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="properties" class="panel rounded-right-0 rounded-top-left-0" style="min-height: 200px">
+                    <div class="row my-2" style="margin: 0">
+                        <div class="col-6 pt-2">
+                            Scene height:
+                        </div>
+                        <div class="col-6">
+                            <input type="number" id="formSceneHeight" name="sceneHeight" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row mb-2" style="margin: 0">
+                        <div class="col-6">
+                            <label>Width</label>
+                            <input type="number" id="formWidth" name="width" class="form-control">
+                        </div>
+                        <div class="col-6">
+                            <label>Height</label>
+                            <input type="number" id="formHeight" class="form-control" name="height">
+                        </div>
+                    </div>
+                    <div class="row mb-2" style="margin: 0">
+                        <div class="col-6">
+                            <label>Pox x</label>
+                            <input type="number" id="formPosX" class="form-control" name="posx">
+                        </div>
+                        <div class="col-6">
+                            <label>Pos y</label>
+                            <input type="number" id="formPosY" class="form-control" name="posy">
+                        </div>
+                    </div>
+                    <div class="row mb-3" style="margin: 0">
+                        <div class="col-6">
+                            <label>Angle</label>
+                            <input type="number" id="formRot" class="form-control" name="rotation">
+                        </div>
+                        <div class="col-6">
+                            <label>Opacity</label>
+                            <input type="number" id="formOpacity" class="form-control" step="0.01" name="opacity">
+                        </div>
+                    </div>
+                    <div class="row" style="margin: 0">
+                        <div class="col-12">
+                            <a href="javascript:openWindow()" class="btn btn-outline-default">Checkout paralaksa</a>
+                        </div>
+                    </div>
+                    <div class="row my-2" style="margin: 0">
+                        <div class="col-6 pt-2">
+                            Parallax speed:
+                        </div>
+                        <div class="col-6">
+                            <input type="number" id="formParallaxSpeed" name="parallaxSpeed" class="form-control" step="0.1">
                         </div>
                     </div>
                 </div>
@@ -100,6 +153,12 @@
             </div>
         </div>
         <!-- end of upload objects -->
+
+        <!-- lookout -->
+        <div id="modal-paralaksa-lookout-target" class="position-fixed justify-content-center" style="display: none; top: 0; left: 0; background-color: rgba(0,0,0,0.8); z-index: 6; width: 100%; min-height: 100vh">
+            <div id="paralaksa-lookout-target" class="overflow-hidden position-relative" style="margin-top: 66px; background: white; border: 1px black solid; width: 800px; height: 500px; overflow: hidden">
+            </div>
+        </div>
     </main>
     <!-- this overlay is activated only when mobile menu is triggered -->
     <div class="page-content-overlay" data-action="toggle" data-class="mobile-nav-on"></div> <!-- END Page Content -->
@@ -211,5 +270,104 @@ Variables:
                 return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
             }
         });
+
+        var windowHeight = 600;
+
+
+        function openWindow(){
+            $('#paralaksa-lookout-target').html('')
+            $('#modal-paralaksa-lookout-target').css('display', 'flex')
+            $('#paralaksa-lookout-target').css('height', windowHeight)
+            $('#modal-paralaksa-lookout-target').on('click', function () {
+                $('#modal-paralaksa-lookout-target').css('display', 'none')
+            })
+            var finishedImage = '';
+
+            var it0=0;
+            layers.forEach(function (elm) {
+                console.log(elm)
+                $('#paralaksa-lookout-target').append('<img id="imgLookout-'+it0+'" class="imgLookout" data-speed="'+elm.prlxSpd+'" data-id="'+elm.id+'" src="'+elm.url+'" style="width: '+elm.width+'px; height: '+elm.height+'px; top: '+elm.posy+'px; left: '+elm.posx+'px; position: absolute; opacity: '+elm.opacity+'">')
+                it0++
+                left[elm.id] = elm.posx
+            })
+        }
+
+        function getWidth() {
+            return Math.max(
+                document.body.scrollWidth,
+                document.documentElement.scrollWidth,
+                document.body.offsetWidth,
+                document.documentElement.offsetWidth,
+                document.documentElement.clientWidth
+            );
+        }
+        var objLeft = $("#paralaksa-lookout-target").offset().left;
+        let currentMousePos = [];
+        var left = [];
+
+
+        $("#modal-paralaksa-lookout-target").mousemove(function(e) {
+                currentMousePos.x = e.pageX;
+                currentMousePos.y = e.pageY;
+
+                objLeft = $("#paralaksa-lookout-target").offset().left;
+                var percent = (getWidth() - (objLeft + $("#paralaksa-lookout-target").width() / 2)) / 100
+
+                var objCenterX = objLeft + $("#paralaksa-lookout-target").width() / 2;
+
+
+
+
+            if (currentMousePos.x - objCenterX > 0){
+                $('.imgLookout').each(function(i, layer) {
+                    var id = layer.id
+                    $('#'+id).css('left', left[layer.getAttribute('data-id')] + ((1 * layer.getAttribute('data-speed') * Math.round((currentMousePos.x - objCenterX) / percent)) / 2))
+                })
+            }else if (currentMousePos.x - objCenterX < 0){
+                $('.imgLookout').each(function(i, layer) {
+                    var id = layer.id
+                    $('#'+id).css('left', left[layer.getAttribute('data-id')] + ((1 * layer.getAttribute('data-speed') * Math.round((currentMousePos.x - objCenterX) / percent)) / 2))
+                })
+            }
+
+            // for(var i=layers.length; i>0;i--){
+            //     $('#imgLookout-'+(i-1)).css('left', layerscurrentMousePos.x - objCenterX)
+            // }
+
+        })
+
+        let sendLayers = {}
+        function saveObject(){
+
+            console.log(layers)
+            var it0 = 0;
+            layers.forEach(function (elm){
+            sendLayers[it0] =
+                {
+                    'width': elm.width,
+                    'height': elm.height,
+                    'posx': elm.posx,
+                    'posy': elm.posy,
+                    'rot': elm.rot,
+                    'opacity': elm.opacity,
+                    'name': elm.name,
+                    'speed': elm.prlxSpd,
+                    'id': elm.objid
+                }
+                it0++
+            })
+            console.log(sendLayers)
+            $.ajax('{{ path('OmniEditor_save_Object') }}', {
+                method: "POST",
+                data: {
+                    'layers': sendLayers,
+                    'height': windowHeight,
+                    '_token': '{{ csrf_token('saveObject') }}'
+                },
+                success: function (data) {
+
+                }
+            });
+        }
     </script>
 {% endblock %}

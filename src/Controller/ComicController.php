@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\ArtObject;
+use App\Entity\ArtScene;
+use App\Entity\ArtSceneToAObjMTM;
+use App\Entity\ArtSceneToUserMTM;
 use App\Entity\Bans;
 use App\Entity\Comic;
 use App\Entity\ComicEpisode;
@@ -16,6 +19,7 @@ use App\Entity\ProjectUserConnection;
 use App\Entity\SocialPost;
 use App\Entity\UserPrintScreens;
 use App\Entity\UserToAObjMTM;
+use App\Repository\ArtObjectRepository;
 use App\Repository\BansRepository;
 use App\Repository\ComicCategoriesRepository;
 use App\Repository\ComicEpisodeRepository;
@@ -1034,5 +1038,55 @@ class ComicController extends AbstractController
             return new JsonResponse(['sound'=>$filename, 'uploaded' => 'success', 'type'=>'mp3']);
         }
 
+    }
+
+    /**
+     * @Route("/saveObject", name="OmniEditor_save_Object")
+     * @Security("is_granted('ROLE_USER')")
+     */
+    function saveObject(Request $request, ArtObjectRepository $artObjectRepository, EntityManagerInterface $em){
+        if ($request->request->get('_token'))
+        {
+            if ($this->isCsrfTokenValid('saveObject', $request->request->get('_token'))) {
+                $NewSceneObj = new ArtScene();
+                $NewSceneObj->setHeight($request->request->get('height'));
+
+                $artSceneToUser = new ArtSceneToUserMTM();
+                $artSceneToUser->setArtScene($NewSceneObj);
+                $artSceneToUser->setUser($this->getUser());
+                $em->persist($artSceneToUser);
+
+                $em->persist($NewSceneObj);
+
+                foreach ($request->request->get('layers') as $layer){
+                    $newObjToSceneRelation = new ArtSceneToAObjMTM();
+                    $newObjToSceneRelation->setWidth($layer['width']);
+                    $newObjToSceneRelation->setHeight($layer['height']);
+                    $newObjToSceneRelation->setPosx($layer['posx']);
+                    $newObjToSceneRelation->setPosy($layer['posy']);
+                    $newObjToSceneRelation->setRotation($layer['rot']);
+
+                    $name = $layer['id'];
+
+                    $obj = $artObjectRepository->find($name);
+
+                    $newObjToSceneRelation->setObj($obj);
+                    $newObjToSceneRelation->setSpeed($layer['speed']);
+                    $newObjToSceneRelation->setName($layer['name']);
+                    $newObjToSceneRelation->setArtScene($NewSceneObj);
+
+                    $em->persist($newObjToSceneRelation);
+                }
+
+                $em->flush();
+
+                return new Response("success");
+
+            }else{
+                return new Response("token invalid");
+            }
+        }else{
+            return new Response("error");
+        }
     }
 }

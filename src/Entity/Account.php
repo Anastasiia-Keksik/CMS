@@ -401,6 +401,11 @@ class Account implements UserInterface
      */
     private $userToAObjMTMs;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ArtSceneToUserMTM::class, mappedBy="User")
+     */
+    private $artSceneToUserMTMs;
+
     public function __construct()
     {
         $this->mainMenuCategories = new ArrayCollection();
@@ -435,6 +440,7 @@ class Account implements UserInterface
         $this->yes = new ArrayCollection();
         $this->bans = new ArrayCollection();
         $this->userToAObjMTMs = new ArrayCollection();
+        $this->artSceneToUserMTMs = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -1870,6 +1876,36 @@ class Account implements UserInterface
             // set the owning side to null (unless already changed)
             if ($userToAObjMTM->getUser() === $this) {
                 $userToAObjMTM->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ArtSceneToUserMTM[]
+     */
+    public function getArtSceneToUserMTMs(): Collection
+    {
+        return $this->artSceneToUserMTMs;
+    }
+
+    public function addArtSceneToUserMTM(ArtSceneToUserMTM $artSceneToUserMTM): self
+    {
+        if (!$this->artSceneToUserMTMs->contains($artSceneToUserMTM)) {
+            $this->artSceneToUserMTMs[] = $artSceneToUserMTM;
+            $artSceneToUserMTM->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArtSceneToUserMTM(ArtSceneToUserMTM $artSceneToUserMTM): self
+    {
+        if ($this->artSceneToUserMTMs->removeElement($artSceneToUserMTM)) {
+            // set the owning side to null (unless already changed)
+            if ($artSceneToUserMTM->getUser() === $this) {
+                $artSceneToUserMTM->setUser(null);
             }
         }
 

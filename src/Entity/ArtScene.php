@@ -54,10 +54,16 @@ class ArtScene
      */
     private $artSceneToAObjMTMs;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ArtSceneToUserMTM::class, mappedBy="ArtScene")
+     */
+    private $artSceneToUserMTMs;
+
     public function __construct()
     {
         $this->episodeToArtSceneMTMs = new ArrayCollection();
         $this->artSceneToAObjMTMs = new ArrayCollection();
+        $this->artSceneToUserMTMs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -179,6 +185,36 @@ class ArtScene
             // set the owning side to null (unless already changed)
             if ($artSceneToAObjMTM->getArtScene() === $this) {
                 $artSceneToAObjMTM->setArtScene(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ArtSceneToUserMTM[]
+     */
+    public function getArtSceneToUserMTMs(): Collection
+    {
+        return $this->artSceneToUserMTMs;
+    }
+
+    public function addArtSceneToUserMTM(ArtSceneToUserMTM $artSceneToUserMTM): self
+    {
+        if (!$this->artSceneToUserMTMs->contains($artSceneToUserMTM)) {
+            $this->artSceneToUserMTMs[] = $artSceneToUserMTM;
+            $artSceneToUserMTM->setArtScene($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArtSceneToUserMTM(ArtSceneToUserMTM $artSceneToUserMTM): self
+    {
+        if ($this->artSceneToUserMTMs->removeElement($artSceneToUserMTM)) {
+            // set the owning side to null (unless already changed)
+            if ($artSceneToUserMTM->getArtScene() === $this) {
+                $artSceneToUserMTM->setArtScene(null);
             }
         }
 
