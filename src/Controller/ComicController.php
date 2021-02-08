@@ -1049,40 +1049,50 @@ class ComicController extends AbstractController
         {
             if ($this->isCsrfTokenValid('saveObject', $request->request->get('_token'))) {
                 $layersAndScene = [];
+//TODO zabezpieczyc tutaj ID sceny aby nikt jej nie podmienil
 
-                $NewSceneObj = new ArtScene();
-                $NewSceneObj->setHeight($request->request->get('height'));
+                if ($request->request->get('scene') == ''){
+                    $NewSceneObj = new ArtScene();
+                    $NewSceneObj->setHeight($request->request->get('height'));
 
-                $artSceneToUser = new ArtSceneToUserMTM();
-                $artSceneToUser->setArtScene($NewSceneObj);
-                $artSceneToUser->setUser($this->getUser());
-                $em->persist($artSceneToUser);
 
-                $em->persist($NewSceneObj);
+                    $artSceneToUser = new ArtSceneToUserMTM();
+                    $artSceneToUser->setArtScene($NewSceneObj);
+                    $artSceneToUser->setUser($this->getUser());
+                    $em->persist($artSceneToUser);
 
-                $layersAndScene['scene'] = $NewSceneObj->getId();
+                    $em->persist($NewSceneObj);
+
+                    $layersAndScene['scene'] = $NewSceneObj->getId();
+                }else{
+                    $layersAndScene['scene'] = $request->request->get('scene');
+                }
 
                 $layerit = 0;
                 foreach ($request->request->get('layers') as $layer){
-                    $newObjToSceneRelation = new ArtSceneToAObjMTM();
-                    $newObjToSceneRelation->setWidth($layer['width']);
-                    $newObjToSceneRelation->setHeight($layer['height']);
-                    $newObjToSceneRelation->setPosx($layer['posx']);
-                    $newObjToSceneRelation->setPosy($layer['posy']);
-                    $newObjToSceneRelation->setRotation($layer['rot']);
 
-                    $name = $layer['id'];
+                    if ($layer['conid'] == ''){
+                        $newObjToSceneRelation = new ArtSceneToAObjMTM();
+                        $newObjToSceneRelation->setWidth($layer['width']);
+                        $newObjToSceneRelation->setHeight($layer['height']);
+                        $newObjToSceneRelation->setPosx($layer['posx']);
+                        $newObjToSceneRelation->setPosy($layer['posy']);
+                        $newObjToSceneRelation->setRotation($layer['rot']);
 
-                    $obj = $artObjectRepository->find($name);
+                        $name = $layer['id'];
 
-                    $newObjToSceneRelation->setObj($obj);
-                    $newObjToSceneRelation->setSpeed($layer['speed']);
-                    $newObjToSceneRelation->setName($layer['name']);
-                    $newObjToSceneRelation->setArtScene($NewSceneObj);
+                        $obj = $artObjectRepository->find($name);
 
-                    $layersAndScene[$layerit] = $newObjToSceneRelation->getId();
+                        $newObjToSceneRelation->setObj($obj);
+                        $newObjToSceneRelation->setSpeed($layer['speed']);
+                        $newObjToSceneRelation->setName($layer['name']);
+                        $newObjToSceneRelation->setArtScene($NewSceneObj);
 
-                    $em->persist($newObjToSceneRelation);
+                        $layersAndScene[$layerit] = $newObjToSceneRelation->getId();
+
+                        $em->persist($newObjToSceneRelation);
+                    }
+
                     $layerit++;
                 }
 

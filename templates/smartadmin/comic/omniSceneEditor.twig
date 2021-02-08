@@ -336,6 +336,7 @@ Variables:
 
         })
 
+        let sceneID = '';
         let sendLayers = {}
         function saveObject(){
 
@@ -352,7 +353,8 @@ Variables:
                     'opacity': elm.opacity,
                     'name': elm.name,
                     'speed': elm.prlxSpd,
-                    'id': elm.objid
+                    'id': elm.objid,
+                    'conid': elm.objconid
                 }
                 it0++
             })
@@ -362,10 +364,16 @@ Variables:
                 data: {
                     'layers': sendLayers,
                     'height': windowHeight,
+                    'scene': sceneID,
                     '_token': '{{ csrf_token('saveObject') }}'
                 },
                 success: function (data) {
-
+                    it0 = 0
+                    layers.forEach(function () {
+                        layers[it0].objconid = data[it0]
+                        it0++
+                    })
+                    sceneID = data['scene']
                 }
             });
         }

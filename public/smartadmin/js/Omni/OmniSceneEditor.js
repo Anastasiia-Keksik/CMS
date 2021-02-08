@@ -141,10 +141,11 @@ $(document).ready(function (){
             tmp_layer.posy = 0
             tmp_layer.rot = 0
             tmp_layer.opacity = 1
-            tmp_layer.prlxSpd = 1
+            tmp_layer.prlxSpd = 0
             tmp_layer.objid = helper.data('objid')
             tmp_layer.url = helper.data('imagename')
             tmp_layer.thumbUrl = helper[0].src
+            tmp_layer.objconid = ''
             layers.push(tmp_layer)
             newImage(tmp_layer.url, tmp_layer.id)
 
