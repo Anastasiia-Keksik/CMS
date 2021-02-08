@@ -1048,6 +1048,8 @@ class ComicController extends AbstractController
         if ($request->request->get('_token'))
         {
             if ($this->isCsrfTokenValid('saveObject', $request->request->get('_token'))) {
+                $layersAndScene = [];
+
                 $NewSceneObj = new ArtScene();
                 $NewSceneObj->setHeight($request->request->get('height'));
 
@@ -1058,6 +1060,9 @@ class ComicController extends AbstractController
 
                 $em->persist($NewSceneObj);
 
+                $layersAndScene['scene'] = $NewSceneObj->getId();
+
+                $layerit = 0;
                 foreach ($request->request->get('layers') as $layer){
                     $newObjToSceneRelation = new ArtSceneToAObjMTM();
                     $newObjToSceneRelation->setWidth($layer['width']);
@@ -1075,12 +1080,15 @@ class ComicController extends AbstractController
                     $newObjToSceneRelation->setName($layer['name']);
                     $newObjToSceneRelation->setArtScene($NewSceneObj);
 
+                    $layersAndScene[$layerit] = $newObjToSceneRelation->getId();
+
                     $em->persist($newObjToSceneRelation);
+                    $layerit++;
                 }
 
                 $em->flush();
 
-                return new Response("success");
+                return new Response(json_encode($layersAndScene));
 
             }else{
                 return new Response("token invalid");

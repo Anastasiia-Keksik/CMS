@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserToAObjMTMRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=UserToAObjMTMRepository::class)
@@ -11,9 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 class UserToAObjMTM
 {
     /**
+     * @var string
+     * @ORM\Column(type="string", length=36)
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     private $id;
 
@@ -29,7 +30,12 @@ class UserToAObjMTM
      */
     private $Obj;
 
-    public function getId(): ?int
+    public function __construct()
+    {
+        $this->id = Uuid::uuid4();
+    }
+
+    public function getId(): ?string
     {
         return $this->id;
     }

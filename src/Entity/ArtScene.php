@@ -6,6 +6,7 @@ use App\Repository\ArtSceneRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=ArtSceneRepository::class)
@@ -13,9 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
 class ArtScene
 {
     /**
+     * @var string
+     * @ORM\Column(type="string", length=36)
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      */
     private $id;
 
@@ -64,9 +65,10 @@ class ArtScene
         $this->episodeToArtSceneMTMs = new ArrayCollection();
         $this->artSceneToAObjMTMs = new ArrayCollection();
         $this->artSceneToUserMTMs = new ArrayCollection();
+        $this->id = Uuid::uuid4();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
