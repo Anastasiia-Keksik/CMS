@@ -30,6 +30,11 @@ class UserToAObjMTM
      */
     private $Obj;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdAt;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4();
@@ -60,6 +65,18 @@ class UserToAObjMTM
     public function setObj(?ArtObject $Obj): self
     {
         $this->Obj = $Obj;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

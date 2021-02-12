@@ -36,15 +36,18 @@ class ArtSceneToUserMTMRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?ArtSceneToUserMTM
+
+    public function findOneBySomeField($user): ?ArtSceneToUserMTM
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('au.id = :val')
+            ->setParameter('val', $user)
+            ->leftJoin('a.User', 'au')
+            ->orderBy('a.CreatedAt', 'DESC')
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
-    */
+
 }

@@ -30,6 +30,11 @@ class ArtSceneToUserMTM
      */
     private $ArtScene;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $CreatedAt;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4();
@@ -60,6 +65,18 @@ class ArtSceneToUserMTM
     public function setArtScene(?ArtScene $ArtScene): self
     {
         $this->ArtScene = $ArtScene;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->CreatedAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $CreatedAt): self
+    {
+        $this->CreatedAt = $CreatedAt;
 
         return $this;
     }

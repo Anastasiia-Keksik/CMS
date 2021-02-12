@@ -211,6 +211,17 @@ Variables:
         layouts.hideNavigation('off')
         layouts.fixedHeader('on')
     </script>
+    <script>
+        {% if scene is not null %}
+            let layers = [];
+            {% for layer in scene.artSceneToAObjMTMs %}
+                {{ dump(layer.width) }}
+                let layers += []
+            {% endfor %}
+        {% else %}
+        let layers = [];
+        {% endif %}
+    </script>
     <script src="{{ asset('smartadmin/js/Omni/fabric.js') }}"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/gsap.min.js"></script>
@@ -339,7 +350,11 @@ Variables:
         let sceneID = '';
         let sendLayers = {}
         function saveObject(){
-
+            canvas.discardActiveObject().renderAll();
+            var formData = new FormData();
+            $('#canvas').get(0).toBlob(function (blob) {
+                formData.set('thumb', blob)
+            })
             console.log(layers)
             var it0 = 0;
             layers.forEach(function (elm){
@@ -358,13 +373,14 @@ Variables:
                 }
                 it0++
             })
-            console.log(sendLayers)
+            console.log(formData)
             $.ajax('{{ path('OmniEditor_save_Object') }}', {
                 method: "POST",
                 data: {
                     'layers': sendLayers,
                     'height': windowHeight,
                     'scene': sceneID,
+                    'ep': '{{ episode }}',
                     '_token': '{{ csrf_token('saveObject') }}'
                 },
                 success: function (data) {
@@ -374,8 +390,21 @@ Variables:
                         it0++
                     })
                     sceneID = data['scene']
+                    sendBlob()
                 }
             });
+
+            function sendBlob(){
+                $.ajax('{{ path('OmniEditor_save_BlobToObject') }}', {
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+
+                    }
+                });
+            }
         }
     </script>
 {% endblock %}

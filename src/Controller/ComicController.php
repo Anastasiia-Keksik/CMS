@@ -13,13 +13,16 @@ use App\Entity\ComicEpisode;
 use App\Entity\EpisodeImage;
 use App\Entity\EpisodeScrollTime;
 use App\Entity\EpisodeSounds;
+use App\Entity\EpisodeToArtSceneMTM;
 use App\Entity\ProfileUserConnection;
 use App\Entity\Project;
 use App\Entity\ProjectUserConnection;
 use App\Entity\SocialPost;
 use App\Entity\UserPrintScreens;
 use App\Entity\UserToAObjMTM;
+use App\Repository\AccountRepository;
 use App\Repository\ArtObjectRepository;
+use App\Repository\ArtSceneToUserMTMRepository;
 use App\Repository\BansRepository;
 use App\Repository\ComicCategoriesRepository;
 use App\Repository\ComicEpisodeRepository;
@@ -37,6 +40,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -932,14 +936,15 @@ class ComicController extends AbstractController
     }
 
     /**
-     * @Route("/OmniSceneEditor", name="omni_scene_editor")
+     * @Route("/OmniSceneEditor/{episodeid}", name="omni_scene_editor")
+     * @Route("/OmniSceneEditor/{episodeid}/{SceneID}", name="omnieditor_editScene")
      * @param MainMenuService $mainMenuService
      * @return \Symfony\Component\HttpFoundation\Response
      * @Security ("is_granted('ROLE_USER')")
      */
-    public function omniSceneEditor(MainMenuService $mainMenuService, BansRepository $bansRepository,
+    public function omniSceneEditor(ArtScene $SceneID = null, MainMenuService $mainMenuService, BansRepository $bansRepository,
                                ComicRepository $comicRepo, ComicEpisodeRepository $comicEpisodeRepository,
-                               EpisodeScrollTimeRepository $episodeScrollTimeRepository)
+                               EpisodeScrollTimeRepository $episodeScrollTimeRepository, $episodeid)
     {
         /** @var Account $user */
         $user = $this->getUser();
@@ -963,7 +968,9 @@ class ComicController extends AbstractController
             'profile' => $profile,
             'user' => $user,
             'NotComposed' => true,
-            'comics'=>$comics
+            'comics'=>$comics,
+            'episode'=>$episodeid,
+            'scene'=>$SceneID
         ]);
     }
 
@@ -1044,7 +1051,8 @@ class ComicController extends AbstractController
      * @Route("/saveObject", name="OmniEditor_save_Object")
      * @Security("is_granted('ROLE_USER')")
      */
-    function saveObject(Request $request, ArtObjectRepository $artObjectRepository, EntityManagerInterface $em){
+    function saveObject(Request $request, ArtObjectRepository $artObjectRepository, EntityManagerInterface $em,
+                        ComicEpisodeRepository $comicEpisodeRepository){
         if ($request->request->get('_token'))
         {
             if ($this->isCsrfTokenValid('saveObject', $request->request->get('_token'))) {
@@ -1055,13 +1063,22 @@ class ComicController extends AbstractController
                     $NewSceneObj = new ArtScene();
                     $NewSceneObj->setHeight($request->request->get('height'));
 
-
+                    // TODO otwierac OpenSceneEditor z ID epizodu, wysylac to ID tutaj i dodawac polaczenie sceny z epizodem
                     $artSceneToUser = new ArtSceneToUserMTM();
                     $artSceneToUser->setArtScene($NewSceneObj);
                     $artSceneToUser->setUser($this->getUser());
-                    $em->persist($artSceneToUser);
+                    $artSceneToUser->setCreatedAt(new \DateTime('now'));
 
+                    $ep = $comicEpisodeRepository->find($request->request->get("ep"));
+
+
+                    $episodetoscene = new EpisodeToArtSceneMTM();
+                    $episodetoscene->setArtScene($NewSceneObj);
+                    $episodetoscene->setEpisode($ep);
+
+                    $em->persist($episodetoscene);
                     $em->persist($NewSceneObj);
+                    $em->persist($artSceneToUser);
 
                     $layersAndScene['scene'] = $NewSceneObj->getId();
                 }else{
@@ -1073,18 +1090,18 @@ class ComicController extends AbstractController
 
                     if ($layer['conid'] == ''){
                         $newObjToSceneRelation = new ArtSceneToAObjMTM();
-                        $newObjToSceneRelation->setWidth($layer['width']);
-                        $newObjToSceneRelation->setHeight($layer['height']);
-                        $newObjToSceneRelation->setPosx($layer['posx']);
-                        $newObjToSceneRelation->setPosy($layer['posy']);
-                        $newObjToSceneRelation->setRotation($layer['rot']);
+                        $newObjToSceneRelation->setWidth((int) $layer['width']);
+                        $newObjToSceneRelation->setHeight((int) $layer['height']);
+                        $newObjToSceneRelation->setPosx((int) $layer['posx']);
+                        $newObjToSceneRelation->setPosy((int) $layer['posy']);
+                        $newObjToSceneRelation->setRotation((int) $layer['rot']);
 
                         $name = $layer['id'];
 
                         $obj = $artObjectRepository->find($name);
 
                         $newObjToSceneRelation->setObj($obj);
-                        $newObjToSceneRelation->setSpeed($layer['speed']);
+                        $newObjToSceneRelation->setSpeed((float)$layer['speed']);
                         $newObjToSceneRelation->setName($layer['name']);
                         $newObjToSceneRelation->setArtScene($NewSceneObj);
 
@@ -1101,10 +1118,47 @@ class ComicController extends AbstractController
                 return new Response(json_encode($layersAndScene));
 
             }else{
-                return new Response("token invalid");
+                return new Response("token invalid", 400);
             }
         }else{
-            return new Response("error");
+            return new Response("error", 400);
         }
+    }
+
+    /**
+//     * @Route("/saveBlobToObject", name="OmniEditor_save_BlobToObject")
+//     * @Security("is_granted('ROLE_USER')")
+//     */
+    function saveBlobToObject(Request $request, PropertyAccessorInterface $propertyAccessor, ArtSceneToUserMTMRepository $artSceneToUserMTMRepository,
+                                EntityManagerInterface $em){
+
+        $lastScene = $artSceneToUserMTMRepository->findOneBySomeField($this->getUser()->getId());
+
+        if($lastScene){
+            $file_content = base64_encode(file_get_contents($propertyAccessor->getValue($request->files->get('thumb'), 'realPath')));
+
+            $imm = new ImageManager(array('driver' => 'gd'));
+
+            $img = $imm->make($file_content);
+
+            $img->mime($propertyAccessor->getValue($request->files->get('thumb'), 'mimeType'));
+
+            $newFilename = uniqid() . uniqid() . '.jpg';
+
+            $img->resize(100, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+
+            $img->save("upload/object/scenes/".$newFilename);
+
+            $artscene = $lastScene->getArtScene();
+
+            $artscene->setThumbFileName($newFilename);
+
+            $em->persist($artscene);
+            $em->flush();
+
+        }
+        return new Response("success");
     }
 }

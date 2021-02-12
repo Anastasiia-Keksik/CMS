@@ -1,5 +1,4 @@
 let helper;
-let layers = [];
 let activeImg;
 function newImage(image, id){
     fabric.Image.fromURL(image, function (img) {

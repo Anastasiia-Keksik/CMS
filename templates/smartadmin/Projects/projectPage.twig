@@ -151,7 +151,7 @@
                                                 </div>
                                                 <div class="col-xs-12 col-md-6 order-md-1">
                                                     <div class="panel-container mb-2">
-                                                        <label>Upload episode files:</label>
+                                                        <label>Upload objects to episode:</label>
                                                         <form action="{{ path('upload_Page') }}" id="uploadComic" class="dropzone needsclick upload" style="min-height: 7rem;" >
                                                             <div class="dz-message needsclick">
                                                                 <i class="fal fa-cloud-upload text-muted mb-3"></i> <br>
@@ -168,20 +168,38 @@
                                                     <small>Upload mp3 files for add dialogue into episode.</small>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div class="row mb-g">
                                                 <div class="col-12">
-                                                    <button class="btn btn-success" data-toggle="modal" data-target="#create-scene">Create Scene</button>
-                                                    <label>Scenes</label>
-                                                    <div>
-                                                        Scene
+                                                    <div class="row">
+                                                        <div class="col-12 my-2">
+                                                            <a href="{{ path('omni_scene_editor', {'episodeid':project.ComicEpisode.id}) }}" class="btn btn-success float-right">Create Scene</a>
+                                                            <label style="font-size: 28px; font-weight: bolder; margin: 0">Scenes</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="row rounded" style="border: 1px black solid; margin: 0">
+                                                                {% for scene in project.comicepisode.EpisodeToArtSceneMTMs %}
+                                                                <div class="m-1 d-flex justify-content-center flex-column" style="width: 10%; min-width: 100px">
+                                                                    <center>
+                                                                        <img class="rounded" src="{{ asset('upload/object/scenes/'~scene.ArtScene.ThumbFileName) }}" style="width: 100px">
+                                                                        <span>
+                                                                            <a href="{{ path('omnieditor_editScene', {'episodeid':project.ComicEpisode.id, 'SceneID':scene.ArtScene.Id}) }}">edit</a>
+                                                                            copy delete</span>
+                                                                    </center>
+                                                                </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div class="row mb-g">
                                                 <div class="col-12">
                                                     <label>Dubbing and sound effects</label>
-                                                    <table style="width: 100%; border: 1px black solid">
-                                                        <thead>
+                                                    <div class="rounded" style="border: 1px black solid">
+                                                        <table style="width: 100%">
+                                                            <thead>
                                                             <tr>
                                                                 <td style="width: 80px">#ID</td>
                                                                 <td>fileName</td>
@@ -189,19 +207,20 @@
                                                                 <td style="width: 80px">BG?</td>
                                                                 <td style="width: 80px">delete</td>
                                                             </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        {% for sound in project.ComicEpisode.EpisodeSounds %}
-                                                            <tr>
-                                                                <td>{{ sound.Id }}</td>
-                                                                <td>{{ sound.FileName }}</td>
-                                                                <td>{% if sound.StartPoint is not null %}YES{% else %}no{% endif %}</td>
-                                                                <td>{% if sound.Background is not null and sound.Background == true %}suure{% endif %}</td>
-                                                                <td>delete</td>
-                                                            </tr>
-                                                        {% endfor %}
-                                                        </tbody>
-                                                    </table>
+                                                            </thead>
+                                                            <tbody>
+                                                            {% for sound in project.ComicEpisode.EpisodeSounds %}
+                                                                <tr>
+                                                                    <td>{{ sound.Id }}</td>
+                                                                    <td>{{ sound.FileName }}</td>
+                                                                    <td>{% if sound.StartPoint is not null %}YES{% else %}no{% endif %}</td>
+                                                                    <td>{% if sound.Background is not null and sound.Background == true %}suure{% endif %}</td>
+                                                                    <td>delete</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="row">

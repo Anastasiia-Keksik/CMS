@@ -112,6 +112,11 @@ class ComicEpisode
      */
     private $episodeToArtSceneMTMs;
 
+    /**
+     * @ORM\OneToMany(targetEntity=EpisodeToAObjectMTM::class, mappedBy="Episode")
+     */
+    private $episodeToAObjectMTMs;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4();
@@ -120,6 +125,7 @@ class ComicEpisode
         $this->yes = new ArrayCollection();
         $this->episodeImages = new ArrayCollection();
         $this->episodeToArtSceneMTMs = new ArrayCollection();
+        $this->episodeToAObjectMTMs = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -462,6 +468,36 @@ class ComicEpisode
             // set the owning side to null (unless already changed)
             if ($episodeToArtSceneMTM->getEpisode() === $this) {
                 $episodeToArtSceneMTM->setEpisode(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EpisodeToAObjectMTM[]
+     */
+    public function getEpisodeToAObjectMTMs(): Collection
+    {
+        return $this->episodeToAObjectMTMs;
+    }
+
+    public function addEpisodeToAObjectMTM(EpisodeToAObjectMTM $episodeToAObjectMTM): self
+    {
+        if (!$this->episodeToAObjectMTMs->contains($episodeToAObjectMTM)) {
+            $this->episodeToAObjectMTMs[] = $episodeToAObjectMTM;
+            $episodeToAObjectMTM->setEpisode($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEpisodeToAObjectMTM(EpisodeToAObjectMTM $episodeToAObjectMTM): self
+    {
+        if ($this->episodeToAObjectMTMs->removeElement($episodeToAObjectMTM)) {
+            // set the owning side to null (unless already changed)
+            if ($episodeToAObjectMTM->getEpisode() === $this) {
+                $episodeToAObjectMTM->setEpisode(null);
             }
         }
 

@@ -60,6 +60,11 @@ class ArtScene
      */
     private $artSceneToUserMTMs;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $ThumbFileName;
+
     public function __construct()
     {
         $this->episodeToArtSceneMTMs = new ArrayCollection();
@@ -219,6 +224,18 @@ class ArtScene
                 $artSceneToUserMTM->setArtScene(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getThumbFileName(): ?string
+    {
+        return $this->ThumbFileName;
+    }
+
+    public function setThumbFileName(string $ThumbFileName): self
+    {
+        $this->ThumbFileName = $ThumbFileName;
 
         return $this;
     }
