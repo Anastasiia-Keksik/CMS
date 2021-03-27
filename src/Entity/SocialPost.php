@@ -76,6 +76,16 @@ class SocialPost
      */
     private $BGopacity;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Group::class, inversedBy="socialPosts")
+     */
+    private $groupID;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=GroupCategory::class, inversedBy="socialPosts")
+     */
+    private $GroupCategory;
+
     public function __construct()
     {
         $this->socialPostComments = new ArrayCollection();
@@ -255,6 +265,30 @@ class SocialPost
     public function setBGopacity(?float $BGopacity): self
     {
         $this->BGopacity = $BGopacity;
+
+        return $this;
+    }
+
+    public function getGroupID(): ?Group
+    {
+        return $this->groupID;
+    }
+
+    public function setGroupID(?Group $groupID): self
+    {
+        $this->groupID = $groupID;
+
+        return $this;
+    }
+
+    public function getGroupCategory(): ?GroupCategory
+    {
+        return $this->GroupCategory;
+    }
+
+    public function setGroupCategory(?GroupCategory $GroupCategory): self
+    {
+        $this->GroupCategory = $GroupCategory;
 
         return $this;
     }

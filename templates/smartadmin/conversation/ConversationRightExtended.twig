@@ -41,7 +41,7 @@
     if (themeSettings.themeOptions)
     {
         classHolder.className = themeSettings.themeOptions;
-        console.log("%c✔ Theme settings loaded", "color: #148f32");
+        console.log("%c✔ Theme settings loaded","color: #148f32");
     }
     else
     {
@@ -75,7 +75,7 @@
      **/
     var resetSettings = function()
     {
-        localStorage.setItem("themeSettings", "");
+        localStorage.setItem("themeSettings","");
     }
 
 </script>
@@ -91,7 +91,7 @@
             <div class="d-inline-block align-middle status status-sm status-success mr-3">
                 <span class="ml-1 mt-1 profile-image profile-image-md rounded d-block mt-1" style="background-image: url('{{ comment.AuthorAvatarFileUrl }}'); background-size: cover;"></span>
             </div>
-            <div class="mb-0 flex-1 text-dark mr-1 ">
+            <div class="mb-0 flex-1 text-dark mr-1">
                 <div class="d-flex">
                     <a href="javascript:void(0);" class="text-dark fw-500">
                         {{ comment.AuthorUsername }}
@@ -107,7 +107,7 @@
                         <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>
                     </a>
 
-                    <a href="#answer_ Comment.Id " data-toggle="collapse" aria-expanded="false" aria-controls="answer_Comment.Id "
+                    <a href="#answer_Comment.Id" data-toggle="collapse" aria-expanded="false" aria-controls="answer_Comment.Id"
                             {# onclick="changeCommgentCss(#comment_{{ post.Id }}_{{ loop.index }}, #comment_{{ post.Id }}_{{ loop.index1 }})" #}
                        class="float-right">
                                                                     <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top">
@@ -132,7 +132,7 @@
     <div class="mb-0 flex-1 text-dark">
         <div class="d-flex">
             <a href="javascript:void(0);" class="text-dark fw-500">
-                insideComment.AuthorFirstName  " ""  insideComment.AuthorUsername  "" "  insideComment.AuthorLastName
+                insideComment.AuthorFirstName"""  insideComment.AuthorUsername"""  insideComment.AuthorLastName
             </a><span class="text-muted fs-xs opacity-70 ml-auto">
     insideComment.createdAt
        </span>
@@ -145,7 +145,7 @@
             <a href="javascript: addHeart(  insideComment.Id  );" class="d-inline-flex align-items-center text-dark">
                 <i class="fas fa-heart fs-xs mr-1 text-danger"></i> <span>0 Likes</span>
             </a>
-            <a href="#answer_  insideComment.Id  " data-toggle="collapse" aria-expanded="false" aria-controls="answer_  insideComment.Id  "
+            <a href="#answer_insideComment.Id" data-toggle="collapse" aria-expanded="false" aria-controls="answer_insideComment.Id"
                     {# onclick="changeCommgentCss(#comment_{{ post.Id }}_{{ loop.index }}, #comment_{{ post.Id }}_{{ loop.index1 }})" #}
                class="float-right">
                                                 <span data-toggle="tooltip" data-original-title="Create new Conversation" data-placement="top">
@@ -158,8 +158,8 @@
     </div>
 </div>
 <!-- add comment -->
-<div class="py-3 w-100 collapse" id="answer_ insideComment.Id "><form id="COMMENTinconversation_ insideComment.Id " method="post">
-                                    <textarea id="new_comment_to_the_conversation_ insideComment.Id " class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
+<div class="py-3 w-100 collapse" id="answer_insideComment.Id"><form id="COMMENTinconversation_insideComment.Id" method="post">
+                                    <textarea id="new_comment_to_the_conversation_insideComment.Id" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
                                               rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment',  insideComment.Id , '3')"></textarea>
         <input type="hidden" name="_token" value="{{ csrf_token("comment") }}">
         <input type="submit"
@@ -172,11 +172,11 @@
         {% endfor %}
         {% endif %}
 
-<div id="conversation_target_  Comment.Id  _after"> </div>
+<div id="conversation_target_Comment.Id  _after"> </div>
 
 <!-- add comment -->
-<div class="py-3 w-100 collapse" id="answer_ Comment.Id "><form id="COMMENTinconversation_ Comment.Id " method="post">
-                                    <textarea id="new_comment_to_the_conversation_ Comment.Id " class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
+<div class="py-3 w-100 collapse" id="answer_Comment.Id"><form id="COMMENTinconversation_Comment.Id" method="post">
+                                    <textarea id="new_comment_to_the_conversation_Comment.Id" class="form-control border-0 p-0"  name="Comment_content" placeholder="add a comment..."
                                               rows="2" style="background-color: unset" onkeypress="submitCommentToComment('comment',  Comment.Id , '2')"></textarea>
         <input type="hidden" name="_token" value="{{ csrf_token("comment") }}">
         <input type="submit"

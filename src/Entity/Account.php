@@ -406,6 +406,11 @@ class Account implements UserInterface
      */
     private $artSceneToUserMTMs;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Group::class, mappedBy="leader", orphanRemoval=true)
+     */
+    private $mine_groups;
+
     public function __construct()
     {
         $this->mainMenuCategories = new ArrayCollection();
@@ -441,6 +446,7 @@ class Account implements UserInterface
         $this->bans = new ArrayCollection();
         $this->userToAObjMTMs = new ArrayCollection();
         $this->artSceneToUserMTMs = new ArrayCollection();
+        $this->mine_groups = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -1906,6 +1912,36 @@ class Account implements UserInterface
             // set the owning side to null (unless already changed)
             if ($artSceneToUserMTM->getUser() === $this) {
                 $artSceneToUserMTM->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Group[]
+     */
+    public function getMineGroups(): Collection
+    {
+        return $this->mine_groups;
+    }
+
+    public function addMineGroup(Group $mineGroup): self
+    {
+        if (!$this->mine_groups->contains($mineGroup)) {
+            $this->mine_groups[] = $mineGroup;
+            $mineGroup->setLeader($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMineGroup(Group $mineGroup): self
+    {
+        if ($this->mine_groups->removeElement($mineGroup)) {
+            // set the owning side to null (unless already changed)
+            if ($mineGroup->getLeader() === $this) {
+                $mineGroup->setLeader(null);
             }
         }
 

@@ -288,3 +288,26 @@ button, button:focus, button:active,
 .form-content-editable[contenteditable="true"]::-moz-selection {
     background: rgba(0, 132, 255, 0.2);
     color: #000; }
+.justify-content-end {
+    -webkit-box-pack: end !important;
+    -ms-flex-pack: end !important;
+    justify-content: flex-end !important; }
+
+.justify-content-center {
+    -webkit-box-pack: center !important;
+    -ms-flex-pack: center !important;
+    justify-content: center !important; }
+
+.justify-content-between {
+    -webkit-box-pack: justify !important;
+    -ms-flex-pack: justify !important;
+    justify-content: space-between !important; }
+
+.justify-content-around {
+    -ms-flex-pack: distribute !important;
+    justify-content: space-around !important; }
+
+.d-flex {
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
+    display: flex !important; }

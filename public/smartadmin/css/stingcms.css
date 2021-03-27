@@ -268,7 +268,7 @@
 /*        flex: 0 0 604px;*/
 /*    }*/
     .profile-container {
-        width: 1116px;
+        width: 1416px;
     }
 }
 /*!*large*!*/
@@ -286,7 +286,7 @@
 /*        flex: 0 0 604px;*/
 /*    }*/
     .profile-container {
-        width: 1116px;
+        width: 100%;
     }
 }
 /*!*medium*!*/
@@ -372,4 +372,45 @@
 tt {
     font-family: "Lucida Console", "Menlo", "Monaco", "Courier",
     monospace;
+}
+
+.HV {
+    float: left;
+}
+
+.NV {
+    float: left;
+}
+
+.OV {
+    float: right;
+}
+
+.BW {
+    float: right;
+}
+
+.border-blend::before {
+    outline: 2px dashed white;
+    outline-offset: -2px;
+    mix-blend-mode: difference;
+    position: absolute;
+    content: '';
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+}
+
+#scale-slider-handle {
+    width: 3em;
+    height: 1.6em;
+    top: 50%;
+    margin-top: -.8em;
+    text-align: center;
+    line-height: 1.6em;
+}
+
+.h18 {
+    height: 18px !important;
 }

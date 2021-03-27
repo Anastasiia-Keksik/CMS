@@ -6,7 +6,7 @@
     <main id="js-page-content" role="main" class="page-content">
         <!-- Your main content goes below here: -->
         <div class="row" style="margin-top: 66px;">
-            <div id="shock-wave" class="shadow-5 m-auto image-drop sortable-main zoom" style="width: 1800px; min-height: 100vh; background: lightskyblue;">
+            <div id="shock-wave" class="shadow-5 m-auto image-drop sortable-main zoom" style="width: 800px; min-height: 100vh; background: lightskyblue;">
                 {% for image in episode.images %}
                     <img src="{{ asset('upload/comics/'~episode.comic.id~'/'~episode.id~'/'~image) }}" class="image-drag-inside zoom" style="width: 100%">
                 {% endfor %}
@@ -41,7 +41,7 @@
             </div>
             <!-- images all end -->
             <!-- edit left side modal dubbing add -->
-            <div id="soundPanel" class="position-absolute clearfix d-inline-flex align-items-end" style="top: 66px; margin-left: -440px">
+            <div id="soundPanel" class="position-fixed clearfix d-inline-flex align-items-end" style="top: 66px; margin-left: -440px">
                 <div class="panel float-left mb-0 p-2 rounded-left-0" style="width: 440px; min-height: 400px">
                     <div class="panel-tag mb-2">Set your desireable scrool height, and set this value as the sound play point.</div>
                     <div id="setled-error-target" class="text-center" style="width: 100%; color: red"></div>
