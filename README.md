@@ -1,4 +1,4 @@
-# Comic CMS 
+# Comic CMS !!!
 
 This is a project of a full Social Media website for Artists who want to publish their art. Here you can find people to work on your project on diffrent positions ranging from writer, artist, and translator, all of whom can earn money from published comics. Comics are sold independently by episodes and episode style can wary for each comic.
 
